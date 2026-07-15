@@ -1,0 +1,12 @@
+# ============================================================================
+# ModeFlow – Clangd Language Server Configuration
+# ============================================================================
+
+CompileFlags:
+  # Search for the compilation database (compile_commands.json) directly 
+  # in the project's root folder, where CMake automatically syncs it.
+  CompilationDatabase: "."
+
+Diagnostics:
+  Suppress: 
+    - "drv_unknown_argument"

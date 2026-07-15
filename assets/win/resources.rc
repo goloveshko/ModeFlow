@@ -1,0 +1,37 @@
+﻿#include <windows.h>
+#include "../../src/utils/VersionInfo.h"
+
+IDI_ICON1 ICON DISCARDABLE APP_ICON_PATH
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION APP_VERSION_MAJOR,APP_VERSION_MINOR,APP_VERSION_PATCH,APP_VERSION_BUILD
+ PRODUCTVERSION APP_VERSION_MAJOR,APP_VERSION_MINOR,APP_VERSION_PATCH,APP_VERSION_BUILD
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0" // English (U.S.)
+        BEGIN
+            VALUE "CompanyName",      APP_COMPANY_NAME
+            VALUE "FileDescription",  APP_PRODUCT_NAME
+            VALUE "FileVersion",      APP_VERSION_STR
+            VALUE "InternalName",     APP_INTERNAL_NAME
+            VALUE "LegalCopyright",   APP_COPYRIGHT
+            VALUE "OriginalFilename", APP_EXECUTABLE_NAME
+            VALUE "ProductName",      APP_PRODUCT_NAME
+            VALUE "ProductVersion",   APP_VERSION_STR
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END

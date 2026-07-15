@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SettingsDialog</class>
+ <widget class="QDialog" name="SettingsDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>456</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>400</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Settings</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
+   </property>
+   <item>
+    <widget class="QGroupBox" name="groupWindows">
+     <property name="title">
+      <string>Windows Integration</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_1">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="checkAutostart">
+        <property name="toolTip">
+         <string>Administrative privileges are required to modify the system task scheduler.</string>
+        </property>
+        <property name="text">
+         <string>Start ModeFlow with Windows</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,10">
+        <item>
+         <widget class="QLabel" name="label_delay">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets a pause before automatically applying settings upon Windows logon. &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Tip&lt;/span&gt;: &lt;span style=&quot; font-style:italic;&quot;&gt;Drivers for monitors and audio cards take time to load. If the startup profile doesn't apply correctly, try increasing this delay.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>Logon delay:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="spinLogonDelay">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets a pause before automatically applying settings upon Windows logon. &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Tip&lt;/span&gt;: &lt;span style=&quot; font-style:italic;&quot;&gt;Drivers for monitors and audio cards take time to load. If the startup profile doesn't apply correctly, try increasing this delay.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="suffix">
+           <string> sec</string>
+          </property>
+          <property name="maximum">
+           <number>30</number>
+          </property>
+          <property name="value">
+           <number>3</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupStartup">
+     <property name="title">
+      <string>Startup Behavior</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_action">
+        <property name="toolTip">
+         <string>Choose which profile to apply automatically when you log into Windows.</string>
+        </property>
+        <property name="text">
+         <string>Startup action:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboStartupPolicy">
+        <property name="toolTip">
+         <string>Choose which profile to apply automatically when you log into Windows.</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupUI">
+     <property name="title">
+      <string>Interaction &amp; UI</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_3">
+      <item row="1" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,10">
+        <item>
+         <widget class="QLabel" name="label_next">
+          <property name="toolTip">
+           <string>Cycle through all your saved profiles using this global shortcut.</string>
+          </property>
+          <property name="text">
+           <string>Next profile</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="ModeFlow::Gui::HotkeyEdit" name="keyEditNextProfile">
+          <property name="toolTip">
+           <string>Cycle through all your saved profiles using this global shortcut.</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QCheckBox" name="checkAudioConfirmation">
+        <property name="toolTip">
+         <string>Play an audio signal upon successful profile activation.</string>
+        </property>
+        <property name="text">
+         <string>Audible confirmation</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="2">
+       <widget class="QCheckBox" name="checkAutoUpdate">
+        <property name="toolTip">
+         <string>Check for new versions when ModeFlow starts.</string>
+        </property>
+        <property name="text">
+         <string>Check for updates on startup</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="2">
+       <layout class="QGridLayout" name="gridLayout" columnstretch="0,10">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_lang">
+          <property name="text">
+           <string>Language:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="comboLanguage"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Theme</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="comboTheme"/>
+        </item>
+       </layout>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="checkAskConfirmation">
+        <property name="toolTip">
+         <string>Show a confirmation dialog when switching profiles via the tray menu or main window list.</string>
+        </property>
+        <property name="text">
+         <string>Confirm before applying profiles</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Policy::Expanding</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Save</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ModeFlow::Gui::HotkeyEdit</class>
+   <extends>QKeySequenceEdit</extends>
+   <header location="global">HotkeyEdit.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>checkAutostart</tabstop>
+  <tabstop>spinLogonDelay</tabstop>
+  <tabstop>comboStartupPolicy</tabstop>
+  <tabstop>keyEditNextProfile</tabstop>
+  <tabstop>checkAudioConfirmation</tabstop>
+  <tabstop>checkAutoUpdate</tabstop>
+  <tabstop>comboLanguage</tabstop>
+  <tabstop>comboTheme</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+ <slots>
+  <slot>on_spinLogonDelay_valueChanged(int)</slot>
+  <slot>on_comboLanguage_currentIndexChanged(int)</slot>
+ </slots>
+</ui>

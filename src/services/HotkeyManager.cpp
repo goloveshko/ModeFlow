@@ -1,0 +1,245 @@
+﻿#include "HotkeyManager.h"
+
+#include "AudioDeviceManager.h"
+#include "ConfigManager.h"
+#include "DisplayManager.h"
+#include "Logging.h"
+
+namespace ModeFlow::Services {
+
+HotkeyManager::HotkeyManager(Core::ConfigManager* configManager, DisplayManager* displayManager,
+                             AudioDeviceManager* audioManager, QObject* parent)
+    : QObject(parent), m_configManager(configManager), m_displayManager(displayManager), m_audioManager(audioManager),
+      m_activeProfileId(resolveInitialProfileId(configManager)) {
+    m_nextProfileHotkey = new QHotkey(this);
+    connect(m_nextProfileHotkey, &QHotkey::activated, this, &HotkeyManager::onNextProfileTriggered);
+}
+
+HotkeyManager::~HotkeyManager() {
+    clearProfileHotkeys();
+}
+
+void HotkeyManager::clearProfileHotkeys() {
+    for (const auto& mapping : m_profileMappings) {
+        mapping.hotkey->deleteLater();
+    }
+    m_profileMappings.clear();
+}
+
+void HotkeyManager::updateRegistrations() {
+    const bool shouldRegister = !m_captureMode;
+
+    for (const auto& mapping : m_profileMappings) {
+        if (!mapping.hotkey) {
+            continue;
+        }
+        mapping.hotkey->setRegistered(shouldRegister);
+    }
+
+    if (m_nextProfileHotkey) {
+        const bool hasShortcut = !m_nextProfileHotkey->shortcut().isEmpty();
+        m_nextProfileHotkey->setRegistered(shouldRegister && hasShortcut);
+    }
+}
+
+QString HotkeyManager::resolveInitialProfileId(Core::ConfigManager* cm) {
+    if (!cm)
+        return {};
+    const auto selected = cm->selectedProfileId();
+    return selected.isEmpty() ? cm->lastActiveProfileId() : selected;
+}
+
+int HotkeyManager::findProfileIndexById(const QString& id) const {
+    for (int i = 0; i < m_lastConfigs.size(); ++i) {
+        if (m_lastConfigs[i].id == id) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+QString HotkeyManager::resolveCurrentProfileId() const {
+    if (m_displayManager && m_audioManager) {
+        const QString currentDisplayId = m_displayManager->getCurrentDisplayKey();
+        const QString currentAudioId = m_audioManager->getDefaultOutputDeviceId();
+
+        int bestIndex = -1;
+        int bestScore = -1;
+
+        for (int i = 0; i < m_lastConfigs.size(); ++i) {
+            const auto& cfg = m_lastConfigs[i];
+            const bool displayMatches = !cfg.displayId.isEmpty() && cfg.displayId == currentDisplayId;
+            const bool audioMatches = !cfg.audioId.isEmpty() && cfg.audioId == currentAudioId;
+
+            int score = -1;
+            if (displayMatches) {
+                score = audioMatches ? 3 : 2;
+            } else if (audioMatches && cfg.displayId.isEmpty()) {
+                score = 1;
+            }
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestIndex = i;
+            }
+        }
+
+        if (bestIndex != -1) {
+            return m_lastConfigs[bestIndex].id;
+        }
+    }
+
+    if (!m_activeProfileId.isEmpty()) {
+        return m_activeProfileId;
+    }
+    if (!m_configManager) {
+        return QString();
+    }
+    if (!m_configManager->selectedProfileId().isEmpty()) {
+        return m_configManager->selectedProfileId();
+    }
+    return m_configManager->lastActiveProfileId();
+}
+
+bool HotkeyManager::setProfiles(const QList<Core::WorkspaceConfig>& configs) {
+    QList<HotkeyMapping> oldMappings = m_profileMappings;
+    m_profileMappings.clear();
+    m_lastConfigs = configs;
+
+    bool anyChanges = false;
+
+    for (const auto& cfg : configs) {
+        if (cfg.hotkey.isEmpty()) {
+            continue;
+        }
+
+        auto oldIt = std::find_if(oldMappings.begin(), oldMappings.end(), [&](const HotkeyMapping& m) {
+            return m.config.id == cfg.id && m.hotkey->shortcut() == cfg.hotkey;
+        });
+
+        if (oldIt != oldMappings.end()) {
+            // Reuse the existing QHotkey! Absolutely no Win32 RegisterHotKey overhead.
+            m_profileMappings.append({oldIt->hotkey, cfg});
+            oldMappings.erase(oldIt); // Remove from cleanup list to keep it alive
+        } else {
+            auto hotkey = new QHotkey(cfg.hotkey, true, this);
+            if (hotkey->isRegistered()) {
+                m_profileMappings.append({hotkey, cfg});
+                connect(hotkey, &QHotkey::activated, this, &HotkeyManager::onProfileTriggered);
+                qCDebug(lcService) << "Registered hotkey for profile:" << cfg.name << "key:" << cfg.hotkey.toString();
+                anyChanges = true;
+            } else {
+                hotkey->deleteLater();
+                qCWarning(lcService) << "Failed to register hotkey for profile:" << cfg.name
+                                     << "key:" << cfg.hotkey.toString();
+            }
+        }
+    }
+
+    // Safely unregister and delete only the old hotkeys that are no longer used/edited
+    for (const auto& oldMap : oldMappings) {
+        if (oldMap.hotkey) {
+            oldMap.hotkey->deleteLater();
+            qCDebug(lcService) << "Unregistered obsolete hotkey for profile:" << oldMap.config.name;
+            anyChanges = true;
+        }
+    }
+
+    updateRegistrations();
+
+    return anyChanges;
+}
+
+bool HotkeyManager::setNextProfileHotkey(const QKeySequence& sequence) {
+    // Early Return: If the next profile shortcut sequence hasn't changed,
+    // skip redundant OS unregistration/registration.
+    if (m_nextProfileHotkey->shortcut() == sequence) {
+        return false;
+    }
+
+    if (sequence.isEmpty()) {
+        m_nextProfileHotkey->setShortcut(QKeySequence(), false);
+        return true;
+    }
+
+    m_nextProfileHotkey->setShortcut(sequence, !m_captureMode);
+    qCDebug(lcService) << "Registered global 'Next Profile' hotkey:" << sequence.toString()
+                       << "success:" << m_nextProfileHotkey->isRegistered();
+    return true;
+}
+
+void HotkeyManager::setCaptureMode(bool active) {
+    if (m_captureMode == active) {
+        return;
+    }
+
+    m_captureMode = active;
+    updateRegistrations();
+}
+
+void HotkeyManager::setActiveProfileId(const QString& id) {
+    m_activeProfileId = id;
+}
+
+void HotkeyManager::setSwitchInProgress(bool active) {
+    m_switchInProgress = active;
+}
+
+void HotkeyManager::onProfileTriggered() {
+    if (m_switchInProgress) {
+        qCDebug(lcService) << "Ignoring profile hotkey while another switch is still in progress";
+        return;
+    }
+
+    const QHotkey* hotkey = qobject_cast<const QHotkey*>(sender());
+    if (!hotkey)
+        return;
+
+    for (const auto& mapping : m_profileMappings) {
+        if (mapping.hotkey == hotkey) {
+            emit activateProfile(mapping.config);
+            break;
+        }
+    }
+}
+
+void HotkeyManager::onNextProfileTriggered() {
+    if (m_lastConfigs.isEmpty())
+        return;
+
+    if (m_switchInProgress) {
+        qCDebug(lcService) << "Ignoring next-profile hotkey while another switch is still in progress";
+        return;
+    }
+
+    const QString currentId = resolveCurrentProfileId();
+    int currentIndex = findProfileIndexById(currentId);
+
+    if (currentIndex == -1) {
+        currentIndex = 0;
+    } else {
+        currentIndex++;
+        if (currentIndex >= m_lastConfigs.size()) {
+            currentIndex = 0;
+        }
+    }
+
+    const int startIndex = currentIndex;
+    while (m_lastConfigs[currentIndex].skipInCycle) {
+        currentIndex++;
+        if (currentIndex >= m_lastConfigs.size()) {
+            currentIndex = 0;
+        }
+        // If we wrapped all the way around, all profiles are skipped — stay on current
+        if (currentIndex == startIndex) {
+            currentIndex = findProfileIndexById(currentId);
+            if (currentIndex == -1)
+                currentIndex = 0;
+            break;
+        }
+    }
+
+    emit activateProfile(m_lastConfigs[currentIndex]);
+}
+
+} // namespace ModeFlow::Services

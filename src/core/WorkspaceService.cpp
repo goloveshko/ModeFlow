@@ -1,0 +1,200 @@
+﻿#include "WorkspaceService.h"
+
+#include <QTimer>
+#include <QtConcurrent>
+
+#include "AppLauncher.h"
+#include "AudioDeviceManager.h"
+#include "Constants.h"
+#include "DisplayManager.h"
+#include "Logging.h"
+
+using namespace Qt::StringLiterals;
+
+namespace ModeFlow::Core {
+
+namespace {
+bool hasFollowUpActions(const WorkspaceConfig& config) {
+    return !config.audioId.isEmpty() || !config.appsToLaunch.isEmpty();
+}
+} // namespace
+
+WorkspaceService::WorkspaceService(Services::DisplayManager* displayManager, Services::AudioDeviceManager* audioManager,
+                                   Services::AppLauncher* appLauncher, QObject* parent)
+    : QObject(parent), m_displayManager(displayManager), m_audioManager(audioManager), m_appLauncher(appLauncher),
+      m_displayTimeoutTimer(std::make_unique<QTimer>()), m_displayTimeoutMs(Utils::DisplaySwitchTimeoutMs) {
+    if (!displayManager || !audioManager || !appLauncher) {
+        qCFatal(lcCore) << "WorkspaceService: Dependencies must not be null";
+        return;
+    }
+
+    m_displayTimeoutTimer->setSingleShot(true);
+
+    connect(m_displayTimeoutTimer.get(), &QTimer::timeout, this, &WorkspaceService::onDisplayTimeout);
+
+    // Monitor system display changes to verify if our switch was successful
+    connect(m_displayManager, &Services::DisplayManager::displaysChanged, this, &WorkspaceService::onDisplayChanged);
+    connect(m_audioManager, &Services::AudioDeviceManager::errorOccurred, this, [this](const QString&) {
+        if (m_isApplyingProfile) {
+            m_hadAudioError = true;
+        }
+    });
+    connect(m_appLauncher, &Services::AppLauncher::errorOccurred, this, [this](const QString&) {
+        if (m_isApplyingProfile) {
+            m_hadAppLaunchError = true;
+        }
+    });
+}
+
+void WorkspaceService::setDisplayTimeout(int ms) {
+    m_displayTimeoutMs = ms;
+}
+
+void WorkspaceService::setAudioConfirmation(bool enabled) {
+    m_audioConfirmation = enabled;
+}
+
+void WorkspaceService::applyWorkspaceConfig(const WorkspaceConfig& config) {
+    qCDebug(lcCore) << "Applying profile:" << config.name;
+
+    m_displayTimeoutTimer->stop();
+    m_isWaitingForDisplay = false;
+    m_isApplyingProfile = true;
+
+    if (!m_pendingConfig.appsToLaunch.isEmpty()) {
+        m_appLauncher->terminateProfileProcesses(m_pendingConfig.id);
+    }
+
+    m_pendingConfig = config;
+
+    QString currentDisplay = m_displayManager->getCurrentDisplayKey();
+    QString currentAudio = m_audioManager->getDefaultOutputDeviceId();
+
+    bool displayChanged = !config.displayId.isEmpty() && (config.displayId != currentDisplay);
+    bool audioChanged = !config.audioId.isEmpty() && (config.audioId != currentAudio);
+
+    m_displayChangeSucceeded = false;
+    m_hadAudioError = false;
+    m_hadAppLaunchError = false;
+    m_hadActualChanges = displayChanged || audioChanged;
+
+    emit configApplyStarted(config);
+
+    if (config.displayId.isEmpty() || currentDisplay == config.displayId) {
+        finalizeApplication(ApplyStatus::Success);
+        return;
+    }
+
+    m_isWaitingForDisplay = true;
+    m_displayTimeoutTimer->start(m_displayTimeoutMs);
+    qCDebug(lcService) << "Display switch command sent asynchronously, waiting for system confirmation...";
+
+    m_displayManager->setDisplayModeAsync(config.displayId).then(this, [this, config](bool success) {
+        if (!m_isApplyingProfile) {
+            return;
+        }
+
+        if (!success) {
+            qCWarning(lcService) << "Failed to initiate display switch (async) for:" << config.name;
+            m_isWaitingForDisplay = false;
+            m_displayTimeoutTimer->stop();
+            emit errorOccurred(tr("Failed to switch display for profile: %1").arg(config.name));
+            finalizeApplication(hasFollowUpActions(config) ? ApplyStatus::PartialSuccess : ApplyStatus::Failed);
+        }
+    });
+}
+
+void WorkspaceService::onDisplayChanged() {
+    if (!m_isWaitingForDisplay)
+        return;
+
+    QString currentKey = m_displayManager->getCurrentDisplayKey();
+
+    if (currentKey == m_pendingConfig.displayId) {
+        qCDebug(lcCore) << "Display switch confirmed for profile:" << m_pendingConfig.name;
+        m_isWaitingForDisplay = false;
+        m_displayChangeSucceeded = true;
+        m_displayTimeoutTimer->stop();
+        finalizeApplication(ApplyStatus::Success);
+    }
+}
+
+void WorkspaceService::onDisplayTimeout() {
+    if (!m_isWaitingForDisplay)
+        return;
+
+    qCDebug(lcCore) << "Display switch timed out, applying audio anyway.";
+    m_isWaitingForDisplay = false;
+    emit errorOccurred(tr("Display switch timed out for profile: %1").arg(m_pendingConfig.name));
+    finalizeApplication(ApplyStatus::PartialSuccess);
+}
+
+void WorkspaceService::finalizeApplication(ApplyStatus status) {
+    const bool audioSwitchConfigured = !m_pendingConfig.audioId.isEmpty();
+    const bool appLaunchConfigured = !m_pendingConfig.appsToLaunch.isEmpty();
+
+    // Switch Default Audio Output synchronously during profile application.
+    // Setting the default endpoint is extremely fast (< 5ms) and guarantees that:
+    // 1. Any COM error is caught synchronously and degrades the status to PartialSuccess/Failed instantly.
+    // 2. The confirmation beep is played STRICTLY on the newly applied audio device (resolves wrong-device beep bug).
+    if (audioSwitchConfigured) {
+        m_audioManager->setDefaultOutputDevice(m_pendingConfig.audioId);
+    }
+
+    if (m_hadAudioError) {
+        const bool hasKnownSuccessfulAction = m_displayChangeSucceeded;
+
+        if (!hasKnownSuccessfulAction && !appLaunchConfigured) {
+            status = ApplyStatus::Failed;
+        } else if (status == ApplyStatus::Success) {
+            status = ApplyStatus::PartialSuccess;
+        }
+    }
+
+    if (appLaunchConfigured) {
+        if (!m_appLauncher->launchSequence(m_pendingConfig.id, m_pendingConfig.appsToLaunch)) {
+            m_hadAppLaunchError = true;
+        }
+    }
+
+    if (m_hadAppLaunchError) {
+        const bool audioSwitchSucceeded = audioSwitchConfigured && !m_hadAudioError;
+        const bool hasKnownSuccessfulAction = m_displayChangeSucceeded || audioSwitchSucceeded;
+
+        if (!hasKnownSuccessfulAction) {
+            status = ApplyStatus::Failed;
+        } else if (status == ApplyStatus::Success) {
+            status = ApplyStatus::PartialSuccess;
+        }
+    }
+
+    // Optional audio feedback (Beep) - will now play strictly on the new default device!
+    if (m_audioConfirmation && m_hadActualChanges) {
+        emit requestAudioFeedback();
+    }
+
+    qCDebug(lcCore) << "Profile application finished:" << m_pendingConfig.name
+                    << ", status =" << applyStatusName(status);
+    emit configApplyFinished(m_pendingConfig, status);
+
+    m_isApplyingProfile = false;
+    m_displayChangeSucceeded = false;
+    m_hadAudioError = false;
+    m_hadAppLaunchError = false;
+    m_hadActualChanges = false;
+}
+
+QString WorkspaceService::applyStatusName(WorkspaceService::ApplyStatus status) {
+    switch (status) {
+    case WorkspaceService::ApplyStatus::Success:
+        return u"success"_s;
+    case WorkspaceService::ApplyStatus::PartialSuccess:
+        return u"partial-success"_s;
+    case WorkspaceService::ApplyStatus::Failed:
+        return u"failed"_s;
+    }
+
+    return u"unknown"_s;
+}
+
+} // namespace ModeFlow::Core

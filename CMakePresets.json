@@ -1,0 +1,77 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+		"CMAKE_CONFIGURATION_TYPES": "Debug;Release"
+      }
+    },
+    {
+      "name": "ninja-base",
+      "hidden": true,
+      "inherits": "base",
+      "generator": "Ninja Multi-Config"
+    },
+    {
+      "name": "vs-base",
+      "hidden": true,
+      "inherits": "base",
+      "generator": "Visual Studio 18 2026",
+      "architecture": "x64"
+    },
+    {
+      "name": "static-base",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "C:/dev/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static"
+      }
+    },
+    {
+      "name": "shared-base",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_PREFIX_PATH": "C:/Qt/6.11.1/msvc2022_64",
+        "CMAKE_VS_GLOBALS": "VcpkgEnabled=false"
+      }
+    },
+    {
+      "name": "ninja-static",
+      "inherits": ["ninja-base", "static-base"]
+    },
+    {
+      "name": "ninja-shared",
+      "inherits": ["ninja-base", "shared-base"]
+    },
+    {
+      "name": "vs-static",
+      "inherits": ["vs-base", "static-base"]
+    },
+    {
+      "name": "vs-shared",
+      "inherits": ["vs-base", "shared-base"]
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "ninja-static",
+      "configurePreset": "ninja-static"
+    },
+    {
+      "name": "ninja-shared",
+      "configurePreset": "ninja-shared"
+    },
+    {
+      "name": "vs-static",
+      "configurePreset": "vs-static"
+    },
+    {
+      "name": "vs-shared",
+      "configurePreset": "vs-shared"
+    }
+  ]
+}

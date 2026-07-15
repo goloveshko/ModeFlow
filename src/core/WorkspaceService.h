@@ -1,0 +1,97 @@
+﻿#pragma once
+
+#include <QObject>
+
+#include "ConfigTypes.h"
+
+namespace ModeFlow::Services {
+class AudioDeviceManager;
+class AppLauncher;
+class DisplayManager;
+} // namespace ModeFlow::Services
+
+namespace ModeFlow::Core {
+
+/**
+ * @brief Service for managing workspace configuration application.
+ *
+ * WorkspaceService coordinates the application of workspace configurations,
+ * handling the complex sequence of display switching, audio device changes,
+ * and optional application launching.
+ *
+ * Key responsibilities:
+ * - Display switching with visual confirmation (waits for displaysChanged signal)
+ * - Audio device switching after display change completes
+ * - Application launching with configurable delay
+ * - Display switch timeout handling (falls back to audio-only if timeout expires)
+ * - Reports whether the profile fully succeeded or finished with warnings
+ */
+class WorkspaceService : public QObject {
+    Q_OBJECT
+public:
+    enum class ApplyStatus { Success, PartialSuccess, Failed };
+    Q_ENUM(ApplyStatus)
+
+    explicit WorkspaceService(Services::DisplayManager* displayManager, Services::AudioDeviceManager* audioManager,
+                              Services::AppLauncher* appLauncher, QObject* parent = nullptr);
+
+    ~WorkspaceService() = default;
+
+    void applyWorkspaceConfig(const WorkspaceConfig& config);
+
+    bool isWaitingForDisplay() const { return m_isWaitingForDisplay; }
+
+    /**
+     * @brief Set display switch timeout delay.
+     * @param ms Timeout in milliseconds.
+     *
+     * If the display switch doesn't complete within this time, the service
+     * will proceed with audio/app changes anyway.
+     */
+    void setDisplayTimeout(int ms);
+
+    /**
+     * @brief Enable/disable audio confirmation (beep on profile switch).
+     * @param enabled true to enable audio feedback, false to disable.
+     */
+    void setAudioConfirmation(bool enabled);
+
+    static QString applyStatusName(WorkspaceService::ApplyStatus status);
+
+signals:
+    void configApplyStarted(const WorkspaceConfig& config);
+    void configApplyFinished(const WorkspaceConfig& config, ApplyStatus status);
+    void errorOccurred(const QString& message);
+
+    /**
+     * @brief Request to play audio feedback (confirmation sound).
+     *
+     * Connected to AudioFeedbackService::playConfirmation.
+     */
+    void requestAudioFeedback();
+
+private slots:
+    void onDisplayChanged();
+    void onDisplayTimeout();
+
+private:
+    void finalizeApplication(ApplyStatus status);
+
+private:
+    Services::DisplayManager* m_displayManager;
+    Services::AudioDeviceManager* m_audioManager;
+    Services::AppLauncher* m_appLauncher;
+
+    std::unique_ptr<QTimer> m_displayTimeoutTimer;
+    WorkspaceConfig m_pendingConfig;
+
+    int m_displayTimeoutMs;
+    bool m_isWaitingForDisplay = false;
+    bool m_isApplyingProfile = false;
+    bool m_displayChangeSucceeded = false;
+    bool m_hadAudioError = false;
+    bool m_hadAppLaunchError = false;
+    bool m_audioConfirmation = true;
+    bool m_hadActualChanges = false;
+};
+} // namespace ModeFlow::Core

@@ -1,0 +1,120 @@
+﻿#pragma once
+
+#include <QAction>
+#include <QCloseEvent>
+#include <QDialog>
+#include <QLabel>
+#include <QMenu>
+#include <QTimer>
+#include <QToolButton>
+
+#include "BaseDialog.h"
+#include "ConfigTypes.h"
+
+namespace ModeFlow::Core {
+class IWorkspaceManager;
+class ISettingsManager;
+} // namespace ModeFlow::Core
+
+namespace Ui {
+class WorkspaceWindow;
+}
+
+namespace ModeFlow::Gui {
+class SettingsDialog;
+class ProfileIconMenu;
+class ProfileExchangeController;
+class ProfileDetailsController;
+
+class WorkspaceWindow : public BaseDialog {
+    Q_OBJECT
+public:
+    WorkspaceWindow(Core::IWorkspaceManager* workspaceManager, Core::ISettingsManager* settingsManager,
+                    Core::IStyleManager* sm, QWidget* parent = nullptr);
+    ~WorkspaceWindow();
+
+    void setVisible(bool visible) override;
+    void raiseWindow();
+
+    void notifySettingsChanged();
+    void refreshVisualState();
+    void setUpdateAvailable(bool available, const QString& version);
+    void showToolTipOnMoreButton(const QString& text);
+
+    bool toggleVisibility();
+
+protected:
+    void changeEvent(QEvent* event) override;
+    void showEvent(QShowEvent* event) override;
+    void closeEvent(QCloseEvent* event) override;
+    void hideEvent(QHideEvent* event) override;
+
+    bool allowMinimize() const override { return true; }
+    bool allowMaximize() const override { return true; }
+
+private slots:
+    void addClicked();
+    void on_selectionChanged(const QModelIndex& current, const QModelIndex& previous);
+    void on_btnCapture_clicked();
+
+    void validateSpecificHotkey();
+
+    void deleteClicked();
+    void deleteProfileByRow(int row);
+    void duplicateProfileByRow(int row);
+    void applyProfileByRow(int row);
+
+signals:
+    void profilesChanged();
+    void activateProfile(const Core::WorkspaceConfig& config);
+    void showSettingsDialog();
+    void showAboutDialog();
+    void showUpdateDialog();
+    void forceUpdateCheck();
+    void showLogViewer();
+    void hotkeyCaptureChanged(bool active);
+
+private:
+    void init();
+    void setupConnections();
+    void initMoreMenu();
+    void restoreSelection();
+
+    void saveWindowGeometry();
+    void restoreWindowGeometry();
+
+    void saveCurrentToModel(int row);
+    void autosaveCurrentProfile();
+    void scheduleAutosave();
+    void loadRowToUi(int row);
+    bool persistProfiles();
+    void setCurrentRowSilently(int row);
+
+    void captureCurrentSettings();
+
+    void updateUI();
+
+    int currentRow() const;
+    QModelIndex currentIndex() const;
+
+private:
+    std::unique_ptr<Ui::WorkspaceWindow> ui;
+    Core::IWorkspaceManager* m_workspaceManager;
+    Core::ISettingsManager* m_settingsManager;
+
+    ProfileIconMenu* m_profileIconMenu = nullptr;
+    std::unique_ptr<ProfileExchangeController> m_exchangeController;
+    std::unique_ptr<ProfileDetailsController> m_detailsController;
+    QMenu* m_moreMenu = nullptr;
+    QAction* m_iconAction = nullptr;
+    QAction* m_importAction = nullptr;
+    QAction* m_exportAction = nullptr;
+    QAction* m_checkUpdatesAction = nullptr;
+    QAction* m_logViewerAction = nullptr;
+
+    bool m_isUpdating = false;
+
+    QTimer* m_autosaveTimer = nullptr;
+};
+
+} // namespace ModeFlow::Gui

@@ -1,0 +1,189 @@
+/* ============================================================
+   ModeFlow – System Theme (Pure Native Windows Look)
+   ============================================================ */
+
+/* ── Spin Box ────────────────────────────────────────────── */
+QSpinBox {
+    padding: 1px;
+}
+
+/* ── Tool Button (icon-only buttons: settings, about) ────── */
+QToolButton {
+    color: rgba(0, 0, 0, 0.6);
+    background-color: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 6px;
+    margin: 1px;
+}
+
+QToolButton:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+    color: #1a1a1a;
+}
+
+QToolButton:focus {
+    background-color: rgba(30, 93, 153, 0.1);
+    border: 1px solid rgba(30, 93, 153, 0.45);
+    color: #1a1a1a;
+}
+
+QToolButton:pressed {
+    background-color: rgba(0, 0, 0, 0.04);
+    color: rgba(0, 0, 0, 0.75);
+}
+
+QToolButton::menu-indicator,
+QPushButton::menu-indicator {
+    image: none;
+}
+
+#AboutDialog QLabel#labelIcon {
+    image: url(:/icons/light/icon.svg);
+}
+
+#AboutDialog QLabel#labelTitle {
+    font-size: 18pt;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+#AboutDialog QLabel#labelVersion,
+#AboutDialog QLabel#labelDescription {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+#AboutDialog QLabel#labelDisclaimer {
+    font-size: 8pt;
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+#WorkspaceWindow QPushButton#btnCapture,
+#AboutDialog QPushButton#btnGithub,
+#AboutDialog QPushButton#btnNewVersion,
+#AboutDialog QPushButton#btnLicenses {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+    color: rgba(30, 93, 153, 0.88);
+}
+
+#WorkspaceWindow QPushButton#btnCapture:hover,
+#AboutDialog QPushButton#btnGithub:hover,
+#AboutDialog QPushButton#btnNewVersion:hover,
+#AboutDialog QPushButton#btnLicenses:hover {
+    text-decoration: underline;
+    color: rgba(47, 112, 174, 0.95);
+}
+
+#AboutDialog QLabel#labelSeparator {
+    color: rgba(128, 128, 128, 0.35);
+    font-size: 14px;
+    font-weight: 400;
+    background: transparent;
+}
+
+#styleBridge {
+    qproperty-iconprefix: ":/icons/light";
+    qproperty-iconnormal: rgba(53, 79, 104, 0.9);
+    qproperty-iconactive: rgba(30, 93, 153, 0.95);
+    qproperty-icondisabled: rgba(0, 0, 0, 0.28);
+
+    qproperty-sidebaritemhoverbg: rgba(0, 0, 0, 0.05);
+    qproperty-sidebaritemselectedbg: rgba(30, 93, 153, 0.12);
+    qproperty-sidebartextnormal: #5d5d5d;
+    qproperty-sidebartextselected: #1f2f3f;
+    qproperty-sidebaraccent: #1e5d99;
+
+    /* LogViewer colors */
+    qproperty-logtimestamp: #707070;
+    qproperty-logcategory: #0066CC;
+    qproperty-logfunction: #7F7F00;
+    qproperty-logdebug: #666666;
+    qproperty-loginfo: #2E7D32;
+    qproperty-logwarning: #E65100;
+    qproperty-logcritical: #C62828;
+    qproperty-logfatal: #8E0000;
+}
+
+QToolButton#btnAdd:hover,
+QToolButton#btnRemove:hover,
+QToolButton#btnSettings:hover,
+QToolButton#btnAbout:hover,
+QToolButton#btnBrowse:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+QToolButton#btnAdd:focus,
+QToolButton#btnRemove:focus,
+QToolButton#btnSettings:focus,
+QToolButton#btnAbout:focus,
+QToolButton#btnBrowse:focus {
+    background: rgba(30, 93, 153, 0.1);
+    border: 1px solid rgba(30, 93, 153, 0.45);
+}
+
+QToolButton#btnBrowse {
+    border-radius: 4px;
+    padding: 4px;
+    margin: 1px;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+QWidget#profileRowWidget QToolButton#btnDeleteProfileInline,
+QWidget#appRowWidget QToolButton#btnDeleteAppInline {
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    qproperty-iconSize: 0px 0px;
+}
+
+QWidget#profileRowWidget:hover QToolButton#btnDeleteProfileInline,
+QWidget#appRowWidget:hover QToolButton#btnDeleteAppInline {
+    qproperty-iconSize: 14px 14px;
+}
+
+QWidget#profileRowWidget QToolButton#btnDeleteProfileInline:hover,
+QWidget#appRowWidget QToolButton#btnDeleteAppInline:hover {
+    background-color: rgba(211, 47, 47, 0.15);
+    border: 1px solid rgba(211, 47, 47, 0.25);
+    border-radius: 4px;
+}
+
+QToolButton#btnFollow:checked {
+    background-color: rgba(30, 93, 153, 0.12);
+    border: 1px solid rgba(30, 93, 153, 0.28);
+}
+
+QFileDialog {
+    background-color: rgb(240, 240, 240);
+}
+
+QFileDialog QTreeView,
+QFileDialog QListView {
+    background-color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+    color: #1a1a1a;
+}
+
+/* ── File Dialog Dropdowns (System Theme Contrast Fix) ───── */
+QFileDialog QAbstractItemView,
+QFileDialog QComboBox QAbstractItemView {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+    border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+QFileDialog QAbstractItemView::item:selected {
+    background-color: rgba(30, 93, 153, 0.08) !important;
+    color: #1a1a1a !important;
+}

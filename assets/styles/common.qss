@@ -1,0 +1,409 @@
+/* ============================================================
+   ModeFlow – Common Styles
+   Theme-agnostic rules, applied on top of dark.qss / light.qss
+   ============================================================ */
+
+/* ── Global ──────────────────────────────────────────────── */
+* {
+    font-family: "Segoe UI Variable Text", "Segoe UI", sans-serif;
+    font-size: 9pt;
+    outline: 0;
+}
+
+/* ── Tab Widget ──────────────────────────────────────────── */
+QTabBar {
+    background: transparent;
+}
+
+QTabBar::tab {
+    background: transparent;
+    padding: 8px 20px;
+    margin-right: 2px;
+    border-bottom: 2px solid transparent;
+}
+
+/* ── Push Button ─────────────────────────────────────────── */
+QPushButton {
+    border-radius: 6px;
+    padding: 6px 16px;
+    margin: 1px; /* Reserve room for a visible focus/default ring. */
+}
+
+/* ── Tool Button ─────────────────────────────────────────── */
+QToolButton {
+    background-color: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 6px;
+    margin: 1px; /* Reserve room for a visible focus ring. */
+}
+
+/* ── Line Edit ───────────────────────────────────────────── */
+QLineEdit,
+QTextEdit {
+    border-radius: 4px;
+    padding: 5px 10px;
+    selection-background-color: #0078d4;
+}
+
+/* ── Key Sequence Edit ───────────────────────────────────── */
+QKeySequenceEdit {
+    border-radius: 4px;
+    padding: 5px 10px;
+    selection-background-color: #0078d4;
+}
+
+/* ── Spin Box ────────────────────────────────────────────── */
+QSpinBox {
+    border-radius: 4px;
+    padding: 5px 10px;
+    selection-background-color: #0078d4;
+}
+
+QSpinBox::up-button,
+QSpinBox::down-button {
+    background-color: transparent;
+    border: none;
+    width: 20px;
+    border-radius: 3px;
+}
+
+/* CSS triangle – border trick, works in QSS unlike content: */
+QSpinBox::up-arrow {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    width: 0;
+    height: 0;
+}
+
+QSpinBox::down-arrow {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    width: 0;
+    height: 0;
+}
+
+/* ── Combo Box ───────────────────────────────────────────── */
+QComboBox {
+    border-radius: 4px;
+    padding: 5px 10px;
+    min-height: 22px;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 24px;
+}
+
+/* CSS triangle for dropdown arrow */
+QComboBox::down-arrow {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    width: 0;
+    height: 0;
+}
+
+QComboBox QAbstractItemView {
+    border-radius: 6px;
+    outline: none;
+    padding: 4px;
+}
+
+QComboBox QAbstractItemView::item {
+    min-height: 32px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background-color: transparent;
+}
+
+/* ── List View ───────────────────────────────────────────── */
+QListView {
+    border: none;
+    outline: none;
+    padding-top: 10px;
+}
+
+/* Item styling is handled by delegate, not QSS */
+QListView::item {
+    background: transparent;
+    border: none;
+}
+
+/* ── List Widget (standalone lists without custom delegate) ── */
+QListWidget {
+    padding-top: 0px;
+}
+
+QListWidget::item {
+    border: none;
+}
+
+QListWidget::item:selected {
+    border: none;
+}
+
+/* ── Check Box ───────────────────────────────────────────── */
+QCheckBox {
+    spacing: 8px;
+    background: transparent;
+}
+
+QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+    border-radius: 6px;
+}
+
+QCheckBox::indicator:checked {
+    image: url(:/icons/check_mark.svg);
+}
+
+/* ── Label ───────────────────────────────────────────────── */
+QLabel {
+    background-color: transparent;
+}
+
+/* ── Group Box ───────────────────────────────────────────── */
+QGroupBox {
+    border: none;
+    padding-top: 4px;
+    background-color: transparent;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    left: 0px;
+    top: 4px;
+    padding: 0 6px 0 0;
+    letter-spacing: 0.3px;
+}
+
+/* ── Frame separators ────────────────────────────────────── */
+QFrame[frameShape="4"],
+QFrame[frameShape="5"] {
+    border: none;
+}
+
+/* ── Scroll Area ─────────────────────────────────────────── */
+QScrollArea {
+    border: none;
+    background-color: transparent;
+}
+
+QScrollArea QWidget {
+    background-color: transparent;
+}
+
+/* ── Scroll Bar ──────────────────────────────────────────── */
+QScrollBar:vertical {
+    background: transparent;
+    width: 6px;
+    margin: 2px 0;
+}
+
+QScrollBar::handle:vertical {
+    min-height: 32px;
+    border-radius: 3px;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical,
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+    background: none;
+    height: 0;
+}
+
+QScrollBar:horizontal {
+    background: transparent;
+    height: 6px;
+    margin: 0 2px;
+}
+
+QScrollBar::handle:horizontal {
+    min-width: 32px;
+    border-radius: 3px;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal,
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal {
+    background: none;
+    width: 0;
+}
+
+/* ── Plain Text Edit ─────────────────────────────────────── */
+QPlainTextEdit {
+    border-radius: 6px;
+    padding: 4px;
+    selection-background-color: #0078d4;
+}
+
+/* ── Menu ────────────────────────────────────────────────── */
+QMenu {
+    border-radius: 8px;
+    padding: 4px;
+}
+
+QMenu#moreMenu {
+	icon-size: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+
+QMenu::item {
+    padding: 7px 14px;
+    border-radius: 4px;
+    margin: 1px 3px;
+    background-color: transparent;
+}
+
+QMenu::separator {
+    height: 1px;
+    margin: 4px 10px;
+}
+
+QMenu::icon {
+    padding-left: 6px;
+}
+
+QMenu#profileIconMenu {
+    padding: 0;
+}
+
+QWidget#profileIconMenuContent {
+    background: transparent;
+}
+
+QToolButton#profileIconOption {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 6px;
+    margin: 0;
+}
+
+/* ── Tool Tip ────────────────────────────────────────────── */
+QToolTip {
+    border-radius: 6px;
+    padding: 5px 10px;
+}
+
+/* ── Size Grip ───────────────────────────────────────────── */
+QSizeGrip {
+    width: 16px;
+    height: 16px;
+    margin: 0 6px 6px 0;
+    padding: 0;
+    border-radius: 4px;
+}
+
+#AboutDialog QLabel#labelTitle {
+    font-size: 18pt;
+    font-weight: 700;
+}
+
+#AboutDialog QLabel#labelDisclaimer {
+    font-size: 8pt;
+    font-style: italic;
+}
+
+#WorkspaceWindow QPushButton#btnCapture,
+#AboutDialog QPushButton#btnGithub,
+#AboutDialog QPushButton#btnNewVersion,
+#AboutDialog QPushButton#btnLicenses {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+#WorkspaceWindow QPushButton#btnCapture:hover,
+#AboutDialog QPushButton#btnGithub:hover,
+#AboutDialog QPushButton#btnNewVersion:hover,
+#AboutDialog QPushButton#btnLicenses:hover {
+    text-decoration: underline;
+}
+
+#AboutDialog QLabel#labelSeparator {
+    color: rgba(128, 128, 128, 0.35);
+    font-size: 14px;
+    font-weight: 400;
+    background: transparent;
+}
+
+QLineEdit,
+QSpinBox,
+QComboBox {
+    margin: 1px;
+}
+
+QToolButton#btnAdd,
+QToolButton#btnRemove,
+QToolButton#btnSettings,
+QToolButton#btnAbout,
+QToolButton#btnBrowse {
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+QToolButton#btnAdd:hover,
+QToolButton#btnRemove:hover,
+QToolButton#btnSettings:hover,
+QToolButton#btnAbout:hover,
+QToolButton#btnBrowse:hover {
+    border-radius: 6px;
+}
+
+QToolButton::menu-indicator,
+QPushButton::menu-indicator {
+    image: none;
+}
+
+QWidget#appRowWidget QToolButton#btnDeleteAppInline {
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    qproperty-iconSize: 0px 0px;
+}
+
+QWidget#appRowWidget:hover QToolButton#btnDeleteAppInline {
+    qproperty-iconSize: 14px 14px;
+}
+
+QWidget#profileRowWidget QToolButton#btnDeleteProfileInline {
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    qproperty-iconSize: 0px 0px;
+}
+
+QWidget#profileRowWidget:hover QToolButton#btnDeleteProfileInline {
+    qproperty-iconSize: 14px 14px;
+}
+
+QWidget#appRowWidget[selected="true"] QToolButton#btnDeleteAppInline {
+    qproperty-iconSize: 0px 0px;
+}
+
+#WorkspaceWindow QPushButton#btnCreateProfile {
+    background: transparent;
+    border: none;
+    border-radius: 0px;
+    outline: none;
+    text-align: center;
+    qproperty-iconSize: 14px 14px;
+    padding: 10px 16px;
+    margin: 0;
+    font-weight: 500;
+}
+
+QDialog QPushButton {
+    min-width: 80px;
+}
