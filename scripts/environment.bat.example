@@ -1,0 +1,12 @@
+@echo off
+rem ============================================================================
+rem ModeFlow – Local Developer Environment & Build Overrides (TEMPLATE)
+rem Copy this file to "environment.bat" and fill in your local compiler paths.
+rem ============================================================================
+
+set "QT_DIR=C:\path\to\Qt"
+set "VS_PATH=C:\path\to\Visual Studio"
+set "VCPKG_EXE=C:\path\to\vcpkg.exe"
+
+set "MODEFLOW_UPDATE_URL=https://raw.githubusercontent.com/username/ModeFlow/main/metadata/update.json"
+set "GIT_HOST_URL=https://github.com/username/ModeFlow"
