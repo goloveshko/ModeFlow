@@ -53,10 +53,16 @@ function(setup_app_resources TARGET_NAME)
             "${CMAKE_SOURCE_DIR}/assets/styles/system.qss"
     )
     
-    # Compiled App Translations
-    qt_add_resources(${TARGET_NAME} "${TARGET_NAME}_translations"
-        PREFIX "/i18n"
-        BASE "${CMAKE_SOURCE_DIR}/i18n"
-        FILES "${CMAKE_SOURCE_DIR}/i18n/${PROJECT_NAME}_ru_RU.qm"
-    )
+    # Compiled App Translations (Manual Workflow with safe existence check)
+    # Allows the project to configure successfully even if the binary .qm file
+    # hasn't been generated yet (e.g. on fresh clones inside IDEs).
+    if(EXISTS "${CMAKE_SOURCE_DIR}/i18n/${PROJECT_NAME}_ru_RU.qm")
+        qt_add_resources(${TARGET_NAME} "${TARGET_NAME}_translations"
+            PREFIX "/i18n"
+            BASE "${CMAKE_SOURCE_DIR}/i18n"
+            FILES "${CMAKE_SOURCE_DIR}/i18n/${PROJECT_NAME}_ru_RU.qm"
+        )
+    else()
+        message(STATUS "Note: ${PROJECT_NAME}_ru_RU.qm not found. Russian translation will be omitted until compiled.")
+    endif()
 endfunction()

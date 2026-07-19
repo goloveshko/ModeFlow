@@ -91,12 +91,12 @@ set(COMMON_SOURCES
     src/gui/AppLaunchDialog.cpp src/gui/AppLaunchDialog.h src/gui/AppLaunchDialog.ui
     src/gui/AppListWidget.cpp src/gui/AppListWidget.h
     src/gui/BaseDialog.cpp src/gui/BaseDialog.h
+    src/gui/FluentListItemDelegate.cpp src/gui/FluentListItemDelegate.h
     src/gui/FontAwesome.cpp src/gui/FontAwesome.h
     src/gui/HotkeyEdit.cpp src/gui/HotkeyEdit.h
     src/gui/HotkeyValidation.cpp src/gui/HotkeyValidation.h
     src/gui/LogHighlighter.cpp src/gui/LogHighlighter.h
     src/gui/LogViewerDialog.cpp src/gui/LogViewerDialog.h src/gui/LogViewerDialog.ui
-    src/gui/NavigationDelegate.cpp src/gui/NavigationDelegate.h
     src/gui/ProfileDetailsController.cpp src/gui/ProfileDetailsController.h
     src/gui/ProfileExchangeController.cpp src/gui/ProfileExchangeController.h
     src/gui/ProfileIconMenu.cpp src/gui/ProfileIconMenu.h
@@ -234,13 +234,14 @@ set_directory_properties(PROPERTIES VS_STARTUP_PROJECT ${MAIN_TARGET})
 
 # --- Centralized Compilation Database Synchronization ---
 # Automatically copy the generated compile_commands.json from the active binary directory 
-# directly to the project's source root. This ensures that clangd (or other LSPs) can 
-# always locate the active configuration database automatically.
+# directly to the project's root build/ folder. This keeps the root directory clean 
+# while ensuring that clangd (or other LSPs) can always locate the active configuration.
 if(CMAKE_EXPORT_COMPILE_COMMANDS)
     add_custom_target(copy_compile_commands ALL
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_SOURCE_DIR}/build"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${CMAKE_BINARY_DIR}/compile_commands.json"
-            "${CMAKE_SOURCE_DIR}/compile_commands.json"
-        COMMENT "Syncing active compile_commands.json to project root..."
+            "${CMAKE_SOURCE_DIR}/build/compile_commands.json"
+        COMMENT "Syncing active compile_commands.json to root build/ directory..."
     )
 endif()

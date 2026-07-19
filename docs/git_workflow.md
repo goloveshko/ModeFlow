@@ -1,68 +1,107 @@
 # ModeFlow — Developer & Release Guide
 
-This document defines the standard workflow for making changes, compiling, translating, and publishing releases of the **ModeFlow** utility.
+This document defines the standard Git branching strategy, daily development cycle, translation pipelines, and publishing workflows for the **ModeFlow** utility.
 
 ---
 
-## 🛠️ 1. Git Remotes Configuration
+## 🛠️ 1. Git Remotes Configuration (Explicit Routing)
 
-To prevent confusion between the local debugging server (Forgejo) and the public production repository (GitHub), the standard `origin` remote has been split into explicit, self-documenting targets.
+To prevent any accidental commits or transfers between your local debugging environment (Forgejo) and the public production repository (GitHub), we completely eliminate the default `origin` remote and register explicit, self-documenting targets.
+
+Run the following commands in the project root to set up your remotes:
+
+```bash
+# 1. Remove the default 'origin' remote to prevent confusion
+git remote remove origin
+
+# 2. Register the official production GitHub repository as 'github'
+git remote add github https://github.com/goloveshko/ModeFlow.git
+
+# 3. Register your local Gitea/Forgejo debugging environment as 'forgejo'
+git remote add forgejo http://localhost:3000/ItzMe/ModeFlow_forgejo.git
+```
 
 Verify your remotes configuration by running:
 ```bash
 git remote -v
 ```
 
-If needed, set them up using the following commands:
-```bash
-# Register Gitea/Forgejo as the local debug environment
-git remote add forgejo http://localhost:3000/goloveshko/ModeFlow.git
-
-# Register official GitHub as the production environment
-git remote add github https://github.com/goloveshko/ModeFlow.git
-```
+Now, your push targets are 100% explicit:
+*   Pushing to local Forgejo (Private Backup): `git push forgejo <branch_name>`
+*   Pushing to official GitHub (Public Release): `git push github <branch_name>`
 
 ---
 
-## 💻 2. Daily Development Cycle
+## 🌿 2. Branching & Development Strategy
 
-Follow this strict cycle before committing any changes to ensure the codebase remains stable and compilable.
+We enforce a strict separation between **Active Development** and **Stable Production**:
+
+*   **`main` Branch (on GitHub):** Contains strictly stable, compiled, and fully tested production-grade code. Direct daily development on `main` is prohibited.
+*   **`dev` Branch (Local & Forgejo):** Your sandbox. You are encouraged to commit as frequently as possible (e.g., "fix typo", "temp save", "debug log"). This serves as your local safety net.
+
+---
+
+## 💻 3. Daily Development Cycle (The "Dirty" Local History)
+
+Develop and save your work frequently within the `dev` branch.
 
 ### Step 1: Format Code
-Before compiling or committing, run `clang-format` on all modified source files. Thanks to our `.clang-format` categories, this will automatically regroup and sort all your `#include` directives into a clean, unified standard:
+Before compiling or committing, run the formatter to keep the codebase consistent:
 ```bash
 scripts\build.bat --format
 ```
-*Note: Every time you run the build, CMake automatically copies the active configuration's `compile_commands.json` directly to the project root, keeping your LSP (clangd in VS Code/Zed) 100% synchronized and error-free.*
+*Note: This automatically copies the compilation database (`compile_commands.json`) to the project root, keeping your LSP (clangd in VS Code/Zed) 100% synchronized.*
 
-### Step 2: Build & Verify
-Always run a test build using the default generator (Ninja is recommended for speed) to check for compile errors or warnings. Due to our shared `ModeFlowCore` Object Library configuration, compiling is now up to 50% faster as files are built strictly once:
+### Step 2: Commit & Backup
+Commit your changes locally as often as you want. Push them to your private Forgejo server as a cloud backup:
 ```bash
-scripts\build.bat --ninja
-```
+# Switch to the development branch (done once)
+git checkout -b dev
 
-### Step 3: Run Tests
-Verify that the full suite of unit tests passes successfully before committing (running the build script with `--ninja` automatically compiles and executes these):
-```bash
-build\bin\Debug\ModeFlowTests.exe
+# Work on code, make a change, and commit:
+git add .
+git commit -m "refactor audio manager"
+
+# Make another small change:
+git add .
+git commit -m "fix typo in qss"
+
+# Push to your private Forgejo server for backup:
+git push forgejo dev
 ```
 
 ---
 
-## 📝 3. Commit Workflow (Conventional Commits)
+## 🚀 4. The Release & Squash-Merge Pipeline (The Clean GitHub History)
 
-Commit your changes once a logical task is complete. Group your commits using the following prefixes:
+When a feature or bugfix is completed, tested, and ready to be published to the public **GitHub** repository, we use a **Squash Merge** to combine all intermediate "dirty" commits into a single, beautifully formatted Conventional Commit.
 
-*   `feat(<scope>):` — A new user-facing feature (e.g., `feat(ui): add inline delete buttons`).
-*   `fix(<scope>):` — A bug fix (e.g., `fix(audio): prevent background thread crash`).
-*   `refactor(<scope>):` — Code restructuring without altering behavior (e.g., `refactor(core): decouple list widget from main window`).
-*   `docs(<scope>):` — Updates to documentation files (e.g., `docs(git): add release guide`).
+Run the following commands strictly in this sequence:
 
-*Never use "git add ." or "git add -A" as it can accidentally stage local build folders, compile databases, or other untracked developer artifacts. Stage only the specific C++ or QSS source files you edited.*
+```bash
+# 1. Switch to the stable main branch
+git checkout main
+
+# 2. Pull the latest upstream changes from GitHub (if any occurred)
+git pull github main
+
+# 3. Merge your dev branch into main, SQUASHING all intermediate commits into one!
+git merge --squash dev
+
+# 4. Create a single, polished, and descriptive commit matching Conventional Commits standards
+git commit -m "feat(audio): implement non-blocking audio manager with Pimpl"
+
+# 5. Push this single pristine commit directly to the official GitHub repository!
+git push github main
+
+# 6. Switch back to your development branch and synchronize it with the updated main
+git checkout dev
+git merge main
+```
 
 ---
 
-## 🌐 4. Internationalization (i18n) Pipeline
+## 🌐 5. Internationalization (i18n) Pipeline
 
 All user-facing strings must be wrapped in `tr()`. If you modify, add, or delete translatable strings:
 
@@ -78,12 +117,12 @@ All user-facing strings must be wrapped in `tr()`. If you modify, add, or delete
 
 ---
 
-## 📦 5. Release & Deployment Pipeline
+## 📦 6. Release Packaging & Deployment
 
 Follow these steps to package and publish a new version of ModeFlow.
 
 ### Step 1: Version Bump
-Update the version numbers in `src/utils/VersionInfo.h` (increment MAJOR for major features, MINOR for features/pre-releases, and PATCH for bug fixes):
+Update the version numbers in `src/utils/VersionInfo.h` (increment MAJOR for major features, MINOR for pre-releases, and PATCH for bug fixes):
 ```cpp
 #define APP_VERSION_MAJOR 0
 #define APP_VERSION_MINOR 9  // Set to 9 for Release Candidate
@@ -91,7 +130,7 @@ Update the version numbers in `src/utils/VersionInfo.h` (increment MAJOR for maj
 ```
 
 ### Step 2: Write Release Notes
-Open `metadata/changelog.md` in the metadata directory. Write your release notes in Markdown under the following structure. Keep the `{VERSION}` placeholder intact; the build script will replace it automatically:
+Open `metadata/changelog.md` and write your release notes in Markdown under the following structure (keep the `{VERSION}` placeholder intact; the build script replaces it automatically):
 ```markdown
 # Changelog - ModeFlow v{VERSION}
 
@@ -105,7 +144,7 @@ Open `metadata/changelog.md` in the metadata directory. Write your release notes
 ```
 
 ### Step 3: Package Release
-Run the build script with the `--package` flag. This will compile the release binary, compress the artifacts, calculate the SHA-256 hash, and dynamically generate `update.json` inside the metadata folder:
+Run the build script with the `--package` flag. This will compile the static release binary, compress the artifacts, calculate the SHA-256 hash, and dynamically generate `update.json` inside the metadata folder:
 ```bash
 scripts\build.bat --release --static --ninja --package
 ```
@@ -120,12 +159,12 @@ Verify the generated output:
     ```bash
     git add metadata/update.json metadata/changelog.md src/utils/VersionInfo.h
     git commit -m "bump: release version X.Y.Z"
-    git push <remote_name> main
+    git push github main
     ```
-2.  **Upload Assets to Gitea/GitHub:**
-    *   Open your Git host in a web browser.
-    *   Create a new tag/release matching `vX.Y.Z`.
-    *   Open `build\artifacts\temp_changelog.md` and copy its pre-rendered contents into the release description box.
-    *   Drag and drop the generated `.zip` and `.sha256` files into the assets attachment area.
-    *   Click **Publish**.
+2.  **Upload Assets to GitHub:**
+    *   Create a new release on GitHub matching the tag `vX.Y.Z`.
+    *   Check the **"Set as a pre-release"** checkbox.
+    *   Open `build\artifacts\temp_changelog.md` and copy its pre-rendered contents into the release description.
+    *   Drag and drop the generated `.zip` and `.sha256` files from `build\artifacts\` into the assets box.
+    *   Click **Publish release**!
 ```

@@ -226,52 +226,27 @@
 <context>
     <name>ModeFlow::Core::AppController</name>
     <message>
-        <location filename="../src/core/AppController.cpp" line="252"/>
-        <source>Restart Required</source>
-        <translation>Требуется перезапуск</translation>
-    </message>
-    <message>
-        <location filename="../src/core/AppController.cpp" line="253"/>
-        <source>Theme change will be applied after restart.</source>
-        <translation>Изменения темы вступят в силу после перезапуска.</translation>
-    </message>
-    <message>
-        <location filename="../src/core/AppController.cpp" line="254"/>
-        <source>To apply the selected theme, ModeFlow needs to be restarted.</source>
-        <translation>Для применения выбранной темы необходимо перезапустить ModeFlow.</translation>
-    </message>
-    <message>
-        <location filename="../src/core/AppController.cpp" line="249"/>
-        <source>Restart now</source>
-        <translation>Перезапустить сейчас</translation>
-    </message>
-    <message>
-        <location filename="../src/core/AppController.cpp" line="249"/>
-        <source>Not now</source>
-        <translation>Не сейчас</translation>
-    </message>
-    <message>
-        <location filename="../src/core/AppController.cpp" line="434"/>
+        <location filename="../src/core/AppController.cpp" line="419"/>
         <source>You are up to date.</source>
         <translation>Вы используете последнюю версию.</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="440"/>
+        <location filename="../src/core/AppController.cpp" line="425"/>
         <source>Update Check Failed</source>
         <translation>Ошибка проверки обновлений</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="485"/>
+        <location filename="../src/core/AppController.cpp" line="470"/>
         <source>ModeFlow</source>
         <translation>ModeFlow</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="495"/>
+        <location filename="../src/core/AppController.cpp" line="480"/>
         <source>Apply Profile</source>
         <translation>Применить профиль</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="496"/>
+        <location filename="../src/core/AppController.cpp" line="481"/>
         <source>Apply profile &apos;%1&apos;?</source>
         <translation>Применить профиль &apos;%1&apos;?</translation>
     </message>
@@ -717,39 +692,39 @@
 <context>
     <name>ModeFlow::Gui::WorkspaceWindow</name>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="231"/>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="494"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="206"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="476"/>
         <source>Delete</source>
         <translation>Удаление</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="232"/>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="494"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="207"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="476"/>
         <source>Delete configuration &apos;%1&apos;?</source>
         <translation>Удалить конфигурацию «%1»?</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="100"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="99"/>
         <source>View Log</source>
         <translation>Просмотр лога</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="99"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="98"/>
         <source>Check for Updates...</source>
         <translation>Проверить обновления...</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="468"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="450"/>
         <source>Update available: v%1 — click to view</source>
         <translation>Доступно обновление: v%1 — нажмите для просмотра</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="95"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="94"/>
         <source>Export Profiles</source>
         <translation>Экспорт профилей</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="93"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="92"/>
         <source>Import Profiles</source>
         <translation>Импорт профилей</translation>
     </message>
@@ -777,7 +752,7 @@
         <translation>Можно запускать только файлы .exe: %1</translation>
     </message>
     <message>
-        <location filename="../src/services/AppLauncher.cpp" line="170"/>
+        <location filename="../src/services/AppLauncher.cpp" line="160"/>
         <source>Failed to start application: %1</source>
         <translation>Не удалось запустить приложение: %1</translation>
     </message>
@@ -826,17 +801,17 @@
 <context>
     <name>ModeFlow::Services::StyleManager</name>
     <message>
-        <location filename="../src/services/StyleManager.cpp" line="96"/>
+        <location filename="../src/services/StyleManager.cpp" line="99"/>
         <source>Light</source>
         <translation>Светлая</translation>
     </message>
     <message>
-        <location filename="../src/services/StyleManager.cpp" line="97"/>
+        <location filename="../src/services/StyleManager.cpp" line="100"/>
         <source>Dark</source>
         <translation>Темная</translation>
     </message>
     <message>
-        <location filename="../src/services/StyleManager.cpp" line="101"/>
+        <location filename="../src/services/StyleManager.cpp" line="104"/>
         <source>System styles</source>
         <translation>Стили системы</translation>
     </message>

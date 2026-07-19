@@ -4,14 +4,14 @@
 #include <QHBoxLayout>
 #include <QMenu>
 
+#include "FluentListItemDelegate.h"
 #include "FontAwesome.h"
-#include "NavigationDelegate.h"
 #include "WorkspaceModel.h"
 
 namespace ModeFlow::Gui {
 
 ProfileListView::ProfileListView(QWidget* parent) : QListView(parent) {
-    setItemDelegate(new NavigationDelegate(this));
+    setItemDelegate(new FluentListItemDelegate(this));
     setSpacing(4);
 }
 

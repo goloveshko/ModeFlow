@@ -51,7 +51,7 @@ src/
     UpdateDialog     — Displays Markdown changelogs and provides update actions
     LogViewerDialog  — Local diagnostics console (lazy-loaded QSyntaxHighlighter, QScrollArea, and OK button)
     LogHighlighter   — High-performance QSyntaxHighlighter (zero-allocation parsing, theme-adaptive palette)
-    NavigationDelegate — Custom sidebar item delegate (paints active status dot and sidebar accents)
+    FluentListItemDelegate — Custom sidebar item delegate
     TrayController   — Compact system tray icon and dynamic context menus
   services/       — Hardware/system services (mostly asynchronous or isolated)
     DisplayManager   — Asynchronous monitor switching (QueryDisplayConfig/SetDisplayConfig) with WinLuid types

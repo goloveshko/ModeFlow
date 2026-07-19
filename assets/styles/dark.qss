@@ -593,10 +593,19 @@ QToolButton#btnBrowse {
     color: rgba(149, 189, 202, 0.96);
 }
 
+QWidget#profileRowWidget QToolButton#btnDeleteProfileInline,
+QWidget#appRowWidget QToolButton#btnDeleteAppInline {
+    border: 1px solid rgba(255, 255, 255, 0.08); /* Very soft low-contrast outline */
+    background-color: rgba(255, 255, 255, 0.02); /* Translucent resting fill */
+    border-radius: 4px;
+    padding: 0;
+    margin: 0;
+}
+
 QWidget#profileRowWidget QToolButton#btnDeleteProfileInline:hover,
 QWidget#appRowWidget QToolButton#btnDeleteAppInline:hover {
-    background-color: rgba(244, 67, 54, 0.22);
-    border: 1px solid rgba(244, 67, 54, 0.35);
+	background-color: rgba(244, 67, 54, 0.18); /* Soft warnings-red fill */
+    border: 1px solid rgba(244, 67, 54, 0.35);  /* Red outline */
 }
 
 QWidget#appRowWidget QLabel#appAddIconLabel,

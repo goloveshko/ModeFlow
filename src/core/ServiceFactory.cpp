@@ -30,7 +30,8 @@ void ServiceFactory::createHardwareServices(AppServices& services, QObject* pare
     services.autostartManager = std::make_unique<Services::WindowsAutostartManager>();
     services.audioFeedback = std::make_unique<Services::AudioFeedbackService>();
 
-    services.styleManager = std::make_unique<Services::StyleManager>();
+    services.styleManager = std::make_unique<Services::StyleManager>(services.configManager->currentTheme(),
+                                                                     services.configManager->currentQtStyleKey());
 
     services.workspaceService = std::make_unique<WorkspaceService>(
         services.displayManager.get(), services.audioManager.get(), services.appLauncher.get());
@@ -38,8 +39,7 @@ void ServiceFactory::createHardwareServices(AppServices& services, QObject* pare
     services.workspaceImpl = std::make_unique<WorkspaceManagerImpl>(
         services.configManager.get(), services.displayManager.get(), services.audioManager.get());
 
-    services.trayController =
-        std::make_unique<Gui::TrayController>(services.workspaceImpl.get(), services.updateService.get());
+    services.trayController = std::make_unique<Gui::TrayController>(services.workspaceImpl.get());
 
     services.settingsImpl =
         std::make_unique<SettingsManagerImpl>(services.configManager.get(), services.autostartManager.get(),

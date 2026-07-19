@@ -14,6 +14,8 @@ public:
     explicit BaseDialog(Core::IStyleManager* styleManager, QWidget* parent = nullptr);
     ~BaseDialog() override;
 
+    void setVisible(bool visible) override;
+
 protected:
     void showEvent(QShowEvent* event) override;
     void changeEvent(QEvent* event) override;
@@ -27,6 +29,7 @@ protected:
 
 protected:
     Core::IStyleManager* m_styleManager;
+    bool m_flagsConfigured = false;
 };
 
 } // namespace ModeFlow::Gui
