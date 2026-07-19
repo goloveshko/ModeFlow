@@ -234,13 +234,14 @@ set_directory_properties(PROPERTIES VS_STARTUP_PROJECT ${MAIN_TARGET})
 
 # --- Centralized Compilation Database Synchronization ---
 # Automatically copy the generated compile_commands.json from the active binary directory 
-# directly to the project's source root. This ensures that clangd (or other LSPs) can 
-# always locate the active configuration database automatically.
+# directly to the project's root build/ folder. This keeps the root directory clean 
+# while ensuring that clangd (or other LSPs) can always locate the active configuration.
 if(CMAKE_EXPORT_COMPILE_COMMANDS)
     add_custom_target(copy_compile_commands ALL
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_SOURCE_DIR}/build"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${CMAKE_BINARY_DIR}/compile_commands.json"
-            "${CMAKE_SOURCE_DIR}/compile_commands.json"
-        COMMENT "Syncing active compile_commands.json to project root..."
+            "${CMAKE_SOURCE_DIR}/build/compile_commands.json"
+        COMMENT "Syncing active compile_commands.json to root build/ directory..."
     )
 endif()

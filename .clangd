@@ -3,9 +3,9 @@
 # ============================================================================
 
 CompileFlags:
-  # Search for the compilation database (compile_commands.json) directly 
-  # in the project's root folder, where CMake automatically syncs it.
-  CompilationDatabase: "."
+  # Search for the compilation database (compile_commands.json) inside the 
+  # centralized build/ folder in the project's root.
+  CompilationDatabase: "build"
 
 Diagnostics:
   Suppress: 
