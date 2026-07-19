@@ -4,7 +4,6 @@
 
 #include <QToolTip>
 
-#include "AppLaunchDialog.h"
 #include "Constants.h"
 #include "FontAwesome.h"
 #include "HotkeyValidation.h"
