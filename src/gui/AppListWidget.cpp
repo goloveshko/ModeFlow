@@ -8,8 +8,8 @@
 #include <QToolButton>
 
 #include "AppLaunchDialog.h"
+#include "FluentListItemDelegate.h"
 #include "FontAwesome.h"
-#include "NavigationDelegate.h"
 
 namespace ModeFlow::Gui {
 
@@ -18,7 +18,7 @@ using namespace Qt::StringLiterals;
 AppListWidget::AppListWidget(QWidget* parent) : QListWidget(parent) {
     setAcceptDrops(true);
 
-    setItemDelegate(new NavigationDelegate(this));
+    setItemDelegate(new FluentListItemDelegate(this));
 }
 
 AppListWidget::~AppListWidget() = default;

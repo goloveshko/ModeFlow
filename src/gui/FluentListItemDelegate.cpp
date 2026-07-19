@@ -1,4 +1,4 @@
-﻿#include "NavigationDelegate.h"
+﻿#include "FluentListItemDelegate.h"
 
 #include <QPainter>
 
@@ -8,13 +8,14 @@
 
 namespace ModeFlow::Gui {
 
-NavigationDelegate::NavigationDelegate(QObject* parent) : QStyledItemDelegate(parent) {
+FluentListItemDelegate::FluentListItemDelegate(QObject* parent) : QStyledItemDelegate(parent) {
     m_iconFont.setFamily(FontAwesome::fontFamily());
     m_iconFont.setPixelSize(16);
     m_iconFont.setHintingPreference(QFont::PreferNoHinting);
 }
 
-void NavigationDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const {
+void FluentListItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option,
+                                   const QModelIndex& index) const {
     painter->save();
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setRenderHint(QPainter::TextAntialiasing);
@@ -77,27 +78,21 @@ void NavigationDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
         isSelected ? bridge.sidebarTextSelected() : (isActive ? bridge.sidebarAccent() : bridge.sidebarTextNormal());
     painter->setPen(textColor);
 
-    // Optimized Layout Grid: Adjusted left offset from 44 to 48 to leave a stable 14px gap
-    // between the icon and the text. This aligns all text labels perfectly.
-    const QRect textRect = rect.adjusted(48, 0, -32, 0);
-    painter->drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, text);
-
-    // Visual indicator: Draw a tiny 6px Fluent accent status dot BEFORE the profile name.
-    // Placed exactly in the middle of the 14px gap between the left icon and the text label.
-    // This entirely avoids any overlapping with long profile names or right-side buttons.
-    if (isActive) {
-        painter->setBrush(bridge.sidebarAccent());
-        painter->setPen(Qt::NoPen);
-        const int dotSize = 6;
-        const int dotX = rect.left() + 38; // Perfectly centered in the layout gap
-        const int dotY = rect.top() + (rect.height() - dotSize) / 2;
-        painter->drawEllipse(dotX, dotY, dotSize, dotSize);
-    }
-
+    // The right-side inset of textRect is calculated as: -(RightContentsMargin + DeleteButtonWidth)
+    // - 8 is the right margin of the row layout (layout->setContentsMargins(0, 0, 8, 0))
+    // - 24 is the exact width of the delete button (deleteBtn->setFixedSize(24, 24))
+    // This defines the precise safety boundary where text elision starts, preventing overlaps.
+    const QRect textRect = rect.adjusted(iconRect.right(), 0, -(8 + 24), 0);
+    
+    QFontMetrics fm(painter->font());
+    const QString elidedText = fm.elidedText(text, Qt::ElideMiddle, textRect.width());
+    
+    painter->drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, elidedText);
+    
     painter->restore();
 }
 
-QSize NavigationDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
+QSize FluentListItemDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
     QSize size = QStyledItemDelegate::sizeHint(option, index);
     return QSize(size.width(), 48);
 }

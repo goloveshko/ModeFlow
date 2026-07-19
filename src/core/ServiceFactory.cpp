@@ -39,8 +39,7 @@ void ServiceFactory::createHardwareServices(AppServices& services, QObject* pare
     services.workspaceImpl = std::make_unique<WorkspaceManagerImpl>(
         services.configManager.get(), services.displayManager.get(), services.audioManager.get());
 
-    services.trayController =
-        std::make_unique<Gui::TrayController>(services.workspaceImpl.get());
+    services.trayController = std::make_unique<Gui::TrayController>(services.workspaceImpl.get());
 
     services.settingsImpl =
         std::make_unique<SettingsManagerImpl>(services.configManager.get(), services.autostartManager.get(),

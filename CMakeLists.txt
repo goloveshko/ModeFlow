@@ -91,12 +91,12 @@ set(COMMON_SOURCES
     src/gui/AppLaunchDialog.cpp src/gui/AppLaunchDialog.h src/gui/AppLaunchDialog.ui
     src/gui/AppListWidget.cpp src/gui/AppListWidget.h
     src/gui/BaseDialog.cpp src/gui/BaseDialog.h
+    src/gui/FluentListItemDelegate.cpp src/gui/FluentListItemDelegate.h
     src/gui/FontAwesome.cpp src/gui/FontAwesome.h
     src/gui/HotkeyEdit.cpp src/gui/HotkeyEdit.h
     src/gui/HotkeyValidation.cpp src/gui/HotkeyValidation.h
     src/gui/LogHighlighter.cpp src/gui/LogHighlighter.h
     src/gui/LogViewerDialog.cpp src/gui/LogViewerDialog.h src/gui/LogViewerDialog.ui
-    src/gui/NavigationDelegate.cpp src/gui/NavigationDelegate.h
     src/gui/ProfileDetailsController.cpp src/gui/ProfileDetailsController.h
     src/gui/ProfileExchangeController.cpp src/gui/ProfileExchangeController.h
     src/gui/ProfileIconMenu.cpp src/gui/ProfileIconMenu.h
