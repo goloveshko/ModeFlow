@@ -226,52 +226,52 @@
 <context>
     <name>ModeFlow::Core::AppController</name>
     <message>
-        <location filename="../src/core/AppController.cpp" line="252"/>
+        <location filename="../src/core/AppController.cpp" line="248"/>
         <source>Restart Required</source>
         <translation>Требуется перезапуск</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="253"/>
+        <location filename="../src/core/AppController.cpp" line="249"/>
         <source>Theme change will be applied after restart.</source>
         <translation>Изменения темы вступят в силу после перезапуска.</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="254"/>
+        <location filename="../src/core/AppController.cpp" line="250"/>
         <source>To apply the selected theme, ModeFlow needs to be restarted.</source>
         <translation>Для применения выбранной темы необходимо перезапустить ModeFlow.</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="249"/>
+        <location filename="../src/core/AppController.cpp" line="245"/>
         <source>Restart now</source>
         <translation>Перезапустить сейчас</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="249"/>
+        <location filename="../src/core/AppController.cpp" line="245"/>
         <source>Not now</source>
         <translation>Не сейчас</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="434"/>
+        <location filename="../src/core/AppController.cpp" line="430"/>
         <source>You are up to date.</source>
         <translation>Вы используете последнюю версию.</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="440"/>
+        <location filename="../src/core/AppController.cpp" line="436"/>
         <source>Update Check Failed</source>
         <translation>Ошибка проверки обновлений</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="485"/>
+        <location filename="../src/core/AppController.cpp" line="481"/>
         <source>ModeFlow</source>
         <translation>ModeFlow</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="495"/>
+        <location filename="../src/core/AppController.cpp" line="491"/>
         <source>Apply Profile</source>
         <translation>Применить профиль</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="496"/>
+        <location filename="../src/core/AppController.cpp" line="492"/>
         <source>Apply profile &apos;%1&apos;?</source>
         <translation>Применить профиль &apos;%1&apos;?</translation>
     </message>
@@ -777,7 +777,7 @@
         <translation>Можно запускать только файлы .exe: %1</translation>
     </message>
     <message>
-        <location filename="../src/services/AppLauncher.cpp" line="170"/>
+        <location filename="../src/services/AppLauncher.cpp" line="160"/>
         <source>Failed to start application: %1</source>
         <translation>Не удалось запустить приложение: %1</translation>
     </message>

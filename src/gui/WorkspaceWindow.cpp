@@ -135,30 +135,6 @@ void WorkspaceWindow::setupConnections() {
     connect(m_autosaveTimer, &QTimer::timeout, this, &WorkspaceWindow::autosaveCurrentProfile);
 }
 
-void WorkspaceWindow::setVisible(bool visible) {
-    static bool firstShow = true;
-    static bool inSetVisible = false;
-
-    // Prevent recursive setVisible calls during showMaximized redirection
-    if (inSetVisible) {
-        BaseDialog::setVisible(visible);
-        return;
-    }
-
-    if (visible && !isVisible() && firstShow) {
-        firstShow = false;
-
-        if (m_settingsManager->isMainWindowMaximized()) {
-            inSetVisible = true;
-            showMaximized();
-            inSetVisible = false;
-            return;
-        }
-    }
-
-    BaseDialog::setVisible(visible);
-}
-
 void WorkspaceWindow::raiseWindow() {
     if (isMinimized()) {
         showNormal();
@@ -382,6 +358,13 @@ void WorkspaceWindow::showEvent(QShowEvent* event) {
         refreshVisualState();
         ui->configList->viewport()->update();
         update();
+
+        if (m_firstShow) {
+            m_firstShow = false;
+            if (m_settingsManager->isMainWindowMaximized()) {
+                showMaximized();
+            }
+        }
     }
 }
 
@@ -540,7 +523,6 @@ void WorkspaceWindow::saveWindowGeometry() {
 }
 
 void WorkspaceWindow::restoreWindowGeometry() {
-    const bool maximized = m_settingsManager->isMainWindowMaximized();
     const QPoint savedPos = m_settingsManager->mainWindowPos();
     const QSize savedSize = m_settingsManager->mainWindowSize();
 

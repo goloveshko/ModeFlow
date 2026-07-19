@@ -33,7 +33,6 @@ public:
                     Core::IStyleManager* sm, QWidget* parent = nullptr);
     ~WorkspaceWindow();
 
-    void setVisible(bool visible) override;
     void raiseWindow();
 
     void notifySettingsChanged();
@@ -51,6 +50,7 @@ protected:
 
     bool allowMinimize() const override { return true; }
     bool allowMaximize() const override { return true; }
+    bool allowAutoAdjustSize() const override { return false; }
 
 private slots:
     void addClicked();
@@ -115,6 +115,7 @@ private:
     bool m_isUpdating = false;
 
     QTimer* m_autosaveTimer = nullptr;
+    bool m_firstShow = true;
 };
 
 } // namespace ModeFlow::Gui
