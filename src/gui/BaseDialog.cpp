@@ -16,6 +16,21 @@ BaseDialog::BaseDialog(Core::IStyleManager* styleManager, QWidget* parent)
 
 BaseDialog::~BaseDialog() = default;
 
+void BaseDialog::setVisible(bool visible) {
+    if (visible && !m_flagsConfigured) {
+        m_flagsConfigured = true;
+
+        Qt::WindowFlags flags = windowFlags();
+        flags |= Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint;
+
+        if (allowMinimize() || allowMaximize()) {
+            flags |= Qt::WindowMinMaxButtonsHint;
+        }
+        setWindowFlags(flags);
+    }
+    QDialog::setVisible(visible);
+}
+
 void BaseDialog::showEvent(QShowEvent* event) {
     QDialog::showEvent(event);
 

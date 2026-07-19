@@ -34,10 +34,6 @@ WorkspaceWindow::WorkspaceWindow(Core::IWorkspaceManager* workspaceManager, Core
 
     ui->setupUi(this);
 
-    Qt::WindowFlags flags = windowFlags();
-    flags |= Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowMinMaxButtonsHint;
-    setWindowFlags(flags);
-
     init();
 }
 

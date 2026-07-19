@@ -394,14 +394,6 @@ void SettingsDialog::closeEvent(QCloseEvent* event) {
     reject();
 }
 
-void SettingsDialog::showEvent(QShowEvent* event) {
-    BaseDialog::showEvent(event);
-
-    if (isVisible()) {
-        Utils::SystemUtils::configureWindowButtons(this, false, false);
-    }
-}
-
 void SettingsDialog::reject() {
     emit hotkeyCaptureChanged(false);
     BaseDialog::reject();

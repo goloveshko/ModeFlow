@@ -57,10 +57,6 @@ void AboutDialog::changeEvent(QEvent* event) {
 void AboutDialog::showEvent(QShowEvent* event) {
     BaseDialog::showEvent(event);
 
-    if (isVisible()) {
-        Utils::SystemUtils::configureWindowButtons(this, false, false);
-    }
-
     updateNewVersionButton();
 }
 

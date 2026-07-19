@@ -32,7 +32,6 @@ public:
 protected:
     void changeEvent(QEvent* event) override;
     void closeEvent(QCloseEvent* event) override;
-    void showEvent(QShowEvent* event) override;
 
 public slots:
     void updateAutostartUi(bool active);
