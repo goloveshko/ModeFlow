@@ -12,7 +12,7 @@ namespace ModeFlow::Services {
 class StyleManager : public QObject, public Core::IStyleManager {
     Q_OBJECT
 public:
-    explicit StyleManager(QObject* parent = nullptr);
+    explicit StyleManager(Core::Theme theme, const QString& qtStyleKey, QObject* parent = nullptr);
 
     QList<Core::ThemeData> availableThemes() const;
 

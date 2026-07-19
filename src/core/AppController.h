@@ -38,7 +38,6 @@ private:
 
     void handleSettingsChanges(const QString& oldLang, Core::Theme oldTheme);
     void processThemeChange(Core::Theme oldTheme);
-    void requestRestart();
     void restartApp(bool silentRestart = false);
     void showNonBlockingError(const QString& message);
 

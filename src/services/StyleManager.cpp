@@ -76,7 +76,10 @@ QString qtStyleDisplayName(const QString& styleKey) {
 
 } // namespace
 
-StyleManager::StyleManager(QObject* parent) : QObject(parent), m_qtStyleKey(Utils::DefaultQtStyleKey.toString()) {}
+StyleManager::StyleManager(Core::Theme theme, const QString& qtStyleKey, QObject* parent)
+    : QObject(parent), m_qtStyleKey(Utils::DefaultQtStyleKey.toString()) {
+    setTheme(theme, qtStyleKey);
+}
 
 QString StyleManager::loadStylesheet(QStringView fileName) const {
     QFile styleFile(fileName.toString());
@@ -108,11 +111,13 @@ QList<Core::ThemeData> StyleManager::availableThemes() const {
 }
 
 void StyleManager::applyToWindow(QWidget* window) {
-    if (m_currentTheme == Core::Theme::Qt)
-        return;
-
     if (!window)
         return;
+
+    if (m_currentTheme == Core::Theme::Qt) {
+        Gui::StyleUtils::resetWindowEffects(window);
+        return;
+    }
 
     window->setUpdatesEnabled(false);
 

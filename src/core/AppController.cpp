@@ -67,7 +67,7 @@ void AppController::init(const StartupOptions& options) {
     if (m_options.isLogon && !m_options.isSilentRestart) {
         qCDebug(lcCore) << "Logon startup detected. Starting async preflight.";
 
-        m_preflightChecker = std::make_unique<StartupPreflightChecker>(this);
+        m_preflightChecker = std::make_unique<StartupPreflightChecker>();
         connect(m_preflightChecker.get(), &StartupPreflightChecker::finished, this,
                 &AppController::finalizeInitialization, Qt::QueuedConnection);
 
@@ -88,9 +88,6 @@ void AppController::finalizeInitialization() {
 
     try {
         ServiceFactory::createHardwareServices(m_services, this);
-
-        m_services.styleManager->setTheme(m_services.configManager->currentTheme(),
-                                          m_services.configManager->currentQtStyleKey());
 
         m_services.trayController->retranslateUi();
 
@@ -198,7 +195,7 @@ void AppController::showSettingsDialog() {
     const Theme oldTheme = m_services.styleManager->currentTheme();
 
     auto dlg = std::make_unique<Gui::SettingsDialog>(m_services.settingsImpl.get(), m_services.workspaceImpl.get(),
-                                                     m_services.styleManager.get(), m_services.workspaceWindow.get());
+                                                     m_services.styleManager.get());
     connect(dlg.get(), &Gui::SettingsDialog::hotkeyCaptureChanged, m_services.hotkeyManager.get(),
             &Services::HotkeyManager::setCaptureMode, Qt::UniqueConnection);
 
@@ -224,33 +221,28 @@ void AppController::processThemeChange(Core::Theme oldTheme) {
     const Core::Theme newTheme = m_services.configManager->currentTheme();
     const QString newStyleKey = m_services.configManager->currentQtStyleKey();
 
-    const bool needsRestart =
+    const bool needsRecreation =
         (oldTheme == Theme::Qt && newTheme != Theme::Qt) || (oldTheme != Theme::Qt && newTheme == Theme::Qt);
 
-    if (needsRestart) {
-        requestRestart();
+    if (needsRecreation) {
+        const bool wasVisible = m_services.workspaceWindow && m_services.workspaceWindow->isVisible();
+        m_services.workspaceWindow->hide();
+        m_services.styleManager->setTheme(newTheme, newStyleKey);
+        m_services.workspaceWindow.reset();
+
+        if (wasVisible) {
+            raiseMainWindow();
+        }
     } else {
         m_services.styleManager->setTheme(newTheme, newStyleKey);
+
         if (m_services.workspaceWindow) {
             m_services.styleManager->applyToWindow(m_services.workspaceWindow.get());
         }
-
-        if (m_services.trayController) {
-            m_services.trayController->retranslateUi();
-        }
     }
-}
 
-void AppController::requestRestart() {
-    const QStringList buttons = {tr("Restart now"), tr("Not now")};
-
-    int result = m_services.styleManager->showMessageBox(
-        m_services.workspaceWindow.get(), QMessageBox::Information, tr("Restart Required"),
-        tr("Theme change will be applied after restart."),
-        tr("To apply the selected theme, ModeFlow needs to be restarted."), buttons, 0);
-
-    if (result == 0) {
-        restartApp(false);
+    if (m_services.trayController) {
+        m_services.trayController->retranslateUi();
     }
 }
 
@@ -265,8 +257,7 @@ void AppController::showAboutDialog() {
     const bool updateAvailable = m_services.updateService && m_services.updateService->isUpdateAvailable();
     const QString latestVersion = m_services.updateService ? m_services.updateService->latestVersion() : QString();
 
-    auto dlg = std::make_unique<Gui::AboutDialog>(m_services.styleManager.get(), updateAvailable, latestVersion,
-                                                  m_services.workspaceWindow.get());
+    auto dlg = std::make_unique<Gui::AboutDialog>(m_services.styleManager.get(), updateAvailable, latestVersion);
     const int result = dlg->exec();
 
     if (result == 2) {
@@ -284,7 +275,7 @@ void AppController::showLogViewerDialog() {
 
     SetterGuard guard(this, ActiveDialog::LogViewer);
 
-    auto dlg = std::make_unique<Gui::LogViewerDialog>(m_services.styleManager.get(), m_services.workspaceWindow.get());
+    auto dlg = std::make_unique<Gui::LogViewerDialog>(m_services.styleManager.get());
     dlg->exec();
 }
 
@@ -396,8 +387,7 @@ void AppController::showUpdateDialog() {
     const QString changelog = m_services.updateService->changelog();
     const QUrl downloadUrl = m_services.updateService->downloadUrl();
 
-    auto dlg = std::make_unique<Gui::UpdateDialog>(m_services.styleManager.get(), version, changelog, downloadUrl,
-                                                   m_services.workspaceWindow.get());
+    auto dlg = std::make_unique<Gui::UpdateDialog>(m_services.styleManager.get(), version, changelog, downloadUrl);
     dlg->exec();
 }
 
@@ -418,8 +408,7 @@ void AppController::forceUpdateCheck() {
 
         SetterGuard guard(this, ActiveDialog::About);
 
-        auto dlg = std::make_unique<Gui::UpdateDialog>(m_services.styleManager.get(), version, changelog, url,
-                                                       m_services.workspaceWindow.get());
+        auto dlg = std::make_unique<Gui::UpdateDialog>(m_services.styleManager.get(), version, changelog, url);
         dlg->exec();
     };
 
