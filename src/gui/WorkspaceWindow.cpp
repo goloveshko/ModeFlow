@@ -66,8 +66,8 @@ void WorkspaceWindow::init() {
     widgets.groupHardware = ui->groupHardware;
     widgets.groupAuto = ui->groupAuto;
 
-    m_detailsController = std::make_unique<ProfileDetailsController>(widgets, m_workspaceManager, m_settingsManager,
-                                                                     m_profileIconMenu, this);
+    m_detailsController =
+        std::make_unique<ProfileDetailsController>(widgets, m_workspaceManager, m_settingsManager, m_profileIconMenu);
 
     initMoreMenu();
     setupConnections();

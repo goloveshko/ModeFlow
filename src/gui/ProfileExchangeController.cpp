@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 
 ProfileExchangeController::ProfileExchangeController(Core::IWorkspaceManager* wm, Core::IStyleManager* sm,
                                                      QWidget* parentWindow)
-    : QObject(parentWindow), m_workspaceManager(wm), m_styleManager(sm), m_parentWindow(parentWindow) {}
+    : QObject(), m_workspaceManager(wm), m_styleManager(sm), m_parentWindow(parentWindow) {}
 
 void ProfileExchangeController::doImport() {
     QString filePath = m_styleManager->getOpenFileName(m_parentWindow, tr("Import Profiles"), QString(),

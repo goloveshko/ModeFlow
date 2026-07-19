@@ -53,17 +53,17 @@ void TrayController::rebuildMenu() {
 
     m_trayMenu->addSeparator();
 
-    m_profileMenu = std::make_unique<QMenu>(tr("Profiles"), m_trayMenu.get());
+    m_profileMenu = std::make_unique<QMenu>(tr("Profiles"));
     m_profileMenu->setIcon(FontAwesome::icon(FontAwesome::FolderOpen, 16));
     m_trayMenu->addMenu(m_profileMenu.get());
 
     m_trayMenu->addSeparator();
 
-    m_monitorMenu = std::make_unique<QMenu>(tr("Monitor"), m_trayMenu.get());
+    m_monitorMenu = std::make_unique<QMenu>(tr("Monitor"));
     m_monitorMenu->setIcon(FontAwesome::icon(FontAwesome::Monitor, 16));
     m_trayMenu->addMenu(m_monitorMenu.get());
 
-    m_audioMenu = std::make_unique<QMenu>(tr("Sound"), m_trayMenu.get());
+    m_audioMenu = std::make_unique<QMenu>(tr("Sound"));
     m_audioMenu->setIcon(FontAwesome::icon(FontAwesome::Audio, 16));
     m_trayMenu->addMenu(m_audioMenu.get());
 
