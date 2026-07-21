@@ -49,8 +49,17 @@ bool LogManager::s_enabled = false;
 
 void LogManager::setup(bool enabled) {
     s_enabled = enabled;
-    if (!enabled)
+    if (!enabled) {
+        // Safe Cleanup: If logging is disabled, cleanly close the file and return
+        QMutexLocker locker(&s_mutex);
+        if (s_logFile.isOpen()) {
+            s_logFile.close();
+        }
         return;
+    }
+
+    // Protect initialization steps with our central log mutex
+    QMutexLocker locker(&s_mutex);
 
     // Get path using Windows API (Works before QApplication exists)
     QString appDir = SystemUtils::getExecutableDir();
@@ -73,7 +82,17 @@ void LogManager::setup(bool enabled) {
         QFile::remove(logPath);
     }
 
-    // Open file once and keep it open for the session
+    // Fixed: Prevent recursive setFileName warning loops
+    if (s_logFile.isOpen()) {
+        // If already open and pointing to the correct path, do nothing
+        if (s_logFile.fileName() == logPath) {
+            return;
+        }
+        // If the path has changed, close the old descriptor first
+        s_logFile.close();
+    }
+
+    // Now it is 100% safe to set file name and open the file
     s_logFile.setFileName(logPath);
     if (!s_logFile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
         qCWarning(lcUtil) << "Failed to open log file:" << logPath;
