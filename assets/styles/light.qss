@@ -672,3 +672,20 @@ QFileDialog QAbstractItemView::item:selected {
     background-color: rgba(30, 93, 153, 0.08) !important;
     color: #1a1a1a !important;
 }
+
+/* Soft, semi-transparent grey for the Fluent empty-state illustration */
+QLabel#labelEmptyIcon {
+    font-family: "Font Awesome 7 Free";
+    color: rgba(0, 0, 0, 0.2);
+}
+
+QLabel#labelEmptyTitle {
+    font-size: 11pt;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+QLabel#labelEmptyDesc {
+    font-size: 9.5pt;
+    color: rgba(0, 0, 0, 0.55);
+}

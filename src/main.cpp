@@ -8,6 +8,7 @@
 #include "CliParser.h"
 #include "ComInitGuard.h"
 #include "CommandLineBuilder.h"
+#include "ConfigManager.h"
 #include "CrashHandler.h"
 #include "LogManager.h"
 #include "Logging.h"
@@ -48,7 +49,9 @@ int main(int argc, char* argv[]) {
 
     const auto [runMode, options] = CliParser::parse(app.arguments());
 
-    LogManager::setup(options.enableLogging);
+    ConfigManager config;
+    config.loadConfig();
+    LogManager::setup(config.autoLoggingEnabled() || options.enableLogging);
 
     qCDebug(lcMain) << "--- Log Session Started ---";
     qCDebug(lcMain) << "Application Version:" << APP_VERSION_STR;

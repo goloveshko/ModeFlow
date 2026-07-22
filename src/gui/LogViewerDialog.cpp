@@ -53,7 +53,10 @@ void LogViewerDialog::init() {
 
     ui->comboCategory->addItem(tr("All Categories"), QString());
 
-    ui->btnRecordLog->setIcon(FontAwesome::icon(FontAwesome::Terminal, 16));
+    ui->labelEmptyIcon->setFont(QFont(FontAwesome::fontFamily(), 36));
+    ui->labelEmptyIcon->setText(FontAwesome::Terminal);
+
+    ui->btnRecordLog->setIcon(FontAwesome::icon(FontAwesome::Circle, 16));
     ui->btnFollow->setIcon(FontAwesome::icon(FontAwesome::ArrowDown, 16));
     ui->btnRefresh->setIcon(FontAwesome::icon(FontAwesome::RotateRight, 16));
     ui->btnClear->setIcon(FontAwesome::icon(FontAwesome::Trash, 16));

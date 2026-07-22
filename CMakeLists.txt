@@ -45,6 +45,10 @@ endif()
 configure_compiler()
 
 qt_standard_project_setup()
+
+# Default tests compilation to OFF. 
+# Developers can still explicitly force it ON by passing -DBUILD_TESTING=ON [2.1.6].
+option(BUILD_TESTING "Build the testing tree." OFF) 
 include(CTest)
 
 # Organization in IDEs (Visual Studio)
