@@ -275,7 +275,7 @@ void AppController::showLogViewerDialog() {
 
     SetterGuard guard(this, ActiveDialog::LogViewer);
 
-    auto dlg = std::make_unique<Gui::LogViewerDialog>(m_services.styleManager.get());
+    auto dlg = std::make_unique<Gui::LogViewerDialog>(m_services.settingsManager.get(), m_services.styleManager.get());
     dlg->exec();
 }
 

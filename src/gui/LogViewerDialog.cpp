@@ -7,8 +7,10 @@
 #include <QScrollBar>
 
 #include "FontAwesome.h"
+#include "ISettingsManager.h"
 #include "IStyleManager.h"
 #include "LogHighlighter.h"
+#include "LogManager.h"
 #include "SystemUtils.h"
 
 namespace ModeFlow::Gui {
@@ -21,8 +23,9 @@ constexpr int FilterDebounceMs = 150;
 constexpr int MaxLogEntries = 50000;
 } // namespace
 
-LogViewerDialog::LogViewerDialog(Core::IStyleManager* sm, QWidget* parent)
-    : BaseDialog(sm, parent), ui(std::make_unique<Ui::LogViewerDialog>()) {
+LogViewerDialog::LogViewerDialog(Core::ISettingsManager* settingsManager, Core::IStyleManager* sm, QWidget* parent)
+    : BaseDialog(sm, parent), ui(std::make_unique<Ui::LogViewerDialog>()), m_settingsManager(settingsManager) {
+    Q_ASSERT(m_settingsManager);
     ui->setupUi(this);
     init();
 }
@@ -50,6 +53,7 @@ void LogViewerDialog::init() {
 
     ui->comboCategory->addItem(tr("All Categories"), QString());
 
+    ui->btnRecordLog->setIcon(FontAwesome::icon(FontAwesome::Terminal, 16));
     ui->btnFollow->setIcon(FontAwesome::icon(FontAwesome::ArrowDown, 16));
     ui->btnRefresh->setIcon(FontAwesome::icon(FontAwesome::RotateRight, 16));
     ui->btnClear->setIcon(FontAwesome::icon(FontAwesome::Trash, 16));
@@ -63,7 +67,7 @@ void LogViewerDialog::init() {
     m_filterTimer.setInterval(FilterDebounceMs);
 
     setupConnections();
-    loadLogFile();
+    updateViewMode();
 
     connect(ui->btnClose, &QPushButton::clicked, this, &LogViewerDialog::accept);
 }
@@ -72,17 +76,38 @@ void LogViewerDialog::setupConnections() {
     connect(&m_refreshTimer, &QTimer::timeout, this, &LogViewerDialog::onTimerTick);
     connect(&m_filterTimer, &QTimer::timeout, this, &LogViewerDialog::onApplyFilters);
 
+    connect(ui->btnRecordLog, &QToolButton::toggled, this, &LogViewerDialog::onRecordToggled);
     connect(ui->btnFollow, &QToolButton::toggled, this, &LogViewerDialog::onFollowToggled);
     connect(ui->btnRefresh, &QToolButton::clicked, this, &LogViewerDialog::onRefreshClicked);
     connect(ui->btnClear, &QToolButton::clicked, this, &LogViewerDialog::onClearClicked);
     connect(ui->btnCopy, &QToolButton::clicked, this, &LogViewerDialog::onCopyClicked);
     connect(ui->btnSave, &QToolButton::clicked, this, &LogViewerDialog::onSaveClicked);
 
+    connect(ui->btnEnableLogging, &QPushButton::clicked, this, &LogViewerDialog::onEnableLoggingClicked);
+
     connect(ui->editFilter, &QLineEdit::textChanged, this, &LogViewerDialog::onFilterTextChanged);
     connect(ui->comboLevel, qOverload<int>(&QComboBox::currentIndexChanged), this,
             &LogViewerDialog::onLevelFilterChanged);
     connect(ui->comboCategory, qOverload<int>(&QComboBox::currentIndexChanged), this,
             &LogViewerDialog::onCategoryFilterChanged);
+}
+
+void LogViewerDialog::updateViewMode() {
+    const bool loggingActive = m_settingsManager->autoLoggingEnabled();
+    ui->btnRecordLog->setChecked(loggingActive);
+
+    QFileInfo fi(m_logFilePath);
+    const bool fileExists = fi.exists();
+
+    if (!loggingActive || !fileExists) {
+        ui->stackedWidget->setCurrentIndex(1);
+        m_refreshTimer.stop();
+    } else {
+        ui->stackedWidget->setCurrentIndex(0);
+        loadLogFile();
+        m_refreshTimer.start();
+    }
+    updateStatusBar();
 }
 
 void LogViewerDialog::showEvent(QShowEvent* event) {
@@ -173,7 +198,6 @@ void LogViewerDialog::loadLogFile() {
 
     QFile file(m_logFilePath);
     if (!file.exists() || !file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        ui->textLog->setPlainText(tr("Log file not found or cannot be read:\n%1").arg(m_logFilePath));
         m_fileSize = 0;
         return;
     }
@@ -292,7 +316,6 @@ void LogViewerDialog::onApplyFilters() {
 void LogViewerDialog::rebuildDisplay() {
     m_isRefreshing = true;
 
-    // Fast text-only rebuild. Highlighting is performed line-by-line dynamically by QSyntaxHighlighter
     QString plainText;
     plainText.reserve(m_filteredIndices.size() * 150);
 
@@ -361,6 +384,20 @@ void LogViewerDialog::onSaveClicked() {
                              tr("Log exported successfully.\n%1 lines written.").arg(m_filteredIndices.size()));
 }
 
+void LogViewerDialog::onEnableLoggingClicked() {
+    m_settingsManager->setAutoLoggingEnabled(true);
+    Utils::LogManager::setup(true);
+    m_settingsManager->saveSettings();
+    updateViewMode();
+}
+
+void LogViewerDialog::onRecordToggled(bool checked) {
+    m_settingsManager->setAutoLoggingEnabled(checked);
+    Utils::LogManager::setup(checked);
+    m_settingsManager->saveSettings();
+    updateViewMode();
+}
+
 void LogViewerDialog::onFilterTextChanged(const QString&) {
     m_filterTimer.start();
 }
@@ -379,15 +416,19 @@ void LogViewerDialog::scrollToBottom() {
 }
 
 void LogViewerDialog::updateStatusBar() {
-    int total = m_allEntries.size();
-    int shown = m_filteredIndices.size();
-    QString status = tr("Lines: %1/%2").arg(shown).arg(total);
-    if (total == 0 && QFile(m_logFilePath).exists()) {
-        status += tr("  |  Log file: %1").arg(m_logFilePath);
-    } else if (total == 0) {
-        status = tr("No log file found at: %1").arg(m_logFilePath);
+    const bool loggingActive = m_settingsManager->autoLoggingEnabled();
+    QFileInfo fi(m_logFilePath);
+    const bool fileExists = fi.exists();
+
+    if (!loggingActive && !fileExists) {
+        ui->labelStatus->setText(tr("Logging is disabled"));
+    } else if (!fileExists) {
+        ui->labelStatus->setText(tr("Log file not found: %1").arg(m_logFilePath));
+    } else {
+        int total = m_allEntries.size();
+        int shown = m_filteredIndices.size();
+        ui->labelStatus->setText(tr("Lines: %1/%2").arg(shown).arg(total));
     }
-    ui->labelStatus->setText(status);
 }
 
 QString LogViewerDialog::levelToString(int level) {

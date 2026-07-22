@@ -8,6 +8,10 @@ namespace Ui {
 class LogViewerDialog;
 }
 
+namespace ModeFlow::Core {
+class ISettingsManager;
+} // namespace ModeFlow::Core
+
 namespace ModeFlow::Gui {
 
 class LogHighlighter;
@@ -16,7 +20,8 @@ class LogViewerDialog : public BaseDialog {
     Q_OBJECT
 
 public:
-    explicit LogViewerDialog(Core::IStyleManager* sm, QWidget* parent = nullptr);
+    explicit LogViewerDialog(Core::ISettingsManager* settingsManager, Core::IStyleManager* sm,
+                             QWidget* parent = nullptr);
     ~LogViewerDialog() override;
 
 protected:
@@ -35,6 +40,7 @@ private:
 
     void init();
     void setupConnections();
+    void updateViewMode();
     void loadLogFile();
     void incrementalLoad();
     void rebuildDisplay();
@@ -55,8 +61,11 @@ private:
     void onLevelFilterChanged(int index);
     void onCategoryFilterChanged(int index);
     void onApplyFilters();
+    void onEnableLoggingClicked();
+    void onRecordToggled(bool checked);
 
     std::unique_ptr<Ui::LogViewerDialog> ui;
+    Core::ISettingsManager* m_settingsManager = nullptr;
     LogHighlighter* m_highlighter = nullptr;
     QString m_logFilePath;
     QList<LogEntry> m_allEntries;
