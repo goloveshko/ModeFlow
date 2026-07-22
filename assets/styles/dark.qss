@@ -637,6 +637,23 @@ QToolButton#btnFollow:checked {
     border: 1px solid rgba(108, 168, 186, 0.34);
 }
 
+/* ── Log Viewer Record Button (Dark Theme) ──────────────── */
+#btnRecordLog {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
+}
+
+#btnRecordLog:checked {
+    color: #F44336;
+    border-color: rgba(244, 67, 54, 0.35);
+    background-color: rgba(244, 67, 54, 0.12);
+}
+
+#btnRecordLog:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
 /* ── File Dialog (DontUseNativeDialog Styling) ───────────── */
 QFileDialog {
     background-color: rgb(28, 28, 28);
