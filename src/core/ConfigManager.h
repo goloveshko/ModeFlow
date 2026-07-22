@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <QMutex>
 #include <QObject>
 #include <QPoint>
 #include <QSize>
@@ -16,59 +17,70 @@ public:
 
     explicit ConfigManager(QObject* parent = nullptr);
 
-    QList<WorkspaceConfig> getWorkspaces() const { return m_workspaces; }
-    void setWorkspaces(const QList<WorkspaceConfig>& list) { m_workspaces = list; }
+    QList<WorkspaceConfig> getWorkspaces() const;
+    void setWorkspaces(const QList<WorkspaceConfig>& list);
 
     bool loadConfig();
     bool saveConfig();
-    QKeySequence nextProfileHotkey() const { return m_nextProfileHotkey; }
-    QString lastActiveProfileId() const { return m_lastActiveProfileId; }
+
+    QKeySequence nextProfileHotkey() const;
+    void setNextProfileHotkey(const QKeySequence& key);
+
+    QString lastActiveProfileId() const;
     void setLastActiveProfileId(const QString& id);
-    QString selectedProfileId() const { return m_selectedProfileId; }
+
+    QString selectedProfileId() const;
     void setSelectedProfileId(const QString& id);
 
-    const QString& language() const { return m_language; }
-    StartupAction startupAction() const { return m_startupAction; }
-    const QString& startupProfileId() const { return m_startupProfileId; }
-    bool audioConfirmation() const { return m_audioConfirmation; }
-    bool autoUpdateEnabled() const { return m_autoUpdateEnabled; }
-    int autostartDelay() const { return m_autostartDelay; }
-    bool askConfirmation() const { return m_askConfirmation; }
-
-    bool isMainWindowMaximized() const { return m_mainWindowMaximized; }
-    QPoint mainWindowPos() const { return m_mainWindowPos; }
-    QSize mainWindowSize() const { return m_mainWindowSize; }
-
-    void setNextProfileHotkey(const QKeySequence& key);
+    QString language() const;
     void setLanguage(const QString& locale);
+
+    StartupAction startupAction() const;
     void setStartupAction(StartupAction action);
+
+    QString startupProfileId() const;
     void setStartupProfileId(const QString& id);
+
+    bool audioConfirmation() const;
     void setAudioConfirmation(bool enabled);
+
+    bool autoUpdateEnabled() const;
     void setAutoUpdateEnabled(bool enabled);
+
+    int autostartDelay() const;
     void setAutostartDelay(int seconds);
+
+    bool askConfirmation() const;
     void setAskConfirmation(bool enabled);
 
-    void setMainWindowMaximized(bool maximized) { m_mainWindowMaximized = maximized; }
-    void setMainWindowPos(const QPoint& pos) { m_mainWindowPos = pos; }
-    void setMainWindowSize(const QSize& size) { m_mainWindowSize = size; }
+    bool isMainWindowMaximized() const;
+    void setMainWindowMaximized(bool maximized);
+
+    QPoint mainWindowPos() const;
+    void setMainWindowPos(const QPoint& pos);
+
+    QSize mainWindowSize() const;
+    void setMainWindowSize(const QSize& size);
 
     Theme currentTheme() const;
-    QString currentQtStyleKey() const;
     void setTheme(Theme theme);
+
+    QString currentQtStyleKey() const;
     void setQtStyleKey(const QString& styleKey);
 
-    bool isMainWindowVisible() const { return m_mainWindowVisible; }
+    bool isMainWindowVisible() const;
     void setMainWindowVisible(bool visible);
 
-    qint64 lastUpdateCheckTimestamp() const { return m_lastUpdateCheckTimestamp; }
+    qint64 lastUpdateCheckTimestamp() const;
     void setLastUpdateCheckTimestamp(qint64 timestamp);
 
 signals:
     void errorOccurred(const QString& message);
 
 private:
-    QList<WorkspaceConfig> m_workspaces;
+    mutable QMutex m_mutex;
 
+    QList<WorkspaceConfig> m_workspaces;
     QKeySequence m_nextProfileHotkey;
     QString m_language;
     QString m_lastActiveProfileId;
@@ -80,14 +92,14 @@ private:
     int m_autostartDelay = 0;
     Theme m_theme = Theme::Light;
     QString m_qtStyleKey{Utils::DefaultQtStyleKey};
-    bool m_mainWindowVisible = true; // Default to true for new users
+    bool m_mainWindowVisible = true;
 
     bool m_mainWindowMaximized = false;
     QPoint m_mainWindowPos;
-    QSize m_mainWindowSize = QSize(600, 450); // Default Fluent size
+    QSize m_mainWindowSize = QSize(600, 450);
 
     bool m_askConfirmation = true;
-
     qint64 m_lastUpdateCheckTimestamp = 0;
 };
+
 } // namespace ModeFlow::Core
