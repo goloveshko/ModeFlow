@@ -15,7 +15,7 @@
 #include "StyleUtils.h"
 #include "SystemUtils.h"
 
-namespace ModeFlow::Services {
+namespace ModeFlow::Core {
 
 using namespace Qt::StringLiterals;
 
@@ -140,11 +140,9 @@ void StyleManager::setTheme(Core::Theme theme, const QString& qtStyleKey) {
         m_qtStyleKey = normalizeStyleKey(qtStyleKey);
     }
 
-    // For Qt themes, use standard Windows style and remove window effects
     if (theme == Core::Theme::Qt) {
         const QString stylesheet = loadStylesheet(Core::Styles::System);
         Gui::StyleBridge::instance().updateStyle(stylesheet);
-        // Clear themed glyphs before Qt emits palette/style change events.
         Gui::FontAwesome::invalidateCache();
 
         const QString styleKey = m_qtStyleKey.isEmpty() ? Utils::DefaultQtStyleKey.toString() : m_qtStyleKey;
@@ -164,15 +162,12 @@ void StyleManager::setTheme(Core::Theme theme, const QString& qtStyleKey) {
     stylesheet += loadStylesheet(isDark ? Core::Styles::Dark : Core::Styles::Light);
 
     Gui::StyleBridge::instance().updateStyle(stylesheet);
-    // Widgets can refresh icons while the new stylesheet is being applied,
-    // so invalidate the cache before Qt starts dispatching theme-related events.
     Gui::FontAwesome::invalidateCache();
 
     qApp->setStyleSheet(stylesheet);
 }
 
 Core::Theme StyleManager::currentTheme() const {
-
     return m_currentTheme;
 }
 
@@ -240,7 +235,6 @@ QString StyleManager::getOpenFileName(QWidget* parent, const QString& caption, c
 
     dialog.setSizeGripEnabled(false);
 
-    // Inject Mica backdrop, borders, and rounded corners natively
     applyToWindow(&dialog);
 
     if (dialog.exec() == QDialog::Accepted) {
@@ -257,7 +251,6 @@ QString StyleManager::getSaveFileName(QWidget* parent, const QString& caption, c
 
     dialog.setSizeGripEnabled(false);
 
-    // Inject Mica backdrop, borders, and rounded corners natively
     applyToWindow(&dialog);
 
     if (dialog.exec() == QDialog::Accepted) {
@@ -272,4 +265,4 @@ void StyleManager::forceUnhover() {
     }
 }
 
-} // namespace ModeFlow::Services
+} // namespace ModeFlow::Core

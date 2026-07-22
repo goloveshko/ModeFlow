@@ -83,8 +83,9 @@ set(COMMON_SOURCES
     src/core/StylePaths.h
     src/core/WorkspaceModel.cpp src/core/WorkspaceModel.h
     src/core/WorkspaceService.cpp src/core/WorkspaceService.h
-    src/core/impl/SettingsManagerImpl.cpp src/core/impl/SettingsManagerImpl.h
-    src/core/impl/WorkspaceManagerImpl.cpp src/core/impl/WorkspaceManagerImpl.h
+    src/core/impl/SettingsManager.cpp src/core/impl/SettingsManager.h
+    src/core/impl/WorkspaceManager.cpp src/core/impl/WorkspaceManager.h
+    src/core/impl/StyleManager.cpp src/core/impl/StyleManager.h
 
     # GUI
     src/gui/AboutDialog.cpp src/gui/AboutDialog.h src/gui/AboutDialog.ui
@@ -116,7 +117,6 @@ set(COMMON_SOURCES
     src/services/DisplayManager.cpp src/services/DisplayManager.h
     src/services/HotkeyManager.cpp src/services/HotkeyManager.h
     src/services/SingleInstanceGuard.cpp src/services/SingleInstanceGuard.h
-    src/services/StyleManager.cpp src/services/StyleManager.h
     
     # UTILS
     src/utils/ComInitGuard.cpp src/utils/ComInitGuard.h

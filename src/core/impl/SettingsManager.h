@@ -3,7 +3,6 @@
 #include "ISettingsManager.h"
 
 namespace ModeFlow::Services {
-class StyleManager;
 class WindowsAutostartManager;
 } // namespace ModeFlow::Services
 
@@ -11,11 +10,12 @@ namespace ModeFlow::Core {
 
 class ConfigManager;
 class LocalizationManager;
+class StyleManager;
 
-class SettingsManagerImpl : public ISettingsManager {
+class SettingsManager : public ISettingsManager {
 public:
-    SettingsManagerImpl(ConfigManager* cm, Services::WindowsAutostartManager* as, LocalizationManager* lm,
-                        Services::StyleManager* sm);
+    SettingsManager(ConfigManager* cm, Services::WindowsAutostartManager* as, LocalizationManager* lm,
+                    StyleManager* sm);
 
     QList<LanguageData> availableLanguages() const override;
     QString currentLanguage() const override;
@@ -64,7 +64,8 @@ public:
 private:
     ConfigManager* m_config;
     Services::WindowsAutostartManager* m_autostart;
-    Services::StyleManager* m_styleManager;
+    StyleManager* m_styleManager;
     LocalizationManager* m_loc;
 };
+
 } // namespace ModeFlow::Core

@@ -83,12 +83,12 @@ void FluentListItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem
     // - 24 is the exact width of the delete button (deleteBtn->setFixedSize(24, 24))
     // This defines the precise safety boundary where text elision starts, preventing overlaps.
     const QRect textRect = rect.adjusted(iconRect.right(), 0, -(8 + 24), 0);
-    
+
     QFontMetrics fm(painter->font());
     const QString elidedText = fm.elidedText(text, Qt::ElideMiddle, textRect.width());
-    
+
     painter->drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, elidedText);
-    
+
     painter->restore();
 }
 

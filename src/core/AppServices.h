@@ -8,7 +8,6 @@ class AudioFeedbackService;
 class AppLauncher;
 class DisplayManager;
 class HotkeyManager;
-class StyleManager;
 class UpdateService;
 class WindowsAutostartManager;
 } // namespace ModeFlow::Services
@@ -23,8 +22,9 @@ namespace ModeFlow::Core {
 class ConfigManager;
 class LocalizationManager;
 class WorkspaceService;
-class WorkspaceManagerImpl;
-class SettingsManagerImpl;
+class WorkspaceManager;
+class SettingsManager;
+class StyleManager;
 
 struct AppServices {
     std::unique_ptr<ConfigManager> configManager;
@@ -39,10 +39,10 @@ struct AppServices {
     std::unique_ptr<Services::HotkeyManager> hotkeyManager;
     std::unique_ptr<Services::UpdateService> updateService;
     std::unique_ptr<WorkspaceService> workspaceService;
-    std::unique_ptr<Services::StyleManager> styleManager;
+    std::unique_ptr<StyleManager> styleManager;
 
-    std::unique_ptr<WorkspaceManagerImpl> workspaceImpl;
-    std::unique_ptr<SettingsManagerImpl> settingsImpl;
+    std::unique_ptr<WorkspaceManager> workspaceManager;
+    std::unique_ptr<SettingsManager> settingsManager;
 
     std::unique_ptr<Gui::WorkspaceWindow> workspaceWindow;
     std::unique_ptr<Gui::TrayController> trayController;

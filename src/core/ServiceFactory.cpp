@@ -7,12 +7,12 @@
 #include "DisplayManager.h"
 #include "HotkeyManager.h"
 #include "LocalizationManager.h"
-#include "SettingsManagerImpl.h"
+#include "SettingsManager.h"
 #include "StyleManager.h"
 #include "TrayController.h"
 #include "UpdateService.h"
 #include "WindowsAutostartManager.h"
-#include "WorkspaceManagerImpl.h"
+#include "WorkspaceManager.h"
 #include "WorkspaceService.h"
 #include "WorkspaceWindow.h"
 
@@ -30,20 +30,20 @@ void ServiceFactory::createHardwareServices(AppServices& services, QObject* pare
     services.autostartManager = std::make_unique<Services::WindowsAutostartManager>();
     services.audioFeedback = std::make_unique<Services::AudioFeedbackService>();
 
-    services.styleManager = std::make_unique<Services::StyleManager>(services.configManager->currentTheme(),
-                                                                     services.configManager->currentQtStyleKey());
+    services.styleManager = std::make_unique<StyleManager>(services.configManager->currentTheme(),
+                                                           services.configManager->currentQtStyleKey());
 
     services.workspaceService = std::make_unique<WorkspaceService>(
         services.displayManager.get(), services.audioManager.get(), services.appLauncher.get());
 
-    services.workspaceImpl = std::make_unique<WorkspaceManagerImpl>(
+    services.workspaceManager = std::make_unique<WorkspaceManager>(
         services.configManager.get(), services.displayManager.get(), services.audioManager.get());
 
-    services.trayController = std::make_unique<Gui::TrayController>(services.workspaceImpl.get());
+    services.trayController = std::make_unique<Gui::TrayController>(services.workspaceManager.get());
 
-    services.settingsImpl =
-        std::make_unique<SettingsManagerImpl>(services.configManager.get(), services.autostartManager.get(),
-                                              services.locManager.get(), services.styleManager.get());
+    services.settingsManager =
+        std::make_unique<SettingsManager>(services.configManager.get(), services.autostartManager.get(),
+                                          services.locManager.get(), services.styleManager.get());
 
     services.hotkeyManager = std::make_unique<Services::HotkeyManager>(
         services.configManager.get(), services.displayManager.get(), services.audioManager.get());
@@ -53,7 +53,7 @@ void ServiceFactory::createHardwareServices(AppServices& services, QObject* pare
 
 void ServiceFactory::createWorkspaceWindow(AppServices& services) {
     services.workspaceWindow = std::make_unique<Gui::WorkspaceWindow>(
-        services.workspaceImpl.get(), services.settingsImpl.get(), services.styleManager.get());
+        services.workspaceManager.get(), services.settingsManager.get(), services.styleManager.get());
 }
 
 } // namespace ModeFlow::Core

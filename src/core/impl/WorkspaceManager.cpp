@@ -1,4 +1,4 @@
-﻿#include "WorkspaceManagerImpl.h"
+﻿#include "WorkspaceManager.h"
 
 #include "AudioDeviceManager.h"
 #include "ConfigManager.h"
@@ -32,46 +32,48 @@ const QVector<ProfileIconRule>& profileIconRules() {
 }
 } // namespace
 
-WorkspaceManagerImpl::WorkspaceManagerImpl(ConfigManager* cm, Services::DisplayManager* dm,
-                                           Services::AudioDeviceManager* am)
+WorkspaceManager::WorkspaceManager(ConfigManager* cm, Services::DisplayManager* dm, Services::AudioDeviceManager* am)
     : m_config(cm), m_display(dm), m_audio(am) {
     m_model = std::make_unique<WorkspaceModel>(nullptr);
     m_model->setActiveIdGetter([cm]() { return cm->lastActiveProfileId(); });
     m_model->setConfigs(m_config->getWorkspaces());
 }
 
-WorkspaceManagerImpl::~WorkspaceManagerImpl() = default;
+WorkspaceManager::~WorkspaceManager() = default;
 
-WorkspaceModel* WorkspaceManagerImpl::model() const {
+WorkspaceModel* WorkspaceManager::model() const {
     return m_model.get();
 }
-void WorkspaceManagerImpl::addConfig(const WorkspaceConfig& cfg) {
+
+void WorkspaceManager::addConfig(const WorkspaceConfig& cfg) {
     m_model->addConfig(cfg);
 }
-void WorkspaceManagerImpl::removeConfig(int row) {
+
+void WorkspaceManager::removeConfig(int row) {
     m_model->removeConfig(row);
 }
-void WorkspaceManagerImpl::updateConfig(int row, const WorkspaceConfig& cfg) {
+
+void WorkspaceManager::updateConfig(int row, const WorkspaceConfig& cfg) {
     m_model->updateConfig(row, cfg);
 }
 
-WorkspaceConfig WorkspaceManagerImpl::captureCurrentHardwareState() const {
+WorkspaceConfig WorkspaceManager::captureCurrentHardwareState() const {
     WorkspaceConfig cfg;
     cfg.displayId = m_display->getCurrentDisplayKey();
     cfg.audioId = m_audio->getDefaultOutputDeviceId();
     return cfg;
 }
 
-QList<WorkspaceConfig> WorkspaceManagerImpl::getAllWorkspaceConfigs() const {
+QList<WorkspaceConfig> WorkspaceManager::getAllWorkspaceConfigs() const {
     return m_model->configs();
 }
 
-bool WorkspaceManagerImpl::saveWorkspaces() {
+bool WorkspaceManager::saveWorkspaces() {
     m_config->setWorkspaces(m_model->configs());
     return m_config->saveConfig();
 }
 
-void WorkspaceManagerImpl::setSelectedRow(int row) {
+void WorkspaceManager::setSelectedRow(int row) {
     const auto& configs = m_model->configs();
     if (row >= 0 && row < configs.size())
         m_config->setSelectedProfileId(configs[row].id);
@@ -79,30 +81,30 @@ void WorkspaceManagerImpl::setSelectedRow(int row) {
         m_config->setSelectedProfileId(QString());
 }
 
-int WorkspaceManagerImpl::selectedRow() const {
+int WorkspaceManager::selectedRow() const {
     const int selectedRow = m_model->rowOfId(m_config->selectedProfileId());
     return selectedRow != -1 ? selectedRow : m_model->rowOfId(m_config->lastActiveProfileId());
 }
 
-int WorkspaceManagerImpl::activeRow() const {
+int WorkspaceManager::activeRow() const {
     return m_model->rowOfId(m_config->lastActiveProfileId());
 }
 
-QList<DeviceEntry> WorkspaceManagerImpl::getAvailableDisplays() const {
+QList<DeviceEntry> WorkspaceManager::getAvailableDisplays() const {
     QList<DeviceEntry> res;
     for (const auto& m : m_display->getPhysicalMonitors())
         res.append({m.key, m.friendlyName, m.isActive, m.isPrimary});
     return Utils::DeviceUtils::sortAndGroupDevices(res);
 }
 
-QList<DeviceEntry> WorkspaceManagerImpl::getAvailableAudioOutputs() const {
+QList<DeviceEntry> WorkspaceManager::getAvailableAudioOutputs() const {
     QList<DeviceEntry> res;
     for (const auto& d : m_audio->getOutputDevices())
         res.append({d.id, d.displayName, d.isConnected, d.isDefault});
     return Utils::DeviceUtils::sortAndGroupDevices(res);
 }
 
-QString WorkspaceManagerImpl::generateDefaultName() {
+QString WorkspaceManager::generateDefaultName() {
     const auto configs = getAllWorkspaceConfigs();
 
     auto isTaken = [&](const QString& name) {
@@ -135,7 +137,7 @@ QString WorkspaceManagerImpl::generateDefaultName() {
     return nameBase;
 }
 
-void WorkspaceManagerImpl::createDefaultProfile() {
+void WorkspaceManager::createDefaultProfile() {
     WorkspaceConfig cfg;
     cfg.name = generateDefaultName();
     cfg.id = QUuid::createUuid().toString();
@@ -145,7 +147,7 @@ void WorkspaceManagerImpl::createDefaultProfile() {
     saveWorkspaces();
 }
 
-void WorkspaceManagerImpl::duplicateProfile(int row) {
+void WorkspaceManager::duplicateProfile(int row) {
     const auto configs = getAllWorkspaceConfigs();
     if (row < 0 || row >= configs.size()) {
         return;
@@ -154,13 +156,13 @@ void WorkspaceManagerImpl::duplicateProfile(int row) {
     WorkspaceConfig duplicate = configs[row];
     duplicate.id = QUuid::createUuid().toString();
     duplicate.name = QObject::tr("%1 (Copy)").arg(configs[row].name);
-    duplicate.hotkey = QKeySequence(); // Reset hotkey to prevent direct system conflicts
+    duplicate.hotkey = QKeySequence();
 
     addConfig(duplicate);
     saveWorkspaces();
 }
 
-QString WorkspaceManagerImpl::suggestedProfileIconSymbol(const QString& profileName) const {
+QString WorkspaceManager::suggestedProfileIconSymbol(const QString& profileName) const {
     const QString normalized = profileName.trimmed().toLower();
     for (const auto& rule : profileIconRules()) {
         for (const auto& keyword : rule.keywords) {

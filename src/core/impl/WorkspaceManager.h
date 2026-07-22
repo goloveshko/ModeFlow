@@ -12,10 +12,10 @@ class AudioDeviceManager;
 
 namespace ModeFlow::Core {
 
-class WorkspaceManagerImpl : public IWorkspaceManager {
+class WorkspaceManager : public IWorkspaceManager {
 public:
-    WorkspaceManagerImpl(ConfigManager* cm, Services::DisplayManager* dm, Services::AudioDeviceManager* am);
-    ~WorkspaceManagerImpl() override;
+    WorkspaceManager(ConfigManager* cm, Services::DisplayManager* dm, Services::AudioDeviceManager* am);
+    ~WorkspaceManager() override;
 
     WorkspaceModel* model() const override;
     void addConfig(const WorkspaceConfig& cfg) override;

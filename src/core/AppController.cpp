@@ -16,7 +16,7 @@
 #include "ServiceFactory.h"
 #include "ServiceWiring.h"
 #include "SettingsDialog.h"
-#include "SettingsManagerImpl.h"
+#include "SettingsManager.h"
 #include "StartupPreflightChecker.h"
 #include "StyleManager.h"
 #include "SystemUtils.h"
@@ -24,7 +24,7 @@
 #include "UpdateDialog.h"
 #include "UpdateService.h"
 #include "WindowsAutostartManager.h"
-#include "WorkspaceManagerImpl.h"
+#include "WorkspaceManager.h"
 #include "WorkspaceService.h"
 #include "WorkspaceWindow.h"
 
@@ -194,8 +194,8 @@ void AppController::showSettingsDialog() {
     const QString oldLang = m_services.configManager->language();
     const Theme oldTheme = m_services.styleManager->currentTheme();
 
-    auto dlg = std::make_unique<Gui::SettingsDialog>(m_services.settingsImpl.get(), m_services.workspaceImpl.get(),
-                                                     m_services.styleManager.get());
+    auto dlg = std::make_unique<Gui::SettingsDialog>(m_services.settingsManager.get(),
+                                                     m_services.workspaceManager.get(), m_services.styleManager.get());
     connect(dlg.get(), &Gui::SettingsDialog::hotkeyCaptureChanged, m_services.hotkeyManager.get(),
             &Services::HotkeyManager::setCaptureMode, Qt::UniqueConnection);
 
@@ -280,7 +280,7 @@ void AppController::showLogViewerDialog() {
 }
 
 void AppController::applyStartupConfig() {
-    const auto& configs = m_services.workspaceImpl->getAllWorkspaceConfigs();
+    const auto& configs = m_services.workspaceManager->getAllWorkspaceConfigs();
     if (configs.isEmpty())
         return;
 
@@ -359,8 +359,8 @@ void AppController::setActiveDialog(ActiveDialog activeDialog) {
 }
 
 void AppController::profilesChanged() {
-    const auto configs = m_services.workspaceImpl->getAllWorkspaceConfigs();
-    const auto nextHotkey = m_services.settingsImpl->nextProfileHotkey();
+    const auto configs = m_services.workspaceManager->getAllWorkspaceConfigs();
+    const auto nextHotkey = m_services.settingsManager->nextProfileHotkey();
 
     // Query both updates and track if any actual system-wide hook mutations occurred
     const bool profilesHotkeyChanged = m_services.hotkeyManager->setProfiles(configs);

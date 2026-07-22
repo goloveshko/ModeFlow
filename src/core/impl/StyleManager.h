@@ -7,9 +7,9 @@
 #include "ConfigTypes.h"
 #include "IStyleManager.h"
 
-namespace ModeFlow::Services {
+namespace ModeFlow::Core {
 
-class StyleManager : public QObject, public Core::IStyleManager {
+class StyleManager : public QObject, public IStyleManager {
     Q_OBJECT
 public:
     explicit StyleManager(Core::Theme theme, const QString& qtStyleKey, QObject* parent = nullptr);
@@ -44,4 +44,4 @@ private:
     QString m_qtStyleKey;
 };
 
-} // namespace ModeFlow::Services
+} // namespace ModeFlow::Core
