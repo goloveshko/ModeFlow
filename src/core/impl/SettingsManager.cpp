@@ -144,6 +144,14 @@ void SettingsManager::setMainWindowVisible(bool visible) {
     m_config->setMainWindowVisible(visible);
 }
 
+bool SettingsManager::autoLoggingEnabled() const {
+    return m_config->autoLoggingEnabled();
+}
+
+void SettingsManager::setAutoLoggingEnabled(bool enabled) {
+    m_config->setAutoLoggingEnabled(enabled);
+}
+
 bool SettingsManager::askConfirmation() const {
     return m_config->askConfirmation();
 }

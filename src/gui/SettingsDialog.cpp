@@ -9,9 +9,9 @@
 #include "HotkeyValidation.h"
 #include "ISettingsManager.h"
 #include "IWorkspaceManager.h"
+#include "LogManager.h"
 #include "Logging.h"
 #include "StyleUtils.h"
-#include "SystemUtils.h"
 #include "WindowsAutostartManager.h"
 
 namespace ModeFlow::Gui {

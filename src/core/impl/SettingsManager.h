@@ -58,6 +58,9 @@ public:
     bool isMainWindowVisible() const override;
     void setMainWindowVisible(bool visible) override;
 
+    bool autoLoggingEnabled() const override;
+    void setAutoLoggingEnabled(bool enabled) override;
+
     bool askConfirmation() const override;
     void setAskConfirmation(bool enabled) override;
 
