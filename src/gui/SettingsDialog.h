@@ -56,6 +56,7 @@ private:
         QKeySequence nextProfileHotkey;
         bool audioConfirmation = false;
         bool autoUpdate = true;
+        bool autoLogging = false;
         bool askConfirmation = true;
         QString language;
         Core::Theme theme = Core::Theme::Dark;
