@@ -168,77 +168,77 @@
         <translation>Записи лога появятся здесь...</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="182"/>
-        <source>Diagnostic Logging is Disabled</source>
-        <translation>Диагностическое логирование отключено</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="192"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="207"/>
         <source>Log recording is currently turned off. Enable it to view real-time diagnostic output from ModeFlow services.</source>
         <translation>Запись лога в данный момент отключена. Включите её для просмотра диагностических сообщений служб ModeFlow в реальном времени.</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="208"/>
-        <source>Enable Diagnostic Logging</source>
+        <location filename="../src/gui/LogViewerDialog.ui" line="194"/>
+        <source>Diagnostic logging is disabled</source>
+        <translation>Диагностическое логирование отключено</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/LogViewerDialog.ui" line="223"/>
+        <source>Enable diagnostic logging</source>
         <translation>Включить диагностическое логирование</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="276"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="291"/>
         <source>Auto-scroll to show new log entries</source>
         <translation>Автоматическая прокрутка к новым записям</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="279"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="294"/>
         <source>Follow</source>
         <translation>Следить</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="292"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="307"/>
         <source>Reload the entire log file</source>
         <translation>Перезагрузить весь файл лога</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="295"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="310"/>
         <source>Refresh</source>
         <translation>Обновить</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="302"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="317"/>
         <source>Clear the log display</source>
         <translation>Очистить отображение лога</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="305"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="320"/>
         <source>Clear</source>
         <translation>Очистить</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="312"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="327"/>
         <source>Copy filtered log entries to clipboard</source>
         <translation>Копировать отфильтрованные записи в буфер обмена</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="315"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="330"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="322"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="337"/>
         <source>Save filtered log entries to a file</source>
         <translation>Сохранить отфильтрованные записи в файл</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="325"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="340"/>
         <source>Save...</source>
         <translation>Сохранить...</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="345"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="360"/>
         <source>Lines: 0/0</source>
         <translation>Строк: 0/0</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="367"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="382"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
