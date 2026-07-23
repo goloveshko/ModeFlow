@@ -74,6 +74,9 @@ public:
     qint64 lastUpdateCheckTimestamp() const;
     void setLastUpdateCheckTimestamp(qint64 timestamp);
 
+    bool autoLoggingEnabled() const;
+    void setAutoLoggingEnabled(bool enabled);
+
 signals:
     void errorOccurred(const QString& message);
 
@@ -100,6 +103,8 @@ private:
 
     bool m_askConfirmation = true;
     qint64 m_lastUpdateCheckTimestamp = 0;
+
+    bool m_autoLoggingEnabled = false;
 };
 
 } // namespace ModeFlow::Core

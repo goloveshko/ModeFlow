@@ -32,6 +32,7 @@ public:
     static inline const QString FileImport = QString::fromUcs4(U"\uf56f");
     static inline const QString FileExport = QString::fromUcs4(U"\uf56e");
     static inline const QString EllipsisVertical = QString::fromUcs4(U"\uf142");
+    static inline const QString Terminal = QString::fromUcs4(U"\uf120");
 
     static inline const QString Square = QString::fromUcs4(U"\uf0c8");
     static inline const QString CheckSquare = QString::fromUcs4(U"\uf14a");

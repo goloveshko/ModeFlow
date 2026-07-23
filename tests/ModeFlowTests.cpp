@@ -6,6 +6,14 @@
 #include <QtConcurrent>
 #include <QMessageBox>
 
+// Fixed: Explicitly include required Qt and core types to prevent LNK/C++ compiler errors
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QPair>
+#include <QPoint>
+#include <QSize>
+
 #include "ConfigManager.h"
 #include "CliParser.h"
 #include "ConfigTypes.h"
@@ -257,6 +265,9 @@ public:
     bool askConfirmation() const override { return askConfirmationMock; }
     void setAskConfirmation(bool enabled) override { askConfirmationMock = enabled; }
 
+    bool loggingEnabled() const override { return loggingEnabledValue; }
+    void setLoggingEnabled(bool enabled) override { loggingEnabledValue = enabled; }
+
     QString languageCode = QStringLiteral("en_US");
     bool autostartEnabled = false;
     int autostartDelaySeconds = 5;
@@ -278,6 +289,7 @@ public:
     bool visibleMock = true;
 
     bool askConfirmationMock = true;
+    bool loggingEnabledValue = false;
 };
 
 class FakeDisplayManagerForWS : public ModeFlow::Services::DisplayManager {

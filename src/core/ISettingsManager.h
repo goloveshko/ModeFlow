@@ -37,6 +37,9 @@ public:
     virtual bool isMainWindowVisible() const = 0;
     virtual void setMainWindowVisible(bool visible) = 0;
 
+    virtual bool loggingEnabled() const = 0;
+    virtual void setLoggingEnabled(bool enabled) = 0;
+
     virtual StartupAction startupAction() const = 0;
     virtual QString startupProfileId() const = 0;
     virtual void setStartupBehavior(StartupAction action, const QString& profileId) = 0;

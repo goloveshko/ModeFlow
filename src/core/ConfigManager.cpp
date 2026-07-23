@@ -95,6 +95,8 @@ bool ConfigManager::loadConfig() {
 
     auto lastUpdateCheckTimestamp = s.value(u"update/lastCheckTimestamp"_sv, 0).toLongLong();
 
+    auto autoLoggingEnabled = s.value(u"loggingEnabled"_sv, false).toBool();
+
     // Fast atomic update of member state using the double-buffered snapshot pattern
     {
         QMutexLocker locker(&m_mutex);
@@ -116,6 +118,7 @@ bool ConfigManager::loadConfig() {
         m_mainWindowPos = mainWindowPos;
         m_mainWindowSize = mainWindowSize;
         m_lastUpdateCheckTimestamp = lastUpdateCheckTimestamp;
+        m_autoLoggingEnabled = autoLoggingEnabled;
     }
 
     return true;
@@ -141,6 +144,7 @@ bool ConfigManager::saveConfig() {
     QPoint mainWindowPos;
     QSize mainWindowSize;
     qint64 lastUpdateCheckTimestamp;
+    bool autoLoggingEnabled;
 
     {
         QMutexLocker locker(&m_mutex);
@@ -162,6 +166,7 @@ bool ConfigManager::saveConfig() {
         mainWindowPos = m_mainWindowPos;
         mainWindowSize = m_mainWindowSize;
         lastUpdateCheckTimestamp = m_lastUpdateCheckTimestamp;
+        autoLoggingEnabled = m_autoLoggingEnabled;
     }
 
     QSettings s;
@@ -208,6 +213,8 @@ bool ConfigManager::saveConfig() {
     s.setValue(u"window/size"_sv, mainWindowSize);
 
     s.setValue(u"update/lastCheckTimestamp"_sv, lastUpdateCheckTimestamp);
+
+    s.setValue(u"loggingEnabled"_sv, autoLoggingEnabled);
 
     s.sync();
 
@@ -390,6 +397,14 @@ qint64 ConfigManager::lastUpdateCheckTimestamp() const {
 void ConfigManager::setLastUpdateCheckTimestamp(qint64 timestamp) {
     QMutexLocker locker(&m_mutex);
     m_lastUpdateCheckTimestamp = timestamp;
+}
+
+bool ConfigManager::autoLoggingEnabled() const {
+    return m_autoLoggingEnabled;
+}
+
+void ConfigManager::setAutoLoggingEnabled(bool enabled) {
+    m_autoLoggingEnabled = enabled;
 }
 
 } // namespace ModeFlow::Core

@@ -629,6 +629,23 @@ QToolButton#btnFollow:checked {
     border: 1px solid rgba(30, 93, 153, 0.28);
 }
 
+/* ── Log Viewer Record Button (Light Theme) ─────────────── */
+#btnRecordLog {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 4px;
+}
+
+#btnRecordLog:checked {
+    color: #D32F2F;
+    border-color: rgba(211, 47, 47, 0.35);
+    background-color: rgba(211, 47, 47, 0.12);
+}
+
+#btnRecordLog:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
 /* ── File Dialog (DontUseNativeDialog Styling) ───────────── */
 QFileDialog {
     background-color: rgb(240, 240, 240);
@@ -654,4 +671,21 @@ QFileDialog QComboBox QAbstractItemView {
 QFileDialog QAbstractItemView::item:selected {
     background-color: rgba(30, 93, 153, 0.08) !important;
     color: #1a1a1a !important;
+}
+
+/* Soft, semi-transparent grey for the Fluent empty-state illustration */
+QLabel#labelEmptyIcon {
+    font-family: "Font Awesome 7 Free";
+    color: rgba(0, 0, 0, 0.2);
+}
+
+QLabel#labelEmptyTitle {
+    font-size: 11pt;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+QLabel#labelEmptyDesc {
+    font-size: 9.5pt;
+    color: rgba(0, 0, 0, 0.55);
 }

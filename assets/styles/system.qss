@@ -157,6 +157,22 @@ QToolButton#btnFollow:checked {
     border: 1px solid rgba(30, 93, 153, 0.28);
 }
 
+#btnRecordLog {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 4px;
+}
+
+#btnRecordLog:checked {
+    color: #D32F2F;
+    border-color: rgba(211, 47, 47, 0.35);
+    background-color: rgba(211, 47, 47, 0.12);
+}
+
+#btnRecordLog:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
 QFileDialog {
     background-color: rgb(240, 240, 240);
 }

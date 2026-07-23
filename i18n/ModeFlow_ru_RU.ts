@@ -138,87 +138,107 @@
         <translation>Просмотр лога</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="43"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="40"/>
         <source>Filter:</source>
         <translation>Фильтр:</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="50"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="47"/>
         <source>Search logs...</source>
         <translation>Поиск по логам...</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="60"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="57"/>
         <source>Level:</source>
         <translation>Уровень:</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="77"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="74"/>
         <source>Category:</source>
         <translation>Категория:</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="102"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="103"/>
+        <source>Toggle log recording</source>
+        <translation>Включить/выключить запись лога</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/LogViewerDialog.ui" line="140"/>
         <source>Log entries will appear here...</source>
         <translation>Записи лога появятся здесь...</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="111"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="207"/>
+        <source>Log recording is currently turned off. Enable it to view real-time diagnostic output from ModeFlow services.</source>
+        <translation>Запись лога в данный момент отключена. Включите её для просмотра диагностических сообщений служб ModeFlow в реальном времени.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/LogViewerDialog.ui" line="194"/>
+        <source>Diagnostic logging is disabled</source>
+        <translation>Диагностическое логирование отключено</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/LogViewerDialog.ui" line="223"/>
+        <source>Enable diagnostic logging</source>
+        <translation>Включить диагностическое логирование</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/LogViewerDialog.ui" line="291"/>
         <source>Auto-scroll to show new log entries</source>
-        <translation>Автопрокрутка для отображения новых записей</translation>
+        <translation>Автоматическая прокрутка к новым записям</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="114"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="294"/>
         <source>Follow</source>
-        <translation>Отслеживать</translation>
+        <translation>Следить</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="127"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="307"/>
         <source>Reload the entire log file</source>
         <translation>Перезагрузить весь файл лога</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="130"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="310"/>
         <source>Refresh</source>
         <translation>Обновить</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="137"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="317"/>
         <source>Clear the log display</source>
         <translation>Очистить отображение лога</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="140"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="320"/>
         <source>Clear</source>
         <translation>Очистить</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="147"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="327"/>
         <source>Copy filtered log entries to clipboard</source>
         <translation>Копировать отфильтрованные записи в буфер обмена</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="150"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="330"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="157"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="337"/>
         <source>Save filtered log entries to a file</source>
         <translation>Сохранить отфильтрованные записи в файл</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="160"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="340"/>
         <source>Save...</source>
         <translation>Сохранить...</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="180"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="360"/>
         <source>Lines: 0/0</source>
-        <translation>Строки: 0/0</translation>
+        <translation>Строк: 0/0</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="202"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="382"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
@@ -254,17 +274,17 @@
 <context>
     <name>ModeFlow::Core::ConfigManager</name>
     <message>
-        <location filename="../src/core/ConfigManager.cpp" line="21"/>
+        <location filename="../src/core/ConfigManager.cpp" line="32"/>
         <source>Configuration file is corrupted or inaccessible.</source>
         <translation>Файл конфигурации поврежден или недоступен.</translation>
     </message>
     <message>
-        <location filename="../src/core/ConfigManager.cpp" line="32"/>
+        <location filename="../src/core/ConfigManager.cpp" line="43"/>
         <source>Workspace</source>
         <translation>Рабочее пространство</translation>
     </message>
     <message>
-        <location filename="../src/core/ConfigManager.cpp" line="150"/>
+        <location filename="../src/core/ConfigManager.cpp" line="223"/>
         <source>Failed to save settings. Check disk space or permissions.</source>
         <translation>Не удалось сохранить настройки. Проверьте свободное место на диске или права доступа.</translation>
     </message>
@@ -280,6 +300,24 @@
         <location filename="../src/core/LocalizationManager.cpp" line="62"/>
         <source>Failed to load translation for %1</source>
         <translation>Не удалось загрузить перевод для %1</translation>
+    </message>
+</context>
+<context>
+    <name>ModeFlow::Core::StyleManager</name>
+    <message>
+        <location filename="../src/core/impl/StyleManager.cpp" line="99"/>
+        <source>Light</source>
+        <translation>Светлая</translation>
+    </message>
+    <message>
+        <location filename="../src/core/impl/StyleManager.cpp" line="100"/>
+        <source>Dark</source>
+        <translation>Темная</translation>
+    </message>
+    <message>
+        <location filename="../src/core/impl/StyleManager.cpp" line="104"/>
+        <source>System styles</source>
+        <translation>Стили системы</translation>
     </message>
 </context>
 <context>
@@ -303,7 +341,7 @@
         <translation>Версия %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/AboutDialog.cpp" line="69"/>
+        <location filename="../src/gui/AboutDialog.cpp" line="65"/>
         <source>New version available: v%1</source>
         <translation>Доступна новая версия: v%1</translation>
     </message>
@@ -399,96 +437,99 @@
 <context>
     <name>ModeFlow::Gui::LogViewerDialog</name>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="44"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="48"/>
         <source>All Levels</source>
         <translation>Все уровни</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="45"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="49"/>
         <source>Debug</source>
         <translation>Отладка</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="46"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="50"/>
         <source>Info</source>
         <translation>Информация</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="47"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="51"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="48"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="52"/>
         <source>Critical</source>
         <translation>Критический</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="49"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="53"/>
         <source>Fatal</source>
         <translation>Фатальный</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="51"/>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="253"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="55"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="301"/>
         <source>All Categories</source>
         <translation>Все категории</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="176"/>
-        <source>Log file not found or cannot be read:
-%1</source>
-        <translation>Файл лога не найден или не может быть прочитан:
-%1</translation>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="129"/>
+        <source>Logging active (click to disable)</source>
+        <translation>Логирование активно (нажмите для отключения)</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="344"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="129"/>
+        <source>Enable diagnostic logging</source>
+        <translation>Включить диагностическое логирование</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="407"/>
         <source>Save Log</source>
         <translation>Сохранить лог</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="345"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="408"/>
         <source>Text files (*.txt);;All files (*)</source>
         <translation>Текстовые файлы (*.txt);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="351"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="414"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="351"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="414"/>
         <source>Cannot save to file:
 %1</source>
         <translation>Не удалось сохранить в файл:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="360"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="423"/>
         <source>Saved</source>
         <translation>Сохранено</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="361"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="424"/>
         <source>Log exported successfully.
 %1 lines written.</source>
         <translation>Лог успешно экспортирован.
 Записано строк: %1.</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="384"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="467"/>
+        <source>Logging is disabled</source>
+        <translation>Логирование отключено</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="469"/>
+        <source>Log file not found: %1</source>
+        <translation>Файл лога не найден: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="473"/>
         <source>Lines: %1/%2</source>
         <translation>Строки: %1/%2</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="386"/>
-        <source>  |  Log file: %1</source>
-        <translation>  |  Файл лога: %1</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="388"/>
-        <source>No log file found at: %1</source>
-        <translation>Файл лога не найден: %1</translation>
     </message>
 </context>
 <context>
@@ -608,37 +649,37 @@
 <context>
     <name>ModeFlow::Gui::SettingsDialog</name>
     <message>
-        <location filename="../src/gui/SettingsDialog.cpp" line="130"/>
+        <location filename="../src/gui/SettingsDialog.cpp" line="135"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="../src/gui/SettingsDialog.cpp" line="131"/>
+        <location filename="../src/gui/SettingsDialog.cpp" line="136"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/gui/SettingsDialog.cpp" line="268"/>
+        <location filename="../src/gui/SettingsDialog.cpp" line="276"/>
         <source>Administrative privileges are required to apply these changes.</source>
         <translation>Для применения этих изменений требуются права администратора.</translation>
     </message>
     <message>
-        <location filename="../src/gui/SettingsDialog.cpp" line="269"/>
+        <location filename="../src/gui/SettingsDialog.cpp" line="277"/>
         <source>Hold Ctrl while clicking Save to enable startup logging for troubleshooting.</source>
         <translation>Удерживайте Ctrl при нажатии «Сохранить», чтобы включить лог запуска для диагностики.</translation>
     </message>
     <message>
-        <location filename="../src/gui/SettingsDialog.cpp" line="275"/>
+        <location filename="../src/gui/SettingsDialog.cpp" line="283"/>
         <source>Tip</source>
         <translation>Совет</translation>
     </message>
     <message>
-        <location filename="../src/gui/SettingsDialog.cpp" line="356"/>
+        <location filename="../src/gui/SettingsDialog.cpp" line="364"/>
         <source>Do Nothing</source>
         <translation>Ничего не делать</translation>
     </message>
     <message>
-        <location filename="../src/gui/SettingsDialog.cpp" line="357"/>
+        <location filename="../src/gui/SettingsDialog.cpp" line="365"/>
         <source>Last Active</source>
         <translation>Последний активный</translation>
     </message>
@@ -692,39 +733,39 @@
 <context>
     <name>ModeFlow::Gui::WorkspaceWindow</name>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="206"/>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="476"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="202"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="472"/>
         <source>Delete</source>
         <translation>Удаление</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="207"/>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="476"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="203"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="472"/>
         <source>Delete configuration &apos;%1&apos;?</source>
         <translation>Удалить конфигурацию «%1»?</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="99"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="95"/>
         <source>View Log</source>
         <translation>Просмотр лога</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="98"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="94"/>
         <source>Check for Updates...</source>
         <translation>Проверить обновления...</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="450"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="446"/>
         <source>Update available: v%1 — click to view</source>
         <translation>Доступно обновление: v%1 — нажмите для просмотра</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="94"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="90"/>
         <source>Export Profiles</source>
         <translation>Экспорт профилей</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.cpp" line="92"/>
+        <location filename="../src/gui/WorkspaceWindow.cpp" line="88"/>
         <source>Import Profiles</source>
         <translation>Импорт профилей</translation>
     </message>
@@ -799,24 +840,6 @@
     </message>
 </context>
 <context>
-    <name>ModeFlow::Services::StyleManager</name>
-    <message>
-        <location filename="../src/services/StyleManager.cpp" line="99"/>
-        <source>Light</source>
-        <translation>Светлая</translation>
-    </message>
-    <message>
-        <location filename="../src/services/StyleManager.cpp" line="100"/>
-        <source>Dark</source>
-        <translation>Темная</translation>
-    </message>
-    <message>
-        <location filename="../src/services/StyleManager.cpp" line="104"/>
-        <source>System styles</source>
-        <translation>Стили системы</translation>
-    </message>
-</context>
-<context>
     <name>ModeFlow::Services::UpdateService</name>
     <message>
         <location filename="../src/services/UpdateService.cpp" line="81"/>
@@ -827,28 +850,28 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="88"/>
+        <location filename="../src/main.cpp" line="91"/>
         <source>System tray</source>
         <translation>Системный трей</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="89"/>
+        <location filename="../src/main.cpp" line="92"/>
         <source>The system tray is unavailable on this system.</source>
         <translation>Системный трей недоступен в этой системе.</translation>
     </message>
     <message>
-        <location filename="../src/core/impl/WorkspaceManagerImpl.cpp" line="113"/>
+        <location filename="../src/core/impl/WorkspaceManager.cpp" line="115"/>
         <location filename="../src/gui/FontAwesome.cpp" line="110"/>
         <source>Desktop</source>
         <translation>Рабочий стол</translation>
     </message>
     <message>
-        <location filename="../src/core/impl/WorkspaceManagerImpl.cpp" line="123"/>
+        <location filename="../src/core/impl/WorkspaceManager.cpp" line="125"/>
         <source>Workspace</source>
         <translation>Рабочее пространство</translation>
     </message>
     <message>
-        <location filename="../src/core/impl/WorkspaceManagerImpl.cpp" line="156"/>
+        <location filename="../src/core/impl/WorkspaceManager.cpp" line="158"/>
         <source>%1 (Copy)</source>
         <translation>%1 (копия)</translation>
     </message>
@@ -858,7 +881,7 @@
         <translation>Монитор</translation>
     </message>
     <message>
-        <location filename="../src/core/impl/WorkspaceManagerImpl.cpp" line="118"/>
+        <location filename="../src/core/impl/WorkspaceManager.cpp" line="120"/>
         <location filename="../src/gui/FontAwesome.cpp" line="112"/>
         <source>TV</source>
         <translation>Телевизор</translation>
@@ -1014,22 +1037,27 @@
         <source>Confirm before applying profiles</source>
         <translation>Запрашивать подтверждение перед переключением</translation>
     </message>
+    <message>
+        <location filename="../src/gui/SettingsDialog.ui" line="185"/>
+        <source>Enable diagnostic logging</source>
+        <translation>Включить диагностическое логирование</translation>
+    </message>
 </context>
 <context>
     <name>StyleManager</name>
     <message>
-        <location filename="../src/services/StyleManager.cpp" line="59"/>
-        <location filename="../src/services/StyleManager.cpp" line="70"/>
+        <location filename="../src/core/impl/StyleManager.cpp" line="59"/>
+        <location filename="../src/core/impl/StyleManager.cpp" line="70"/>
         <source>System</source>
         <translation>Системная</translation>
     </message>
     <message>
-        <location filename="../src/services/StyleManager.cpp" line="62"/>
+        <location filename="../src/core/impl/StyleManager.cpp" line="62"/>
         <source>Windows</source>
         <translation>Windows</translation>
     </message>
     <message>
-        <location filename="../src/services/StyleManager.cpp" line="65"/>
+        <location filename="../src/core/impl/StyleManager.cpp" line="65"/>
         <source>Fusion</source>
         <translation>Fusion</translation>
     </message>
@@ -1126,22 +1154,22 @@
         <translation>Список приложений для запуска при активации этого профиля.</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.ui" line="230"/>
+        <location filename="../src/gui/WorkspaceWindow.ui" line="233"/>
         <source>Update available</source>
         <translation>Доступно обновление</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.ui" line="240"/>
+        <location filename="../src/gui/WorkspaceWindow.ui" line="243"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.ui" line="250"/>
+        <location filename="../src/gui/WorkspaceWindow.ui" line="253"/>
         <source>More options</source>
         <translation>Дополнительно</translation>
     </message>
     <message>
-        <location filename="../src/gui/WorkspaceWindow.ui" line="263"/>
+        <location filename="../src/gui/WorkspaceWindow.ui" line="266"/>
         <source>About</source>
         <translation>О программе</translation>
     </message>

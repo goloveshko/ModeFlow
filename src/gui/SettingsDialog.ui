@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>456</height>
+    <height>486</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -145,7 +145,7 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0" colspan="2">
+      <item row="6" column="0" colspan="2">
        <layout class="QGridLayout" name="gridLayout" columnstretch="0,10">
         <item row="0" column="0">
          <widget class="QLabel" name="label_lang">
@@ -169,13 +169,20 @@
         </item>
        </layout>
       </item>
-      <item row="4" column="0">
+      <item row="5" column="0">
        <widget class="QCheckBox" name="checkAskConfirmation">
         <property name="toolTip">
          <string>Show a confirmation dialog when switching profiles via the tray menu or main window list.</string>
         </property>
         <property name="text">
          <string>Confirm before applying profiles</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="checkLoggingEnabled">
+        <property name="text">
+         <string>Enable diagnostic logging</string>
         </property>
        </widget>
       </item>
