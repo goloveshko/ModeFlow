@@ -95,7 +95,7 @@ bool ConfigManager::loadConfig() {
 
     auto lastUpdateCheckTimestamp = s.value(u"update/lastCheckTimestamp"_sv, 0).toLongLong();
     
-    auto autoLoggingEnabled = s.value(u"autoLoggingEnabled"_sv, false).toBool();
+    auto autoLoggingEnabled = s.value(u"loggingEnabled"_sv, false).toBool();
 
     // Fast atomic update of member state using the double-buffered snapshot pattern
     {
@@ -214,7 +214,7 @@ bool ConfigManager::saveConfig() {
 
     s.setValue(u"update/lastCheckTimestamp"_sv, lastUpdateCheckTimestamp);
 
-    s.setValue(u"autoLoggingEnabled"_sv, autoLoggingEnabled);
+    s.setValue(u"loggingEnabled"_sv, autoLoggingEnabled);
 
     s.sync();
 

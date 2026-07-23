@@ -100,7 +100,7 @@ void LogViewerDialog::setupConnections() {
 }
 
 void LogViewerDialog::updateViewMode() {
-    const bool loggingActive = m_settingsManager->autoLoggingEnabled();
+    const bool loggingActive = m_settingsManager->loggingEnabled();
     updateRecordButtonVisuals();
 
     const QFileInfo fi(m_logFilePath);
@@ -118,7 +118,7 @@ void LogViewerDialog::updateViewMode() {
 }
 
 void LogViewerDialog::updateRecordButtonVisuals() {
-    const bool active = m_settingsManager->autoLoggingEnabled();
+    const bool active = m_settingsManager->loggingEnabled();
 
     {
         const QSignalBlocker blocker(ui->btnRecordLog);
@@ -425,14 +425,14 @@ void LogViewerDialog::onSaveClicked() {
 }
 
 void LogViewerDialog::onEnableLoggingClicked() {
-    m_settingsManager->setAutoLoggingEnabled(true);
+    m_settingsManager->setLoggingEnabled(true);
     Utils::LogManager::setup(true);
     m_settingsManager->saveSettings();
     updateViewMode();
 }
 
 void LogViewerDialog::onRecordToggled(bool checked) {
-    m_settingsManager->setAutoLoggingEnabled(checked);
+    m_settingsManager->setLoggingEnabled(checked);
     Utils::LogManager::setup(checked);
     m_settingsManager->saveSettings();
     updateViewMode();
@@ -459,7 +459,7 @@ void LogViewerDialog::scrollToBottom() {
 }
 
 void LogViewerDialog::updateStatusBar() {
-    const bool loggingActive = m_settingsManager->autoLoggingEnabled();
+    const bool loggingActive = m_settingsManager->loggingEnabled();
     const QFileInfo fi(m_logFilePath);
     const bool fileExists = fi.exists();
 

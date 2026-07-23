@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>456</height>
+    <height>486</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -180,9 +180,9 @@
        </widget>
       </item>
       <item row="4" column="0">
-       <widget class="QCheckBox" name="checkEnableLogging">
+       <widget class="QCheckBox" name="checkLoggingEnabled">
         <property name="text">
-         <string>Enable Diagnostic Logging</string>
+         <string>Enable diagnostic logging</string>
         </property>
        </widget>
       </item>

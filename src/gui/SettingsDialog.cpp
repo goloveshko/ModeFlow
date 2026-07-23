@@ -52,7 +52,7 @@ void SettingsDialog::loadSettings() {
 
     ui->checkAudioConfirmation->setChecked(m_settingsManager->audioConfirmation());
     ui->checkAutoUpdate->setChecked(m_settingsManager->autoUpdateEnabled());
-    ui->checkEnableLogging->setChecked(m_settingsManager->autoLoggingEnabled());
+    ui->checkLoggingEnabled->setChecked(m_settingsManager->loggingEnabled());
 
     ui->checkAskConfirmation->setChecked(m_settingsManager->askConfirmation());
 }
@@ -146,7 +146,7 @@ void SettingsDialog::setupConnections() {
     connect(ui->keyEditNextProfile, &HotkeyEdit::validateRequested, this, &SettingsDialog::onNextProfileHotkeyChanged);
     connect(ui->checkAudioConfirmation, &QCheckBox::toggled, this, &SettingsDialog::updateUiState);
     connect(ui->checkAutoUpdate, &QCheckBox::toggled, this, &SettingsDialog::updateUiState);
-    connect(ui->checkEnableLogging, &QCheckBox::toggled, this, &SettingsDialog::updateUiState);
+    connect(ui->checkLoggingEnabled, &QCheckBox::toggled, this, &SettingsDialog::updateUiState);
     connect(ui->checkAskConfirmation, &QCheckBox::toggled, this, &SettingsDialog::updateUiState);
     connect(ui->comboLanguage, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
             &SettingsDialog::updateUiState);
@@ -211,7 +211,7 @@ SettingsDialog::FormState SettingsDialog::currentFormState() const {
     state.nextProfileHotkey = ui->keyEditNextProfile->keySequence();
     state.audioConfirmation = ui->checkAudioConfirmation->isChecked();
     state.autoUpdate = ui->checkAutoUpdate->isChecked();
-    state.autoLogging = ui->checkEnableLogging->isChecked();
+    state.autoLogging = ui->checkLoggingEnabled->isChecked();
     state.askConfirmation = ui->checkAskConfirmation->isChecked();
     state.language = ui->comboLanguage->currentData().toString();
 
@@ -247,7 +247,7 @@ void SettingsDialog::applySettingsState(const FormState& state) {
     m_settingsManager->setNextProfileHotkey(state.nextProfileHotkey);
     m_settingsManager->setAudioConfirmation(state.audioConfirmation);
     m_settingsManager->setAutoUpdateEnabled(state.autoUpdate);
-    m_settingsManager->setAutoLoggingEnabled(state.autoLogging);
+    m_settingsManager->setLoggingEnabled(state.autoLogging);
     m_settingsManager->setAskConfirmation(state.askConfirmation);
     m_settingsManager->setLanguagePreference(state.language);
     m_settingsManager->setThemePreference(state.theme, state.qtStyleKey);

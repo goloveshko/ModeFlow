@@ -149,14 +149,14 @@
         <widget class="QGroupBox" name="panelZeroState">
          <property name="minimumSize">
           <size>
-           <width>320</width>
+           <width>360</width>
            <height>240</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>400</width>
-           <height>300</height>
+           <width>480</width>
+           <height>320</height>
           </size>
          </property>
          <property name="title">
@@ -165,6 +165,18 @@
          <layout class="QVBoxLayout" name="zeroStateLayout">
           <property name="spacing">
            <number>12</number>
+          </property>
+          <property name="leftMargin">
+           <number>20</number>
+          </property>
+          <property name="topMargin">
+           <number>20</number>
+          </property>
+          <property name="rightMargin">
+           <number>20</number>
+          </property>
+          <property name="bottomMargin">
+           <number>20</number>
           </property>
           <item>
            <widget class="QLabel" name="labelEmptyIcon">
@@ -179,10 +191,13 @@
           <item>
            <widget class="QLabel" name="labelEmptyTitle">
             <property name="text">
-             <string>Diagnostic Logging is Disabled</string>
+             <string>Diagnostic logging is disabled</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -205,7 +220,10 @@
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="text">
-             <string>Enable Diagnostic Logging</string>
+             <string>Enable diagnostic logging</string>
+            </property>
+            <property name="default">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
