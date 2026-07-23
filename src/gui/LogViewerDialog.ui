@@ -189,7 +189,7 @@
           <item>
            <widget class="QLabel" name="labelEmptyDesc">
             <property name="text">
-             <string>Log recording is currently turned off. Enable it to view real-time diagnostic output from the ctrld service.</string>
+             <string>Log recording is currently turned off. Enable it to view real-time diagnostic output from ModeFlow services.</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>

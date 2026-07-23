@@ -47,6 +47,7 @@ private:
     void updateStatusBar();
     void scrollToBottom();
     void refreshCategories(const QSet<QString>& categories);
+    void updateRecordButtonVisuals();
 
     static LogEntry parseLine(const QString& line);
     static QString levelToString(int level);
@@ -63,6 +64,7 @@ private:
     void onApplyFilters();
     void onEnableLoggingClicked();
     void onRecordToggled(bool checked);
+    void onScrollBarValueChanged(int value);
 
     std::unique_ptr<Ui::LogViewerDialog> ui;
     Core::ISettingsManager* m_settingsManager = nullptr;
@@ -75,6 +77,7 @@ private:
     QTimer m_filterTimer;
     qint64 m_fileSize = 0;
     bool m_followMode = true;
+    bool m_userIsScrolledUp = false;
     bool m_isRefreshing = false;
 };
 
