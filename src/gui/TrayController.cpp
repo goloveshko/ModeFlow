@@ -3,9 +3,6 @@
 #include "Constants.h"
 #include "FontAwesome.h"
 #include "IWorkspaceManager.h"
-#include "VersionInfo.h"
-
-using namespace ModeFlow::Info;
 
 namespace ModeFlow::Gui {
 
@@ -93,7 +90,7 @@ void TrayController::populateProfileSubmenu() {
 
     m_profileMenu->clear();
 
-    const auto configs = m_workspaceManager->getAllWorkspaceConfigs();
+    const auto configs = m_workspaceManager->configs();
 
     const int activeRowIndex = m_workspaceManager->activeRow();
 

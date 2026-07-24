@@ -58,6 +58,7 @@ private:
     void onClearClicked();
     void onCopyClicked();
     void onSaveClicked();
+    void onOpenFolderClicked();
     void onFilterTextChanged(const QString& text);
     void onLevelFilterChanged(int index);
     void onCategoryFilterChanged(int index);

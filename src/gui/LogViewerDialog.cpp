@@ -3,16 +3,16 @@
 #include "ui_LogViewerDialog.h"
 
 #include <QClipboard>
+#include <QDir>
 #include <QFileInfo>
+#include <QProcess>
 #include <QScrollBar>
-#include <QSignalBlocker>
 
 #include "FontAwesome.h"
 #include "ISettingsManager.h"
 #include "IStyleManager.h"
 #include "LogHighlighter.h"
 #include "LogManager.h"
-#include "SystemUtils.h"
 
 namespace ModeFlow::Gui {
 
@@ -34,8 +34,7 @@ LogViewerDialog::LogViewerDialog(Core::ISettingsManager* settingsManager, Core::
 LogViewerDialog::~LogViewerDialog() = default;
 
 void LogViewerDialog::init() {
-    const QString appDir = Utils::SystemUtils::getExecutableDir();
-    m_logFilePath = appDir + u"/log.txt"_s;
+    m_logFilePath = Utils::LogManager::logFilePath();
 
     QFont monoFont(u"Consolas"_s);
     monoFont.setStyleHint(QFont::Monospace);
@@ -62,6 +61,7 @@ void LogViewerDialog::init() {
     ui->btnClear->setIcon(FontAwesome::icon(FontAwesome::Trash, 16));
     ui->btnCopy->setIcon(FontAwesome::icon(FontAwesome::Copy, 16));
     ui->btnSave->setIcon(FontAwesome::icon(FontAwesome::FloppyDisk, 16));
+    ui->btnOpenFolder->setIcon(FontAwesome::icon(FontAwesome::FolderOpen, 16));
 
     m_refreshTimer.setInterval(RefreshIntervalMs);
     m_refreshTimer.setSingleShot(false);
@@ -86,6 +86,7 @@ void LogViewerDialog::setupConnections() {
     connect(ui->btnClear, &QToolButton::clicked, this, &LogViewerDialog::onClearClicked);
     connect(ui->btnCopy, &QToolButton::clicked, this, &LogViewerDialog::onCopyClicked);
     connect(ui->btnSave, &QToolButton::clicked, this, &LogViewerDialog::onSaveClicked);
+    connect(ui->btnOpenFolder, &QToolButton::clicked, this, &LogViewerDialog::onOpenFolderClicked);
 
     connect(ui->btnEnableLogging, &QPushButton::clicked, this, &LogViewerDialog::onEnableLoggingClicked);
 
@@ -104,13 +105,13 @@ void LogViewerDialog::updateViewMode() {
     updateRecordButtonVisuals();
 
     const QFileInfo fi(m_logFilePath);
-    const bool fileExists = fi.exists();
+    const bool hasLogContent = fi.exists() && fi.size() > 0;
 
-    if (!loggingActive && !fileExists) {
-        ui->stackedWidget->setCurrentIndex(1);
+    if (!loggingActive && !hasLogContent) {
+        ui->stackedWidget->setCurrentIndex(1); // Show Zero State card
         m_refreshTimer.stop();
     } else {
-        ui->stackedWidget->setCurrentIndex(0);
+        ui->stackedWidget->setCurrentIndex(0); // Show log view
         loadLogFile();
         m_refreshTimer.start();
     }
@@ -422,6 +423,16 @@ void LogViewerDialog::onSaveClicked() {
 
     styleManager()->showInfo(this, tr("Saved"),
                              tr("Log exported successfully.\n%1 lines written.").arg(m_filteredIndices.size()));
+}
+
+void LogViewerDialog::onOpenFolderClicked() {
+    if (m_logFilePath.isEmpty() || !QFile::exists(m_logFilePath)) {
+        styleManager()->showWarning(this, tr("Log File"), tr("Log file does not exist yet."));
+        return;
+    }
+
+    const QString nativePath = QDir::toNativeSeparators(m_logFilePath);
+    QProcess::startDetached(u"explorer.exe"_s, {u"/select,"_s, nativePath});
 }
 
 void LogViewerDialog::onEnableLoggingClicked() {

@@ -17,12 +17,12 @@ public:
     WorkspaceManager(ConfigManager* cm, Services::DisplayManager* dm, Services::AudioDeviceManager* am);
     ~WorkspaceManager() override;
 
-    WorkspaceModel* model() const override;
+    QAbstractItemModel* model() const override;
     void addConfig(const WorkspaceConfig& cfg) override;
     void removeConfig(int row) override;
     void updateConfig(int row, const WorkspaceConfig& cfg) override;
     WorkspaceConfig captureCurrentHardwareState() const override;
-    QList<WorkspaceConfig> getAllWorkspaceConfigs() const override;
+    QList<WorkspaceConfig> configs() const override;
     bool saveWorkspaces() override;
     void setSelectedRow(int row) override;
     int selectedRow() const override;

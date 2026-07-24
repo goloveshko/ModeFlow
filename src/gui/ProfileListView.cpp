@@ -3,10 +3,10 @@
 #include <QContextMenuEvent>
 #include <QHBoxLayout>
 #include <QMenu>
+#include <QToolButton>
 
 #include "FluentListItemDelegate.h"
 #include "FontAwesome.h"
-#include "WorkspaceModel.h"
 
 namespace ModeFlow::Gui {
 
@@ -38,7 +38,7 @@ void ProfileListView::updateRowWidgets() {
     if (!model() || !m_workspaceManager)
         return;
 
-    const auto configs = m_workspaceManager->getAllWorkspaceConfigs();
+    const auto configs = m_workspaceManager->configs();
 
     for (int row = 0; row < configs.size(); ++row) {
         QModelIndex idx = model()->index(row, 0);

@@ -73,7 +73,7 @@ public:
 
     qint64 lastUpdateCheckTimestamp() const;
     void setLastUpdateCheckTimestamp(qint64 timestamp);
-    
+
     bool autoLoggingEnabled() const;
     void setAutoLoggingEnabled(bool enabled);
 

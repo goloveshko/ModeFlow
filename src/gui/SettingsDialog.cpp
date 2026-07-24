@@ -157,7 +157,7 @@ void SettingsDialog::setupConnections() {
 }
 
 void SettingsDialog::onNextProfileHotkeyChanged() {
-    const auto& configs = m_workspaceManager->getAllWorkspaceConfigs();
+    const auto& configs = m_workspaceManager->configs();
 
     if (HotkeyValidation::validateProfileHotkey(ui->keyEditNextProfile, m_settingsManager->nextProfileHotkey(), configs,
                                                 QString(), m_styleManager, this)) {
@@ -364,7 +364,7 @@ void SettingsDialog::setupStartupCombo() {
     ui->comboStartupPolicy->addItem(tr("Do Nothing"), QVariant::fromValue(Core::StartupAction::None));
     ui->comboStartupPolicy->addItem(tr("Last Active"), QVariant::fromValue(Core::StartupAction::LastActive));
 
-    const auto& configs = m_workspaceManager->getAllWorkspaceConfigs();
+    const auto& configs = m_workspaceManager->configs();
     for (const auto& cfg : configs) {
         ui->comboStartupPolicy->addItem(cfg.name, QVariant::fromValue(Core::StartupAction::Specific));
         int lastIdx = ui->comboStartupPolicy->count() - 1;

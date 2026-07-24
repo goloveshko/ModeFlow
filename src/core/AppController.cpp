@@ -5,7 +5,6 @@
 #include "AboutDialog.h"
 #include "AppLauncher.h"
 #include "AudioDeviceManager.h"
-#include "AudioFeedbackService.h"
 #include "CommandLineBuilder.h"
 #include "Constants.h"
 #include "DisplayManager.h"
@@ -23,7 +22,6 @@
 #include "TrayController.h"
 #include "UpdateDialog.h"
 #include "UpdateService.h"
-#include "WindowsAutostartManager.h"
 #include "WorkspaceManager.h"
 #include "WorkspaceService.h"
 #include "WorkspaceWindow.h"
@@ -183,29 +181,6 @@ void AppController::raiseMainWindow() {
     m_services.workspaceWindow->raiseWindow();
 }
 
-void AppController::showSettingsDialog() {
-    if (m_activeDialog != ActiveDialog::None)
-        return;
-
-    m_services.styleManager->forceUnhover();
-
-    SetterGuard guard(this, ActiveDialog::Settings);
-
-    const QString oldLang = m_services.configManager->language();
-    const Theme oldTheme = m_services.styleManager->currentTheme();
-
-    auto dlg = std::make_unique<Gui::SettingsDialog>(m_services.settingsManager.get(),
-                                                     m_services.workspaceManager.get(), m_services.styleManager.get());
-    connect(dlg.get(), &Gui::SettingsDialog::hotkeyCaptureChanged, m_services.hotkeyManager.get(),
-            &Services::HotkeyManager::setCaptureMode, Qt::UniqueConnection);
-
-    if (dlg->exec() != QDialog::Accepted) {
-        return;
-    }
-
-    handleSettingsChanges(oldLang, oldTheme);
-}
-
 void AppController::handleSettingsChanges(const QString& oldLang, Core::Theme oldTheme) {
     m_services.workspaceService->setAudioConfirmation(m_services.configManager->audioConfirmation());
     m_services.hotkeyManager->setNextProfileHotkey(m_services.configManager->nextProfileHotkey());
@@ -251,18 +226,16 @@ void AppController::showAboutDialog() {
         return;
 
     m_services.styleManager->forceUnhover();
-
     SetterGuard guard(this, ActiveDialog::About);
 
     const bool updateAvailable = m_services.updateService && m_services.updateService->isUpdateAvailable();
     const QString latestVersion = m_services.updateService ? m_services.updateService->latestVersion() : QString();
 
-    auto dlg = std::make_unique<Gui::AboutDialog>(m_services.styleManager.get(), updateAvailable, latestVersion);
-    const int result = dlg->exec();
+    Gui::AboutDialog dlg(m_services.styleManager.get(), updateAvailable, latestVersion, parentWindow());
+    const int result = dlg.exec();
 
     if (result == 2) {
         showUpdateDialog();
-
         QTimer::singleShot(0, this, &AppController::showAboutDialog);
     }
 }
@@ -272,15 +245,61 @@ void AppController::showLogViewerDialog() {
         return;
 
     m_services.styleManager->forceUnhover();
-
     SetterGuard guard(this, ActiveDialog::LogViewer);
 
-    auto dlg = std::make_unique<Gui::LogViewerDialog>(m_services.settingsManager.get(), m_services.styleManager.get());
-    dlg->exec();
+    Gui::LogViewerDialog dlg(m_services.settingsManager.get(), m_services.styleManager.get(), parentWindow());
+    dlg.exec();
+}
+
+void AppController::showSettingsDialog() {
+    if (m_activeDialog != ActiveDialog::None)
+        return;
+
+    m_services.styleManager->forceUnhover();
+
+    SetterGuard guard(this, ActiveDialog::Settings);
+
+    const QString oldLang = m_services.configManager->language();
+    const Theme oldTheme = m_services.styleManager->currentTheme();
+
+    Gui::SettingsDialog dlg(m_services.settingsManager.get(), m_services.workspaceManager.get(),
+                            m_services.styleManager.get(), parentWindow());
+
+    connect(&dlg, &Gui::SettingsDialog::hotkeyCaptureChanged, m_services.hotkeyManager.get(),
+            &Services::HotkeyManager::setCaptureMode, Qt::UniqueConnection);
+
+    if (dlg.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    handleSettingsChanges(oldLang, oldTheme);
+}
+
+void AppController::showUpdateDialog() {
+    if (m_activeDialog != ActiveDialog::None && m_activeDialog != ActiveDialog::About)
+        return;
+
+    if (!m_services.updateService || !m_services.updateService->isUpdateAvailable())
+        return;
+
+    m_services.styleManager->forceUnhover();
+
+    SetterGuard guard(this, ActiveDialog::About);
+
+    const QString version = m_services.updateService->latestVersion();
+    const QString changelog = m_services.updateService->changelog();
+    const QUrl downloadUrl = m_services.updateService->downloadUrl();
+
+    Gui::UpdateDialog dlg(m_services.styleManager.get(), version, changelog, downloadUrl, parentWindow());
+    dlg.exec();
+}
+
+QWidget* AppController::parentWindow() const {
+    return m_services.workspaceWindow ? m_services.workspaceWindow.get() : nullptr;
 }
 
 void AppController::applyStartupConfig() {
-    const auto& configs = m_services.workspaceManager->getAllWorkspaceConfigs();
+    const auto& configs = m_services.workspaceManager->configs();
     if (configs.isEmpty())
         return;
 
@@ -359,7 +378,7 @@ void AppController::setActiveDialog(ActiveDialog activeDialog) {
 }
 
 void AppController::profilesChanged() {
-    const auto configs = m_services.workspaceManager->getAllWorkspaceConfigs();
+    const auto configs = m_services.workspaceManager->configs();
     const auto nextHotkey = m_services.settingsManager->nextProfileHotkey();
 
     // Query both updates and track if any actual system-wide hook mutations occurred
@@ -370,25 +389,6 @@ void AppController::profilesChanged() {
     if (profilesHotkeyChanged || nextHotkeyChanged) {
         qCDebug(lcCore) << "Hotkeys updated from MainWindow signal";
     }
-}
-
-void AppController::showUpdateDialog() {
-    if (m_activeDialog != ActiveDialog::None && m_activeDialog != ActiveDialog::About)
-        return;
-
-    if (!m_services.updateService || !m_services.updateService->isUpdateAvailable())
-        return;
-
-    m_services.styleManager->forceUnhover();
-
-    SetterGuard guard(this, ActiveDialog::About);
-
-    const QString version = m_services.updateService->latestVersion();
-    const QString changelog = m_services.updateService->changelog();
-    const QUrl downloadUrl = m_services.updateService->downloadUrl();
-
-    auto dlg = std::make_unique<Gui::UpdateDialog>(m_services.styleManager.get(), version, changelog, downloadUrl);
-    dlg->exec();
 }
 
 void AppController::forceUpdateCheck() {
@@ -480,8 +480,7 @@ void AppController::confirmAndApplyProfile(const WorkspaceConfig& config) {
         const QString title = tr("Apply Profile");
         const QString text = tr("Apply profile '%1'?").arg(config.name);
 
-        confirmed = m_services.styleManager->confirmAction(
-            m_services.workspaceWindow ? m_services.workspaceWindow.get() : nullptr, title, text);
+        confirmed = m_services.styleManager->confirmAction(parentWindow(), title, text);
     }
 
     if (confirmed) {

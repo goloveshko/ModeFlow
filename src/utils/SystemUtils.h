@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include <QByteArray>
-#include <QString>
 #include <QWidget>
 
 namespace ModeFlow::Utils {

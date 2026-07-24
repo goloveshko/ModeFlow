@@ -2,7 +2,6 @@
 
 #include <QLabel>
 #include <QListView>
-#include <QToolButton>
 
 #include "IStyleManager.h"
 #include "IWorkspaceManager.h"

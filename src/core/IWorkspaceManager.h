@@ -2,6 +2,8 @@
 
 #include "ConfigTypes.h"
 
+class QAbstractItemModel;
+
 namespace ModeFlow::Core {
 
 class WorkspaceModel;
@@ -21,7 +23,7 @@ class IWorkspaceManager {
 public:
     virtual ~IWorkspaceManager() = default;
 
-    virtual WorkspaceModel* model() const = 0;
+    virtual QAbstractItemModel* model() const = 0;
 
     virtual void addConfig(const WorkspaceConfig& cfg) = 0;
     virtual void removeConfig(int row) = 0;
@@ -31,7 +33,7 @@ public:
 
     virtual bool saveWorkspaces() = 0;
 
-    virtual QList<WorkspaceConfig> getAllWorkspaceConfigs() const = 0;
+    virtual QList<WorkspaceConfig> configs() const = 0;
 
     virtual void setSelectedRow(int row) = 0;
     virtual int selectedRow() const = 0;

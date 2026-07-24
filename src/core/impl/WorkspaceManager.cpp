@@ -41,7 +41,7 @@ WorkspaceManager::WorkspaceManager(ConfigManager* cm, Services::DisplayManager* 
 
 WorkspaceManager::~WorkspaceManager() = default;
 
-WorkspaceModel* WorkspaceManager::model() const {
+QAbstractItemModel* WorkspaceManager::model() const {
     return m_model.get();
 }
 
@@ -64,7 +64,7 @@ WorkspaceConfig WorkspaceManager::captureCurrentHardwareState() const {
     return cfg;
 }
 
-QList<WorkspaceConfig> WorkspaceManager::getAllWorkspaceConfigs() const {
+QList<WorkspaceConfig> WorkspaceManager::configs() const {
     return m_model->configs();
 }
 
@@ -74,9 +74,9 @@ bool WorkspaceManager::saveWorkspaces() {
 }
 
 void WorkspaceManager::setSelectedRow(int row) {
-    const auto& configs = m_model->configs();
-    if (row >= 0 && row < configs.size())
-        m_config->setSelectedProfileId(configs[row].id);
+    const auto profiles = configs(); 
+    if (row >= 0 && row < profiles.size())
+        m_config->setSelectedProfileId(profiles[row].id);
     else
         m_config->setSelectedProfileId(QString());
 }
@@ -105,10 +105,10 @@ QList<DeviceEntry> WorkspaceManager::getAvailableAudioOutputs() const {
 }
 
 QString WorkspaceManager::generateDefaultName() {
-    const auto configs = getAllWorkspaceConfigs();
+    const auto profiles = configs();
 
     auto isTaken = [&](const QString& name) {
-        return std::any_of(configs.begin(), configs.end(),
+        return std::any_of(profiles.begin(), profiles.end(),
                            [&](const auto& cfg) { return cfg.name.compare(name, Qt::CaseInsensitive) == 0; });
     };
 
@@ -148,14 +148,14 @@ void WorkspaceManager::createDefaultProfile() {
 }
 
 void WorkspaceManager::duplicateProfile(int row) {
-    const auto configs = getAllWorkspaceConfigs();
-    if (row < 0 || row >= configs.size()) {
+    const auto profiles = configs();
+    if (row < 0 || row >= profiles.size()) {
         return;
     }
 
-    WorkspaceConfig duplicate = configs[row];
+    WorkspaceConfig duplicate = profiles[row];
     duplicate.id = QUuid::createUuid().toString();
-    duplicate.name = QObject::tr("%1 (Copy)").arg(configs[row].name);
+    duplicate.name = QObject::tr("%1 (Copy)").arg(profiles[row].name);
     duplicate.hotkey = QKeySequence();
 
     addConfig(duplicate);

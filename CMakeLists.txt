@@ -71,7 +71,7 @@ set_property(DIRECTORY external/AudioDeviceLib/demos PROPERTY EXCLUDE_FROM_ALL T
 set(COMMON_SOURCES
     # CORE
     src/core/AppController.cpp src/core/AppController.h
-    src/core/AppServices.h
+    src/core/AppServices.cpp src/core/AppServices.h
     src/core/CliParser.cpp src/core/CliParser.h
     src/core/CliArgs.h
     src/core/CommandLineBuilder.cpp src/core/CommandLineBuilder.h

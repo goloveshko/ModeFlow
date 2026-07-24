@@ -148,8 +148,8 @@ void WorkspaceWindow::validateSpecificHotkey() {
     if (row < 0)
         return;
 
-    const auto& configs = m_workspaceManager->getAllWorkspaceConfigs();
-    const QString currentId = m_workspaceManager->model()->configs().at(row).id;
+    const auto& configs = m_workspaceManager->configs();
+    const QString currentId = configs.at(row).id;
 
     // Access the hotkey edit widget from the controller's widgets struct or expose a helper
     // Actually, we can access the widget safely since we know where it is
@@ -200,7 +200,7 @@ void WorkspaceWindow::deleteClicked() {
 
     if (!m_styleManager->confirmAction(
             this, tr("Delete"),
-            tr("Delete configuration '%1'?").arg(m_workspaceManager->model()->configs()[rowToDelete].name)))
+            tr("Delete configuration '%1'?").arg(m_workspaceManager->configs()[rowToDelete].name)))
         return;
 
     m_isUpdating = true;
@@ -249,10 +249,10 @@ void WorkspaceWindow::saveCurrentToModel(int row) {
     if (row < 0 || row >= m_workspaceManager->model()->rowCount())
         return;
 
-    Core::WorkspaceConfig cfg = m_workspaceManager->model()->configs().at(row);
+    Core::WorkspaceConfig cfg = m_workspaceManager->configs().at(row);
     m_detailsController->saveProfile(cfg);
 
-    m_workspaceManager->model()->updateConfig(row, cfg);
+    m_workspaceManager->updateConfig(row, cfg);
 }
 
 void WorkspaceWindow::autosaveCurrentProfile() {
@@ -278,7 +278,7 @@ void WorkspaceWindow::loadRowToUi(int row) {
     if (row < 0 || row >= m_workspaceManager->model()->rowCount())
         return;
     m_isUpdating = true;
-    const auto& cfg = m_workspaceManager->model()->configs().at(row);
+    const auto& cfg = m_workspaceManager->configs().at(row);
 
     m_detailsController->loadProfile(cfg);
 
@@ -469,7 +469,7 @@ void WorkspaceWindow::deleteProfileByRow(int row) {
     m_styleManager->forceUnhover();
 
     if (!m_styleManager->confirmAction(
-            this, tr("Delete"), tr("Delete configuration '%1'?").arg(m_workspaceManager->model()->configs()[row].name)))
+            this, tr("Delete"), tr("Delete configuration '%1'?").arg(m_workspaceManager->configs()[row].name)))
         return;
 
     m_isUpdating = true;
@@ -504,7 +504,7 @@ void WorkspaceWindow::applyProfileByRow(int row) {
     if (row < 0 || row >= m_workspaceManager->model()->rowCount())
         return;
 
-    const auto& cfg = m_workspaceManager->model()->configs().at(row);
+    const auto& cfg = m_workspaceManager->configs().at(row);
 
     emit activateProfile(cfg);
 }

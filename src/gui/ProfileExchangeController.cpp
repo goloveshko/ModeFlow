@@ -32,7 +32,7 @@ void ProfileExchangeController::doImport() {
         return;
     }
 
-    auto existing = m_workspaceManager->getAllWorkspaceConfigs();
+    auto existing = m_workspaceManager->configs();
     int addedCount = 0;
     int skippedCount = 0;
 
@@ -73,7 +73,7 @@ void ProfileExchangeController::doExport() {
         return;
     }
 
-    auto configs = m_workspaceManager->getAllWorkspaceConfigs();
+    auto configs = m_workspaceManager->configs();
     if (Utils::ProfileSerializer::exportProfiles(configs, filePath)) {
         m_styleManager->showInfo(m_parentWindow, tr("Export Successful"),
                                  tr("Exported %1 profile(s) to:\n%2").arg(configs.size()).arg(filePath));

@@ -265,8 +265,8 @@ public:
     bool askConfirmation() const override { return askConfirmationMock; }
     void setAskConfirmation(bool enabled) override { askConfirmationMock = enabled; }
 
-    bool autoLoggingEnabled() const override { return autoLoggingEnabledValue; }
-    void setAutoLoggingEnabled(bool enabled) override { autoLoggingEnabledValue = enabled; }
+    bool loggingEnabled() const override { return loggingEnabledValue; }
+    void setLoggingEnabled(bool enabled) override { loggingEnabledValue = enabled; }
 
     QString languageCode = QStringLiteral("en_US");
     bool autostartEnabled = false;
@@ -289,7 +289,7 @@ public:
     bool visibleMock = true;
 
     bool askConfirmationMock = true;
-    bool autoLoggingEnabledValue = false;
+    bool loggingEnabledValue = false;
 };
 
 class FakeDisplayManagerForWS : public ModeFlow::Services::DisplayManager {

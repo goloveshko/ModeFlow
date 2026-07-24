@@ -183,62 +183,72 @@
         <translation>Включить диагностическое логирование</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="291"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="294"/>
         <source>Auto-scroll to show new log entries</source>
         <translation>Автоматическая прокрутка к новым записям</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="294"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="297"/>
         <source>Follow</source>
         <translation>Следить</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="307"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="310"/>
         <source>Reload the entire log file</source>
         <translation>Перезагрузить весь файл лога</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="310"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="313"/>
         <source>Refresh</source>
         <translation>Обновить</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="317"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="320"/>
         <source>Clear the log display</source>
         <translation>Очистить отображение лога</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="320"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="323"/>
         <source>Clear</source>
         <translation>Очистить</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="327"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="330"/>
         <source>Copy filtered log entries to clipboard</source>
         <translation>Копировать отфильтрованные записи в буфер обмена</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="330"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="333"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="337"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="340"/>
         <source>Save filtered log entries to a file</source>
         <translation>Сохранить отфильтрованные записи в файл</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="340"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="343"/>
         <source>Save...</source>
         <translation>Сохранить...</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="360"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="350"/>
+        <source>Show log file in Windows Explorer</source>
+        <translation>Показать файл лога в проводнике</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/LogViewerDialog.ui" line="353"/>
+        <source>Open Folder</source>
+        <translation>Открыть папку</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/LogViewerDialog.ui" line="373"/>
         <source>Lines: 0/0</source>
         <translation>Строк: 0/0</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.ui" line="382"/>
+        <location filename="../src/gui/LogViewerDialog.ui" line="395"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
@@ -246,27 +256,27 @@
 <context>
     <name>ModeFlow::Core::AppController</name>
     <message>
-        <location filename="../src/core/AppController.cpp" line="419"/>
+        <location filename="../src/core/AppController.cpp" line="421"/>
         <source>You are up to date.</source>
         <translation>Вы используете последнюю версию.</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="425"/>
+        <location filename="../src/core/AppController.cpp" line="427"/>
         <source>Update Check Failed</source>
         <translation>Ошибка проверки обновлений</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="470"/>
+        <location filename="../src/core/AppController.cpp" line="472"/>
         <source>ModeFlow</source>
         <translation>ModeFlow</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="480"/>
+        <location filename="../src/core/AppController.cpp" line="482"/>
         <source>Apply Profile</source>
         <translation>Применить профиль</translation>
     </message>
     <message>
-        <location filename="../src/core/AppController.cpp" line="481"/>
+        <location filename="../src/core/AppController.cpp" line="483"/>
         <source>Apply profile &apos;%1&apos;?</source>
         <translation>Применить профиль &apos;%1&apos;?</translation>
     </message>
@@ -437,97 +447,107 @@
 <context>
     <name>ModeFlow::Gui::LogViewerDialog</name>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="48"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="47"/>
         <source>All Levels</source>
         <translation>Все уровни</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="49"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="48"/>
         <source>Debug</source>
         <translation>Отладка</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="50"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="49"/>
         <source>Info</source>
         <translation>Информация</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="51"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="50"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="52"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="51"/>
         <source>Critical</source>
         <translation>Критический</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="53"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="52"/>
         <source>Fatal</source>
         <translation>Фатальный</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="55"/>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="301"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="54"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="302"/>
         <source>All Categories</source>
         <translation>Все категории</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="129"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="130"/>
         <source>Logging active (click to disable)</source>
         <translation>Логирование активно (нажмите для отключения)</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="129"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="130"/>
         <source>Enable diagnostic logging</source>
         <translation>Включить диагностическое логирование</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="407"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="408"/>
         <source>Save Log</source>
         <translation>Сохранить лог</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="408"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="409"/>
         <source>Text files (*.txt);;All files (*)</source>
         <translation>Текстовые файлы (*.txt);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="414"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="415"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="414"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="415"/>
         <source>Cannot save to file:
 %1</source>
         <translation>Не удалось сохранить в файл:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="423"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="424"/>
         <source>Saved</source>
         <translation>Сохранено</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="424"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="425"/>
         <source>Log exported successfully.
 %1 lines written.</source>
         <translation>Лог успешно экспортирован.
 Записано строк: %1.</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="467"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="430"/>
+        <source>Log File</source>
+        <translation>Файл лога</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="430"/>
+        <source>Log file does not exist yet.</source>
+        <translation>Файл лога ещё не существует.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="478"/>
         <source>Logging is disabled</source>
         <translation>Логирование отключено</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="469"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="480"/>
         <source>Log file not found: %1</source>
         <translation>Файл лога не найден: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/LogViewerDialog.cpp" line="473"/>
+        <location filename="../src/gui/LogViewerDialog.cpp" line="484"/>
         <source>Lines: %1/%2</source>
         <translation>Строки: %1/%2</translation>
     </message>

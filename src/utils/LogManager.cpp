@@ -1,6 +1,7 @@
 ﻿#include "LogManager.h"
 
 #include <QDir>
+#include <QStandardPaths>
 
 #include "Constants.h"
 #include "Logging.h"
@@ -46,11 +47,38 @@ QString simplifyFunction(const char* rawFunction) {
 QFile LogManager::s_logFile;
 QMutex LogManager::s_mutex;
 bool LogManager::s_enabled = false;
+QString LogManager::s_cachedLogPath;
+
+QString LogManager::logFilePath() {
+    QMutexLocker locker(&s_mutex);
+    if (!s_cachedLogPath.isEmpty()) {
+        return s_cachedLogPath;
+    }
+
+    const QString appDir = SystemUtils::getExecutableDir();
+    const QString testPath = appDir + u"/.write_test.tmp"_s;
+    const QString targetPath = appDir + u"/log.txt"_s;
+
+    // Test if executable directory is writable using a temporary test file
+    QFile testFile(testPath);
+    if (testFile.open(QIODevice::WriteOnly)) {
+        testFile.close();
+        QFile::remove(testPath); // Clean up test file immediately
+        s_cachedLogPath = targetPath;
+        return s_cachedLogPath;
+    }
+
+    // Fallback for restricted install directories (e.g. Program Files): use AppData/Roaming/ModeFlow
+    const QString appDataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir().mkpath(appDataDir);
+    s_cachedLogPath = QDir::toNativeSeparators(appDataDir + u"/log.txt"_s);
+
+    return s_cachedLogPath;
+}
 
 void LogManager::setup(bool enabled) {
     s_enabled = enabled;
     if (!enabled) {
-        // Safe Cleanup: If logging is disabled, cleanly close the file and return
         QMutexLocker locker(&s_mutex);
         if (s_logFile.isOpen()) {
             s_logFile.close();
@@ -58,41 +86,22 @@ void LogManager::setup(bool enabled) {
         return;
     }
 
-    // Protect initialization steps with our central log mutex
+    const QString logPath = logFilePath();
+
     QMutexLocker locker(&s_mutex);
-
-    // Get path using Windows API (Works before QApplication exists)
-    QString appDir = SystemUtils::getExecutableDir();
-
-    QString fileName = "/log.txt";
-    QString targetPath = appDir + fileName;
-
-    // Test if writable, else use Temp
-    QString logPath;
-    QFile testFile(targetPath);
-    if (testFile.open(QIODevice::WriteOnly | QIODevice::Append)) {
-        testFile.close();
-        logPath = targetPath;
-    } else {
-        logPath = QDir::tempPath() + fileName;
-    }
 
     // Rotation (if > 5MB)
     if (QFile(logPath).size() > MaxLogFileSizeBytes) {
         QFile::remove(logPath);
     }
 
-    // Fixed: Prevent recursive setFileName warning loops
     if (s_logFile.isOpen()) {
-        // If already open and pointing to the correct path, do nothing
         if (s_logFile.fileName() == logPath) {
             return;
         }
-        // If the path has changed, close the old descriptor first
         s_logFile.close();
     }
 
-    // Now it is 100% safe to set file name and open the file
     s_logFile.setFileName(logPath);
     if (!s_logFile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
         qCWarning(lcUtil) << "Failed to open log file:" << logPath;
@@ -140,4 +149,5 @@ void LogManager::messageHandler(QtMsgType type, const QMessageLogContext& contex
         out.flush();
     }
 }
+
 } // namespace ModeFlow::Utils

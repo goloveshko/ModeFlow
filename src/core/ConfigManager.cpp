@@ -1,6 +1,5 @@
 ﻿#include "ConfigManager.h"
 
-#include <QMutexLocker>
 #include <QSettings>
 
 #include "Constants.h"
@@ -94,7 +93,7 @@ bool ConfigManager::loadConfig() {
     auto mainWindowSize = s.value(u"window/size"_sv, QSize(600, 450)).toSize();
 
     auto lastUpdateCheckTimestamp = s.value(u"update/lastCheckTimestamp"_sv, 0).toLongLong();
-    
+
     auto autoLoggingEnabled = s.value(u"loggingEnabled"_sv, false).toBool();
 
     // Fast atomic update of member state using the double-buffered snapshot pattern

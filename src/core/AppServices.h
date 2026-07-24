@@ -26,7 +26,13 @@ class WorkspaceManager;
 class SettingsManager;
 class StyleManager;
 
+/**
+ * @brief Aggregate container holding unique pointers to application services.
+ */
 struct AppServices {
+    AppServices();
+    ~AppServices();
+
     std::unique_ptr<ConfigManager> configManager;
     std::unique_ptr<LocalizationManager> locManager;
     std::unique_ptr<Services::AppLauncher> appLauncher;
