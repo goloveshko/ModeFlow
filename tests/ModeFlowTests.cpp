@@ -132,7 +132,7 @@ public:
         m_audioOutputs = {{QStringLiteral("audio-1"), QStringLiteral("Main audio"), true, true}};
     }
 
-    ModeFlow::Core::WorkspaceModel* model() const override { return const_cast<ModeFlow::Core::WorkspaceModel*>(&m_model); }
+    QAbstractItemModel* model() const override { return const_cast<ModeFlow::Core::WorkspaceModel*>(&m_model); }
     void addConfig(const ModeFlow::Core::WorkspaceConfig& cfg) override { m_model.addConfig(cfg); }
     void removeConfig(int row) override { m_model.removeConfig(row); }
     void updateConfig(int row, const ModeFlow::Core::WorkspaceConfig& cfg) override { m_model.updateConfig(row, cfg); }
@@ -146,7 +146,7 @@ public:
         ++saveCalls;
         return saveShouldSucceed;
     }
-    QList<ModeFlow::Core::WorkspaceConfig> getAllWorkspaceConfigs() const override { return m_model.configs(); }
+    QList<ModeFlow::Core::WorkspaceConfig> configs() const override { return m_model.configs(); }
     void setSelectedRow(int row) override { selectedRowValue = row; }
     int selectedRow() const override { return selectedRowValue; }
     int activeRow() const override { return activeRowValue; }
@@ -159,9 +159,9 @@ public:
         addConfig(cfg);
     }
     void duplicateProfile(int row) override {
-        auto configs = getAllWorkspaceConfigs();
-        if (row >= 0 && row < configs.size()) {
-            addConfig(configs[row]);
+        auto profiles = configs();
+        if (row >= 0 && row < profiles.size()) {
+            addConfig(profiles[row]);
         }
     }
     QString suggestedProfileIconSymbol(const QString& profileName) const override {
@@ -170,7 +170,7 @@ public:
     }
 
     QList<ModeFlow::Core::DeviceEntry> getAvailableDisplays() const override { return m_displays; }
-    QList<ModeFlow::Core::DeviceEntry> getAvailableAudioOutputs() const override { return m_audioOutputs; }    
+    QList<ModeFlow::Core::DeviceEntry> getAvailableAudioOutputs() const override { return m_audioOutputs; }
 
     mutable ModeFlow::Core::WorkspaceModel m_model;
     QList<ModeFlow::Core::DeviceEntry> m_displays;
@@ -231,7 +231,6 @@ public:
         return saveShouldSucceed;
     }
 
-    // Geometry mocks to compile with the extended ISettingsManager interface
     bool isMainWindowMaximized() const override { return maximizedMock; }
     void setMainWindowMaximized(bool maximized) override { maximizedMock = maximized; }
     QPoint mainWindowPos() const override { return posMock; }
