@@ -194,16 +194,8 @@ if "%KILL_RUNNING%"=="YES" (
     call :kill_running_app
 )
 
-rem Run lupdate on any standard build automatically
-if "%STATIC_BUILD%"=="NO" (
-    call :run_lupdate
-)
-
-rem If the QM file does not exist, create it
-if not exist "%QM_FILE%" (
-    echo [I18N] QM file not found, running lrelease to generate it.
-    call :run_lrelease
-)
+rem Automatically compile .ts into binary .qm catalog on every standard build
+call :run_lrelease
 
 for %%C in (debug release) do (
     if "!BUILD_%%C!"=="YES" (
@@ -342,16 +334,20 @@ goto :eof
 :run_lupdate
 echo [I18N] Running lupdate...
 if not exist "%I18N_DIR%" mkdir "%I18N_DIR%"
-set "LUPDATE_FLAGS="
+set "LUPDATE_FLAGS=-locations none"
 if "%NOOBSOLETE%"=="YES" (
-    set "LUPDATE_FLAGS=-noobsolete"
+    set "LUPDATE_FLAGS=-locations none -noobsolete"
     echo [I18N] Option: Removing obsolete strings
 )
 "%QT_DIR%\bin\lupdate.exe" "%PROJECT_ROOT%\src" %LUPDATE_FLAGS% -ts "%TS_FILE%"
 goto :eof
 
 :run_lrelease
-echo[I18N] Running lrelease...
+if not exist "%TS_FILE%" (
+    echo [I18N] TS file not found. Generating initial translation source via lupdate...
+    call :run_lupdate
+)
+echo [I18N] Running lrelease...
 "%QT_DIR%\bin\lrelease.exe" "%TS_FILE%"
 goto :eof
 
