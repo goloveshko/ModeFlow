@@ -6,6 +6,7 @@
 #include <QFile>
 
 #include "Logging.h"
+#include "VersionInfo.h"
 
 namespace ModeFlow::Gui {
 
@@ -20,7 +21,7 @@ AboutDialog::AboutDialog(Core::IStyleManager* sm, bool updateAvailable, const QS
     ui->labelVersion->setText(tr("Version %1").arg(version));
 
     connect(ui->btnGithub, &QPushButton::clicked, this,
-            []() { QDesktopServices::openUrl(QUrl("https://goloveshko.github.io")); });
+            []() { QDesktopServices::openUrl(QUrl(ModeFlow::Info::SiteUrl)); });
 
     connect(ui->btnLicenses, &QPushButton::clicked, this, &AboutDialog::openLicense);
 
@@ -33,7 +34,7 @@ AboutDialog::~AboutDialog() = default;
 
 void AboutDialog::openLicense() {
     const QString localPath = qApp->applicationDirPath() + "/LICENSE.txt";
-    const QUrl webUrl("https://github.com/goloveshko/ModeFlow/blob/main/LICENSE");
+    const QUrl webUrl(ModeFlow::Info::LicenseUrl);
     bool success = false;
 
     if (QFile::exists(localPath)) {

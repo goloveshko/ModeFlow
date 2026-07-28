@@ -9,7 +9,6 @@
 #define STRINGIZE_HELPER(x) #x
 #define STRINGIZE(x) STRINGIZE_HELPER(x)
 
-// Use strings for C++ and UI
 #define APP_COPYRIGHT_YEAR "2026"
 
 #define APP_VERSION_STR STRINGIZE(APP_VERSION_MAJOR) "." STRINGIZE(APP_VERSION_MINOR) "." STRINGIZE(APP_VERSION_PATCH)
@@ -21,6 +20,15 @@
 #define APP_ICON_PATH "ModeFlow.ico"
 #define APP_COPYRIGHT "Copyright (C) " APP_COPYRIGHT_YEAR " " APP_COMPANY_NAME
 
+// Dynamic URLs with CMake override support
+#ifndef PROJECT_SITE_URL
+#define PROJECT_SITE_URL "https://goloveshko.github.io"
+#endif
+
+#ifndef PROJECT_LICENSE_URL
+#define PROJECT_LICENSE_URL "https://github.com/goloveshko/ModeFlow/blob/main/LICENSE"
+#endif
+
 #ifdef __cplusplus
 
 namespace ModeFlow::Info {
@@ -29,6 +37,9 @@ inline const QString Company = QString::fromLatin1(APP_COMPANY_NAME);
 inline const QString ProductName = QString::fromLatin1(APP_PRODUCT_NAME);
 inline const QString Copyright = QString::fromUtf8(APP_COPYRIGHT);
 inline const QString Domain = QString::fromLatin1(APP_DOMAIN);
+
+inline const QString SiteUrl = QString::fromLatin1(PROJECT_SITE_URL);
+inline const QString LicenseUrl = QString::fromLatin1(PROJECT_LICENSE_URL);
 } // namespace ModeFlow::Info
 #endif
 
