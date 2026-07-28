@@ -59,21 +59,38 @@ int HotkeyManager::findProfileIndexById(const QString& id) const {
 }
 
 QString HotkeyManager::resolveCurrentProfileId() const {
+    if (!m_activeProfileId.isEmpty() && findProfileIndexById(m_activeProfileId) != -1) {
+        return m_activeProfileId;
+    }
+
+    if (m_configManager) {
+        const QString lastActive = m_configManager->lastActiveProfileId();
+        if (!lastActive.isEmpty() && findProfileIndexById(lastActive) != -1) {
+            return lastActive;
+        }
+        const QString selected = m_configManager->selectedProfileId();
+        if (!selected.isEmpty() && findProfileIndexById(selected) != -1) {
+            return selected;
+        }
+    }
+
     if (m_displayManager && m_audioManager) {
         const QString currentDisplayId = m_displayManager->getCurrentDisplayKey();
         const QString currentAudioId = m_audioManager->getDefaultOutputDeviceId();
 
         int bestIndex = -1;
-        int bestScore = -1;
+        int bestScore = 0;
 
         for (int i = 0; i < m_lastConfigs.size(); ++i) {
             const auto& cfg = m_lastConfigs[i];
             const bool displayMatches = !cfg.displayId.isEmpty() && cfg.displayId == currentDisplayId;
             const bool audioMatches = !cfg.audioId.isEmpty() && cfg.audioId == currentAudioId;
 
-            int score = -1;
-            if (displayMatches) {
-                score = audioMatches ? 3 : 2;
+            int score = 0;
+            if (displayMatches && audioMatches) {
+                score = 3;
+            } else if (displayMatches) {
+                score = 2;
             } else if (audioMatches && cfg.displayId.isEmpty()) {
                 score = 1;
             }
@@ -89,16 +106,7 @@ QString HotkeyManager::resolveCurrentProfileId() const {
         }
     }
 
-    if (!m_activeProfileId.isEmpty()) {
-        return m_activeProfileId;
-    }
-    if (!m_configManager) {
-        return QString();
-    }
-    if (!m_configManager->selectedProfileId().isEmpty()) {
-        return m_configManager->selectedProfileId();
-    }
-    return m_configManager->lastActiveProfileId();
+    return m_lastConfigs.isEmpty() ? QString() : m_lastConfigs.first().id;
 }
 
 bool HotkeyManager::setProfiles(const QList<Core::WorkspaceConfig>& configs) {
