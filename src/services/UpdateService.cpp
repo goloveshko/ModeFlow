@@ -103,7 +103,18 @@ void UpdateService::onCheckReply(QNetworkReply* reply) {
 }
 
 bool UpdateService::isNewerVersion(const QString& remote, const QString& local) const {
-    return QVersionNumber::fromString(remote) > QVersionNumber::fromString(local);
+    auto sanitize = [](QString s) {
+        s = s.trimmed();
+        if (s.startsWith(u'v') || s.startsWith(u'V')) {
+            s.remove(0, 1);
+        }
+        return s;
+    };
+
+    const auto remoteVer = QVersionNumber::fromString(sanitize(remote));
+    const auto localVer = QVersionNumber::fromString(sanitize(local));
+
+    return remoteVer > localVer;
 }
 
 bool UpdateService::shouldCheck() const {
@@ -153,12 +164,17 @@ void UpdateService::loadCachedUpdate() {
 }
 
 void UpdateService::saveUpdateToCache(const QJsonObject& manifest) {
+    const QFileInfo fi(m_cacheFilePath);
+    QDir().mkpath(fi.absolutePath());
+
     QFile file(m_cacheFilePath);
-    if (file.open(QIODevice::WriteOnly)) {
+    if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         QJsonDocument doc(manifest);
-        file.write(doc.toJson());
+        file.write(doc.toJson(QJsonDocument::Compact));
         file.close();
         qCDebug(lcService) << "Saved update manifest to cache file:" << m_latestVersion;
+    } else {
+        qCWarning(lcService) << "Failed to write update cache file:" << m_cacheFilePath;
     }
 }
 

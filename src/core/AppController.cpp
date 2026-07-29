@@ -118,16 +118,15 @@ void AppController::finalizeInitialization() {
 }
 
 void AppController::setupAutoUpdateChecking() {
-    if (!m_services.configManager->autoUpdateEnabled() || !m_services.updateService) {
+    if (!m_services.updateService) {
         return;
     }
 
     connect(m_services.updateService.get(), &Services::UpdateService::updateAvailable, this,
             [this](const QString& version, const QUrl&, const QString&) {
+                m_pendingUpdateVersion = version;
                 if (m_services.workspaceWindow) {
                     m_services.workspaceWindow->setUpdateAvailable(true, version);
-                } else {
-                    m_pendingUpdateVersion = version;
                 }
             });
 
@@ -142,18 +141,20 @@ void AppController::setupAutoUpdateChecking() {
         m_pendingUpdateVersion = m_services.updateService->latestVersion();
     }
 
-    m_services.updateService->checkForUpdates(true);
+    if (m_services.configManager->autoUpdateEnabled()) {
+        m_services.updateService->checkForUpdates(false);
 
-    m_updateTimer.setInterval(Utils::UpdateCheckIntervalMs);
-    m_updateTimer.setSingleShot(false);
+        m_updateTimer.setInterval(Utils::UpdateCheckIntervalMs);
+        m_updateTimer.setSingleShot(false);
 
-    connect(&m_updateTimer, &QTimer::timeout, this, [this]() {
-        if (m_services.updateService) {
-            m_services.updateService->checkForUpdates(false);
-        }
-    });
+        connect(&m_updateTimer, &QTimer::timeout, this, [this]() {
+            if (m_services.updateService) {
+                m_services.updateService->checkForUpdates(false);
+            }
+        });
 
-    m_updateTimer.start();
+        m_updateTimer.start();
+    }
 }
 
 void AppController::ensureWorkspaceWindow() {
@@ -166,7 +167,6 @@ void AppController::ensureWorkspaceWindow() {
 
     if (!m_pendingUpdateVersion.isEmpty()) {
         m_services.workspaceWindow->setUpdateAvailable(true, m_pendingUpdateVersion);
-        m_pendingUpdateVersion.clear();
     }
 }
 
@@ -398,8 +398,6 @@ void AppController::forceUpdateCheck() {
     if (!m_services.updateService || m_services.updateService->isCheckingInProgress())
         return;
 
-    m_services.updateService->checkForUpdates(true);
-
     auto onUpdateAvailable = [this](const QString& version, const QUrl& url, const QString& changelog) {
         if (m_activeDialog != ActiveDialog::None && m_activeDialog != ActiveDialog::About)
             return;
@@ -408,21 +406,19 @@ void AppController::forceUpdateCheck() {
 
         SetterGuard guard(this, ActiveDialog::About);
 
-        auto dlg = std::make_unique<Gui::UpdateDialog>(m_services.styleManager.get(), version, changelog, url);
-        dlg->exec();
+        Gui::UpdateDialog dlg(m_services.styleManager.get(), version, changelog, url, parentWindow());
+        dlg.exec();
     };
 
     auto onNoUpdate = [this]() {
-        m_pendingUpdateVersion.clear();
         if (m_services.workspaceWindow) {
-            m_services.workspaceWindow->setUpdateAvailable(false, {});
             m_services.workspaceWindow->showToolTipOnMoreButton(tr("You are up to date."));
         }
     };
 
     auto onCheckFailed = [this](const QString& error) {
         if (m_services.workspaceWindow) {
-            m_services.workspaceWindow->showToolTipOnMoreButton(tr("Update Check Failed") + u": "_s + error);
+            m_services.workspaceWindow->showToolTipOnMoreButton(tr("Update check failed") + u": "_s + error);
         }
     };
 
@@ -432,6 +428,8 @@ void AppController::forceUpdateCheck() {
                      Qt::SingleShotConnection);
     QObject::connect(m_services.updateService.get(), &Services::UpdateService::checkFailed, this, onCheckFailed,
                      Qt::SingleShotConnection);
+
+    m_services.updateService->checkForUpdates(true);
 }
 
 void AppController::requestAppExit() {
