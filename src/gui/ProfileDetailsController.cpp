@@ -58,6 +58,11 @@ void ProfileDetailsController::setupConnections() {
         emit profileChanged();
     });
 
+    connect(m_widgets.checkSkipInCycle, &QCheckBox::toggled, this, [this](bool) {
+        if (!m_isUpdating)
+            emit profileChanged();
+    });
+
     connect(m_widgets.comboDisplay, qOverload<int>(&QComboBox::currentIndexChanged), this, [this](int) {
         if (!m_isUpdating)
             emit profileChanged();
