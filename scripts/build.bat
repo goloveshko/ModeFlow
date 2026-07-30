@@ -47,6 +47,7 @@ set "BUILD_QT=NO"
 set "USE_NINJA=NO"
 set "BUILD_DEBUG=NO"
 set "BUILD_RELEASE=NO"
+set "RUN_TESTS=YES"
 set "ONLY_LUPDATE=NO"
 set "ONLY_LRELEASE=NO"
 set "NOOBSOLETE=NO"
@@ -63,6 +64,7 @@ if /i "%~1"=="--build-qt"    set "BUILD_QT=YES"
 if /i "%~1"=="--ninja"       set "USE_NINJA=YES"
 if /i "%~1"=="--debug"       set "BUILD_DEBUG=YES"
 if /i "%~1"=="--release"     set "BUILD_RELEASE=YES"
+if /i "%~1"=="--tests"       set "RUN_TESTS=YES"
 if /i "%~1"=="--lupdate"     set "ONLY_LUPDATE=YES"
 if /i "%~1"=="--lrelease"    set "ONLY_LRELEASE=YES"
 if /i "%~1"=="--noobsolete"  set "NOOBSOLETE=YES" & set "ONLY_LUPDATE=YES"
@@ -78,6 +80,7 @@ if /i "%~1"=="-bq"           set "BUILD_QT=YES"
 if /i "%~1"=="-n"            set "USE_NINJA=YES"
 if /i "%~1"=="-d"            set "BUILD_DEBUG=YES"
 if /i "%~1"=="-r"            set "BUILD_RELEASE=YES"
+if /i "%~1"=="-t"            set "RUN_TESTS=YES"
 if /i "%~1"=="-lu"           set "ONLY_LUPDATE=YES"
 if /i "%~1"=="-lr"           set "ONLY_LRELEASE=YES"
 if /i "%~1"=="-no"           set "NOOBSOLETE=YES" & set "ONLY_LUPDATE=YES"
@@ -100,6 +103,7 @@ echo   -bq, --build-qt Build/install Qt static components via vcpkg
 echo   -n, --ninja     Use Ninja generator (default: Visual Studio)
 echo   -d, --debug     Build Debug configuration
 echo   -r, --release   Build Release configuration
+echo   -t, --tests     Build unit tests target (default: YES)
 echo   -lu, --lupdate  Run ONLY lupdate (extract strings to .ts)
 echo   -lr, --lrelease Run ONLY lrelease (compile .ts to .qm)
 echo   -no, --noobsolete  Run lupdate only, removing obsolete translations
@@ -112,7 +116,8 @@ echo.
 echo Convenience wrappers:
 echo   build_debug.bat    ^<^= build.bat --debug   [...]
 echo   build_release.bat  ^<^= build.bat --release --static --ninja [...]
-echo   build_package.bat  ^<^= build.bat --release --static --ninja --package [...]
+echo   build_package.bat  ^<^= build.bat --package --release --static --ninja [...]
+echo   run_tests.bat      ^<^= build.bat --tests   [builds and executes CTest suite]
 echo   build_lrelease.bat ^<^= build.bat --lrelease [...]
 echo   build_lupdate.bat  ^<^= build.bat --lupdate  [...]
 
@@ -200,7 +205,9 @@ call :run_lrelease
 for %%C in (debug release) do (
     if "!BUILD_%%C!"=="YES" (
         echo[INFO] Configuring and Building: !PRESET_NAME!
-        cmake --preset !PRESET_NAME! -DMODEFLOW_UPDATE_URL="%MODEFLOW_UPDATE_URL%"
+        cmake --preset !PRESET_NAME! ^
+			-DMODEFLOW_UPDATE_URL="%MODEFLOW_UPDATE_URL%" ^
+			-DBUILD_TESTING=!RUN_TESTS!
         cmake --build --preset !PRESET_NAME! --config %%C --parallel
 
         if "!RUN_DEPLOY!"=="YES" (
