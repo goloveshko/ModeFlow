@@ -7,8 +7,11 @@ rem Default variables target the official production GitHub repository.
 rem ============================================================================
 
 rem --- Default Production (GitHub & Standard Paths) Configurations ---
-set "MODEFLOW_UPDATE_URL=https://raw.githubusercontent.com/goloveshko/ModeFlow/main/metadata/update.json"
+set "SITE_URL=https://goloveshko.github.io"
+set "UPDATE_URL=https://raw.githubusercontent.com/goloveshko/ModeFlow/main/metadata/update.json"
+set "LICENSE_URL=https://github.com/goloveshko/ModeFlow/blob/main/LICENSE"
 set "GIT_HOST_URL=https://github.com/goloveshko/ModeFlow"
+
 set "QT_DIR=C:\Qt\6.11.1\msvc2022_64"
 set "VS_PATH=C:\Program Files\Microsoft Visual Studio\18\Community\VC"
 set "VCPKG_EXE=C:\dev\vcpkg\vcpkg.exe"
@@ -206,7 +209,9 @@ for %%C in (debug release) do (
     if "!BUILD_%%C!"=="YES" (
         echo[INFO] Configuring and Building: !PRESET_NAME!
         cmake --preset !PRESET_NAME! ^
-			-DMODEFLOW_UPDATE_URL="%MODEFLOW_UPDATE_URL%" ^
+			-DSITE_URL="%SITE_URL%" ^
+			-DUPDATE_URL="%UPDATE_URL%" ^
+			-DLICENSE_URL="%LICENSE_URL%" ^
 			-DBUILD_TESTING=!RUN_TESTS!
         cmake --build --preset !PRESET_NAME! --config %%C --parallel
 

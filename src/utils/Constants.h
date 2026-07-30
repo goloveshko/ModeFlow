@@ -73,15 +73,6 @@ inline constexpr QStringView DefaultQtStyleKey = u"windows11";
 // Auto-Update
 // ============================================================================
 
-// Fallback configuration: if no dynamic UPDATE_MANIFEST_URL is provided by the build system (CMake),
-// we automatically default to the official production GitHub repository path.
-#ifndef UPDATE_MANIFEST_URL
-#define UPDATE_MANIFEST_URL "https://raw.githubusercontent.com/goloveshko/ModeFlow/main/metadata/update.json"
-#endif
-
-/** URL of the update manifest on Gitea or raw.githubusercontent.com */
-inline constexpr const char* UpdateManifestUrl = UPDATE_MANIFEST_URL;
-
 /** Minimum interval between automatic update checks (ms) — 24 hours */
 constexpr int UpdateCheckIntervalMs = 24 * 3600 * 1000;
 

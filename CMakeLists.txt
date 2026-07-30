@@ -17,17 +17,17 @@ include(QtTranslations)
 include(WindowsDependencies)
 include(AppResources)
 
-set(MODEFLOW_SITE_URL "https://goloveshko.github.io" 
+set(SITE_URL "https://goloveshko.github.io"
     CACHE STRING "The project website URL")
-set(MODEFLOW_LICENSE_URL "https://github.com/goloveshko/ModeFlow/blob/main/LICENSE" 
-    CACHE STRING "The project license URL")
-set(MODEFLOW_UPDATE_URL "https://raw.githubusercontent.com/goloveshko/ModeFlow/main/metadata/update.json" 
+set(UPDATE_URL "https://raw.githubusercontent.com/goloveshko/ModeFlow/main/metadata/update.json"
     CACHE STRING "The dynamic URL for auto-update manifest checks")
+set(LICENSE_URL "https://github.com/goloveshko/ModeFlow/blob/main/LICENSE"
+    CACHE STRING "The project license URL")
 
 # vcpkg static Qt packages may omit qtpaths, which triggers a noisy deployment
 # warning during find_package(Qt6 ...) even though the build still works.
 if(WIN32 AND DEFINED VCPKG_TARGET_TRIPLET AND VCPKG_TARGET_TRIPLET MATCHES "-static")
-    set(QT_NO_QTPATHS_DEPLOYMENT_WARNING ON)
+  set(QT_NO_QTPATHS_DEPLOYMENT_WARNING ON)
 endif()
 
 # Set output directory for the compiled .exe
@@ -38,12 +38,12 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS Widgets Concurrent Network Svg)
 
 # --- Logic to detect Static vs Shared ---
 if(NOT DEFINED MODEFLOW_STATIC_BUILD)
-    get_target_property(QT_IS_STATIC Qt6::Core TYPE)
-    if (QT_IS_STATIC STREQUAL "STATIC_LIBRARY")
-        set(MODEFLOW_STATIC_BUILD ON)
-    else()
-        set(MODEFLOW_STATIC_BUILD OFF)
-    endif()
+  get_target_property(QT_IS_STATIC Qt6::Core TYPE)
+  if (QT_IS_STATIC STREQUAL "STATIC_LIBRARY")
+    set(MODEFLOW_STATIC_BUILD ON)
+  else()
+    set(MODEFLOW_STATIC_BUILD OFF)
+  endif()
 endif()
 
 configure_compiler()
@@ -51,7 +51,7 @@ configure_compiler()
 qt_standard_project_setup()
 
 # Default tests compilation to ON to catch interface regressions early.
-option(BUILD_TESTING "Build the testing tree." ON) 
+option(BUILD_TESTING "Build the testing tree." ON)
 include(CTest)
 
 # Organization in IDEs (Visual Studio)
@@ -114,7 +114,7 @@ set(COMMON_SOURCES
     src/gui/TrayController.cpp src/gui/TrayController.h
     src/gui/UpdateDialog.cpp src/gui/UpdateDialog.h src/gui/UpdateDialog.ui
     src/gui/WorkspaceWindow.cpp src/gui/WorkspaceWindow.h src/gui/WorkspaceWindow.ui
-    
+
     # SERVICES
     src/services/AudioDeviceManager.cpp src/services/AudioDeviceManager.h
     src/services/AudioFeedbackService.cpp src/services/AudioFeedbackService.h
@@ -124,7 +124,7 @@ set(COMMON_SOURCES
     src/services/DisplayManager.cpp src/services/DisplayManager.h
     src/services/HotkeyManager.cpp src/services/HotkeyManager.h
     src/services/SingleInstanceGuard.cpp src/services/SingleInstanceGuard.h
-    
+
     # UTILS
     src/utils/ComInitGuard.cpp src/utils/ComInitGuard.h
     src/utils/Constants.h
@@ -141,7 +141,7 @@ set(COMMON_SOURCES
 )
 
 # --- CENTRALIZED OBJECT LIBRARY (${CORE_TARGET}) ---
-# Compiles all shared sources ONCE as an object library. 
+# Compiles all shared sources ONCE as an object library.
 # Both the main executable and the tests will link against this target.
 add_library(${CORE_TARGET} OBJECT ${COMMON_SOURCES})
 
@@ -174,15 +174,15 @@ link_windows_system_libs(${CORE_TARGET})
 target_compile_definitions(${CORE_TARGET} PUBLIC QT_MESSAGELOGCONTEXT)
 
 # Inject the dynamic update URL definition to the preprocessor for both static and shared builds
-target_compile_definitions(${CORE_TARGET} PUBLIC "PROJECT_SITE_URL=\"${MODEFLOW_SITE_URL}\"")
-target_compile_definitions(${CORE_TARGET} PUBLIC "PROJECT_LICENSE_URL=\"${MODEFLOW_LICENSE_URL}\"")
-target_compile_definitions(${CORE_TARGET} PUBLIC "UPDATE_MANIFEST_URL=\"${MODEFLOW_UPDATE_URL}\"")
+target_compile_definitions(${CORE_TARGET} PUBLIC "SITE_URL=\"${SITE_URL}\"")
+target_compile_definitions(${CORE_TARGET} PUBLIC "UPDATE_URL=\"${UPDATE_URL}\"")
+target_compile_definitions(${CORE_TARGET} PUBLIC "LICENSE_URL=\"${LICENSE_URL}\"")
 
 if(MODEFLOW_STATIC_BUILD)
-    target_compile_definitions(${CORE_TARGET} PUBLIC MODEFLOW_STATIC)
-    message(STATUS "Build Mode: STATIC")
+  target_compile_definitions(${CORE_TARGET} PUBLIC MODEFLOW_STATIC)
+  message(STATUS "Build Mode: STATIC")
 else()
-    message(STATUS "Build Mode: SHARED (DLL)")
+  message(STATUS "Build Mode: SHARED (DLL)")
 endif()
 
 # --- MAIN APPLICATION TARGET ---
@@ -191,7 +191,7 @@ set(PROJECT_SOURCES
 )
 
 if(WIN32)
-    list(APPEND PROJECT_SOURCES "assets/win/resources.rc")
+  list(APPEND PROJECT_SOURCES "assets/win/resources.rc")
 endif()
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${PROJECT_SOURCES})
@@ -219,34 +219,34 @@ set_target_properties(${MAIN_TARGET} PROPERTIES
 
 # --- UNIT TESTS SUBDIRECTORY ---
 if(BUILD_TESTING)
-    # Triggers cmake compilation inside tests/ directory
-    add_subdirectory(tests)
+  # Triggers cmake compilation inside tests/ directory
+  add_subdirectory(tests)
 endif()
 
 
 # --- IDE CONFIGURATIONS ---
 if(MSVC)
-    set_target_properties(${MAIN_TARGET} PROPERTIES
+  set_target_properties(${MAIN_TARGET} PROPERTIES
         VS_DEBUGGER_ENVIRONMENT "PATH=${_qt_bin_dir}\;$ENV{PATH}"
     )
 endif()
 
 if(TARGET qhotkey)
-    set_target_properties(qhotkey PROPERTIES FOLDER "External")
+  set_target_properties(qhotkey PROPERTIES FOLDER "External")
 endif()
 
 if(TARGET AudioDeviceLib)
-    set_target_properties(AudioDeviceLib PROPERTIES FOLDER "External")
+  set_target_properties(AudioDeviceLib PROPERTIES FOLDER "External")
 endif()
 
 set_directory_properties(PROPERTIES VS_STARTUP_PROJECT ${MAIN_TARGET})
 
 # --- Centralized Compilation Database Synchronization ---
-# Automatically copy the generated compile_commands.json from the active binary directory 
-# directly to the project's root build/ folder. This keeps the root directory clean 
+# Automatically copy the generated compile_commands.json from the active binary directory
+# directly to the project's root build/ folder. This keeps the root directory clean
 # while ensuring that clangd (or other LSPs) can always locate the active configuration.
 if(CMAKE_EXPORT_COMPILE_COMMANDS)
-    add_custom_target(copy_compile_commands ALL
+  add_custom_target(copy_compile_commands ALL
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_SOURCE_DIR}/build"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${CMAKE_BINARY_DIR}/compile_commands.json"
