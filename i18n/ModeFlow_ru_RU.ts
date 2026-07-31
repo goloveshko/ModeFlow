@@ -212,7 +212,7 @@
         <translation>Вы используете последнюю версию.</translation>
     </message>
     <message>
-        <source>Update Check Failed</source>
+        <source>Update check failed</source>
         <translation>Ошибка проверки обновлений</translation>
     </message>
     <message>
