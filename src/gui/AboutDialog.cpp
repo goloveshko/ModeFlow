@@ -3,6 +3,7 @@
 #include "ui_AboutDialog.h"
 
 #include <QDesktopServices>
+#include <QDir>
 #include <QFile>
 
 #include "Logging.h"
@@ -20,8 +21,7 @@ AboutDialog::AboutDialog(Core::IStyleManager* sm, bool updateAvailable, const QS
     QString version = QCoreApplication::applicationVersion();
     ui->labelVersion->setText(tr("Version %1").arg(version));
 
-    connect(ui->btnGithub, &QPushButton::clicked, this,
-            []() { QDesktopServices::openUrl(QUrl(ModeFlow::Info::SiteUrl)); });
+    connect(ui->btnGithub, &QPushButton::clicked, this, []() { QDesktopServices::openUrl(QUrl(Info::SiteUrl)); });
 
     connect(ui->btnLicenses, &QPushButton::clicked, this, &AboutDialog::openLicense);
 
@@ -33,8 +33,7 @@ AboutDialog::AboutDialog(Core::IStyleManager* sm, bool updateAvailable, const QS
 AboutDialog::~AboutDialog() = default;
 
 void AboutDialog::openLicense() {
-    const QString localPath = qApp->applicationDirPath() + "/LICENSE.txt";
-    const QUrl webUrl(ModeFlow::Info::LicenseUrl);
+    const QString localPath = QDir::toNativeSeparators(QDir(qApp->applicationDirPath()).filePath(u"LICENSE.txt"_s));
     bool success = false;
 
     if (QFile::exists(localPath)) {
@@ -43,6 +42,7 @@ void AboutDialog::openLicense() {
 
     if (!success) {
         qCWarning(lcGui) << "Could not open local license, falling back to web URL";
+        const QUrl webUrl(Info::LicenseUrl);
         QDesktopServices::openUrl(webUrl);
     }
 }

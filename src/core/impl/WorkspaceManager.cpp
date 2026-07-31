@@ -74,7 +74,7 @@ bool WorkspaceManager::saveWorkspaces() {
 }
 
 void WorkspaceManager::setSelectedRow(int row) {
-    const auto profiles = configs(); 
+    const auto profiles = configs();
     if (row >= 0 && row < profiles.size())
         m_config->setSelectedProfileId(profiles[row].id);
     else
