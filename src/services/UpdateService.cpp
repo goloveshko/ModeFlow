@@ -45,7 +45,8 @@ void UpdateService::checkForUpdates(bool force) {
 
     m_checkInProgress = true;
 
-    QNetworkRequest request(QUrl(QString::fromLatin1(Utils::UpdateManifestUrl)));
+    const QUrl manifestUrl = QUrl::fromUserInput(Info::UpdateManifestUrl);
+    QNetworkRequest request(manifestUrl);
     request.setRawHeader("User-Agent", APP_INTERNAL_NAME " UpdateChecker");
 
     QNetworkReply* reply = m_network.get(request);
@@ -53,6 +54,11 @@ void UpdateService::checkForUpdates(bool force) {
 }
 
 void UpdateService::onCheckReply(QNetworkReply* reply) {
+    if (!reply)
+        return;
+
+    disconnect(reply, &QNetworkReply::finished, this, nullptr);
+
     m_checkInProgress = false;
     reply->deleteLater();
 

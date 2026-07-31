@@ -72,6 +72,8 @@ private:
 
     QString m_pendingUpdateVersion;
 
+    QList<QMetaObject::Connection> m_manualUpdateConns;
+
     ActiveDialog m_activeDialog = ActiveDialog::None;
     bool m_restartPending = false;
     bool m_isFinalizing = false;

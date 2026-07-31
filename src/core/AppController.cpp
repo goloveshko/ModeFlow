@@ -118,7 +118,7 @@ void AppController::finalizeInitialization() {
 }
 
 void AppController::setupAutoUpdateChecking() {
-    if (!m_services.updateService) {
+    if (!m_services.configManager->autoUpdateEnabled() || !m_services.updateService) {
         return;
     }
 
@@ -141,20 +141,19 @@ void AppController::setupAutoUpdateChecking() {
         m_pendingUpdateVersion = m_services.updateService->latestVersion();
     }
 
-    if (m_services.configManager->autoUpdateEnabled()) {
-        m_services.updateService->checkForUpdates(false);
+    // Pass false to honor 24-hour cache interval on application startup
+    m_services.updateService->checkForUpdates(false);
 
-        m_updateTimer.setInterval(Utils::UpdateCheckIntervalMs);
-        m_updateTimer.setSingleShot(false);
+    m_updateTimer.setInterval(Utils::UpdateCheckIntervalMs);
+    m_updateTimer.setSingleShot(false);
 
-        connect(&m_updateTimer, &QTimer::timeout, this, [this]() {
-            if (m_services.updateService) {
-                m_services.updateService->checkForUpdates(false);
-            }
-        });
+    connect(&m_updateTimer, &QTimer::timeout, this, [this]() {
+        if (m_services.updateService) {
+            m_services.updateService->checkForUpdates(false);
+        }
+    });
 
-        m_updateTimer.start();
-    }
+    m_updateTimer.start();
 }
 
 void AppController::ensureWorkspaceWindow() {
@@ -398,37 +397,46 @@ void AppController::forceUpdateCheck() {
     if (!m_services.updateService || m_services.updateService->isCheckingInProgress())
         return;
 
-    auto onUpdateAvailable = [this](const QString& version, const QUrl& url, const QString& changelog) {
-        if (m_activeDialog != ActiveDialog::None && m_activeDialog != ActiveDialog::About)
-            return;
+    // Disconnect and clear any lingering handles from previous manual checks
+    for (const auto& conn : m_manualUpdateConns) {
+        QObject::disconnect(conn);
+    }
+    m_manualUpdateConns.clear();
 
-        m_services.styleManager->forceUnhover();
-
-        SetterGuard guard(this, ActiveDialog::About);
-
-        Gui::UpdateDialog dlg(m_services.styleManager.get(), version, changelog, url, parentWindow());
-        dlg.exec();
-    };
-
-    auto onNoUpdate = [this]() {
-        if (m_services.workspaceWindow) {
-            m_services.workspaceWindow->showToolTipOnMoreButton(tr("You are up to date."));
+    // Helper to immediately unhook all manual check connections as soon as ANY outcome triggers
+    auto cleanupConns = [this]() {
+        for (const auto& conn : m_manualUpdateConns) {
+            QObject::disconnect(conn);
         }
+        m_manualUpdateConns.clear();
     };
 
-    auto onCheckFailed = [this](const QString& error) {
-        if (m_services.workspaceWindow) {
-            m_services.workspaceWindow->showToolTipOnMoreButton(tr("Update check failed") + u": "_s + error);
-        }
-    };
+    const auto c1 = QObject::connect(m_services.updateService.get(), &Services::UpdateService::updateAvailable, this,
+                                     [this, cleanupConns](const QString&, const QUrl&, const QString&) {
+                                         cleanupConns();
+                                         showUpdateDialog();
+                                     });
 
-    QObject::connect(m_services.updateService.get(), &Services::UpdateService::updateAvailable, this, onUpdateAvailable,
-                     Qt::SingleShotConnection);
-    QObject::connect(m_services.updateService.get(), &Services::UpdateService::noUpdateAvailable, this, onNoUpdate,
-                     Qt::SingleShotConnection);
-    QObject::connect(m_services.updateService.get(), &Services::UpdateService::checkFailed, this, onCheckFailed,
-                     Qt::SingleShotConnection);
+    const auto c2 = QObject::connect(
+        m_services.updateService.get(), &Services::UpdateService::noUpdateAvailable, this, [this, cleanupConns]() {
+            cleanupConns();
+            if (m_services.workspaceWindow) {
+                m_services.workspaceWindow->showToolTipOnMoreButton(tr("You are up to date."));
+            }
+        });
 
+    const auto c3 = QObject::connect(m_services.updateService.get(), &Services::UpdateService::checkFailed, this,
+                                     [this, cleanupConns](const QString& error) {
+                                         cleanupConns();
+                                         if (m_services.workspaceWindow) {
+                                             m_services.workspaceWindow->showToolTipOnMoreButton(
+                                                 tr("Update check failed") + u": "_s + error);
+                                         }
+                                     });
+
+    m_manualUpdateConns = {c1, c2, c3};
+
+    // Force network check on manual trigger
     m_services.updateService->checkForUpdates(true);
 }
 
