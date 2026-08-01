@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 
     ConfigManager config;
     config.loadConfig();
-    LogManager::setup(config.autoLoggingEnabled() || options.enableLogging);
+    LogManager::setup(config.loggingEnabled() || options.enableLogging);
 
     qCDebug(lcMain) << "--- Log Session Started ---";
     qCDebug(lcMain) << "Application Version:" << APP_VERSION_STR;

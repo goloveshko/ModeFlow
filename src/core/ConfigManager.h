@@ -10,6 +10,37 @@
 
 namespace ModeFlow::Core {
 
+/**
+ * @brief Plain C++ data struct holding application configuration state snapshot.
+ */
+struct ConfigState {
+    QList<WorkspaceConfig> workspaces;
+
+    QKeySequence nextProfileHotkey;
+    QString language;
+    QString lastActiveProfileId;
+    QString selectedProfileId;
+    StartupAction startupAction = StartupAction::None;
+    QString startupProfileId;
+    bool audioConfirmation = true;
+    bool autoUpdateEnabled = true;
+    int autostartDelay = 0;
+    Theme theme = Theme::Light;
+    QString qtStyleKey{Utils::DefaultQtStyleKey};
+    bool mainWindowVisible = true;
+
+    bool mainWindowMaximized = false;
+    QPoint mainWindowPos;
+    QSize mainWindowSize = QSize(600, 450);
+
+    bool askConfirmation = true;
+    qint64 lastUpdateCheckTimestamp = 0;
+
+    bool loggingEnabled = false;
+
+    bool operator==(const ConfigState&) const = default;
+};
+
 class ConfigManager : public QObject {
     Q_OBJECT
 public:
@@ -74,37 +105,18 @@ public:
     qint64 lastUpdateCheckTimestamp() const;
     void setLastUpdateCheckTimestamp(qint64 timestamp);
 
-    bool autoLoggingEnabled() const;
-    void setAutoLoggingEnabled(bool enabled);
+    bool loggingEnabled() const;
+    void setLoggingEnabled(bool enabled);
+
+private:
+    ConfigState takeSnapshot() const;
 
 signals:
     void errorOccurred(const QString& message);
 
 private:
     mutable QMutex m_mutex;
-
-    QList<WorkspaceConfig> m_workspaces;
-    QKeySequence m_nextProfileHotkey;
-    QString m_language;
-    QString m_lastActiveProfileId;
-    QString m_selectedProfileId;
-    StartupAction m_startupAction = StartupAction::None;
-    QString m_startupProfileId;
-    bool m_audioConfirmation = true;
-    bool m_autoUpdateEnabled = true;
-    int m_autostartDelay = 0;
-    Theme m_theme = Theme::Light;
-    QString m_qtStyleKey{Utils::DefaultQtStyleKey};
-    bool m_mainWindowVisible = true;
-
-    bool m_mainWindowMaximized = false;
-    QPoint m_mainWindowPos;
-    QSize m_mainWindowSize = QSize(600, 450);
-
-    bool m_askConfirmation = true;
-    qint64 m_lastUpdateCheckTimestamp = 0;
-
-    bool m_autoLoggingEnabled = false;
+    ConfigState m_state;
 };
 
 } // namespace ModeFlow::Core

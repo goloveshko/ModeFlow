@@ -28,11 +28,11 @@ void SettingsManager::setLanguagePreference(const QString& locale) {
     m_config->setLanguage(locale);
 }
 
-bool SettingsManager::isAutostartEnabled() const {
+bool SettingsManager::autostartEnabled() const {
     return m_autostart->isAutostartEnabled();
 }
 
-QFuture<bool> SettingsManager::isAutostartEnabledAsync() const {
+QFuture<bool> SettingsManager::autostartEnabledAsync() const {
     return m_autostart->checkIsRegisteredAsync();
 }
 
@@ -112,7 +112,7 @@ QList<Core::ThemeData> SettingsManager::availableThemes() const {
     return m_styleManager->availableThemes();
 }
 
-bool SettingsManager::isMainWindowMaximized() const {
+bool SettingsManager::mainWindowMaximized() const {
     return m_config->isMainWindowMaximized();
 }
 
@@ -136,7 +136,7 @@ void SettingsManager::setMainWindowSize(const QSize& size) {
     m_config->setMainWindowSize(size);
 }
 
-bool SettingsManager::isMainWindowVisible() const {
+bool SettingsManager::mainWindowVisible() const {
     return m_config->isMainWindowVisible();
 }
 
@@ -145,11 +145,11 @@ void SettingsManager::setMainWindowVisible(bool visible) {
 }
 
 bool SettingsManager::loggingEnabled() const {
-    return m_config->autoLoggingEnabled();
+    return m_config->loggingEnabled();
 }
 
 void SettingsManager::setLoggingEnabled(bool enabled) {
-    m_config->setAutoLoggingEnabled(enabled);
+    m_config->setLoggingEnabled(enabled);
 }
 
 bool SettingsManager::askConfirmation() const {

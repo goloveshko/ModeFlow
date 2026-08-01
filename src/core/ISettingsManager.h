@@ -15,8 +15,8 @@ public:
     virtual void setLanguage(const QString& locale) = 0;
     virtual void setLanguagePreference(const QString& locale) = 0;
 
-    virtual bool isAutostartEnabled() const = 0;
-    virtual QFuture<bool> isAutostartEnabledAsync() const = 0;
+    virtual bool autostartEnabled() const = 0;
+    virtual QFuture<bool> autostartEnabledAsync() const = 0;
     virtual QFuture<bool> requestAutostartToggleAsync(bool enabled, int delay) = 0;
     virtual int autostartDelay() const = 0;
     virtual void setAutostartDelay(int seconds) = 0;
@@ -28,13 +28,13 @@ public:
     virtual QKeySequence nextProfileHotkey() const = 0;
     virtual void setNextProfileHotkey(const QKeySequence& seq) = 0;
 
-    virtual bool isMainWindowMaximized() const = 0;
+    virtual bool mainWindowMaximized() const = 0;
     virtual void setMainWindowMaximized(bool maximized) = 0;
     virtual QPoint mainWindowPos() const = 0;
     virtual void setMainWindowPos(const QPoint& pos) = 0;
     virtual QSize mainWindowSize() const = 0;
     virtual void setMainWindowSize(const QSize& size) = 0;
-    virtual bool isMainWindowVisible() const = 0;
+    virtual bool mainWindowVisible() const = 0;
     virtual void setMainWindowVisible(bool visible) = 0;
 
     virtual bool loggingEnabled() const = 0;

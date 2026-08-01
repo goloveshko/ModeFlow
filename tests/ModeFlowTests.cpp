@@ -192,9 +192,11 @@ public:
     void setLanguage(const QString& locale) override { languageCode = locale; }
     void setLanguagePreference(const QString& locale) override { languageCode = locale; }
 
-    bool isAutostartEnabled() const override { return autostartEnabled; }
+    bool autostartEnabled() const override { return autostartEnabledValue; }
 
-    QFuture<bool> isAutostartEnabledAsync() const override { return QtFuture::makeReadyValueFuture(autostartEnabled); }
+    QFuture<bool> autostartEnabledAsync() const override {
+        return QtFuture::makeReadyValueFuture(autostartEnabledValue);
+    }
 
     QFuture<bool> requestAutostartToggleAsync(bool enabled, int delay) override {
         autostartRequests.append({enabled, delay});
@@ -202,7 +204,7 @@ public:
             return QtFuture::makeReadyValueFuture(false);
         }
 
-        autostartEnabled = enabled;
+        autostartEnabledValue = enabled;
         autostartDelaySeconds = delay;
         return QtFuture::makeReadyValueFuture(true);
     }
@@ -231,14 +233,14 @@ public:
         return saveShouldSucceed;
     }
 
-    bool isMainWindowMaximized() const override { return maximizedMock; }
+    bool mainWindowMaximized() const override { return maximizedMock; }
     void setMainWindowMaximized(bool maximized) override { maximizedMock = maximized; }
     QPoint mainWindowPos() const override { return posMock; }
     void setMainWindowPos(const QPoint& pos) override { posMock = pos; }
     QSize mainWindowSize() const override { return sizeMock; }
     void setMainWindowSize(const QSize& size) override { sizeMock = size; }
 
-    bool isMainWindowVisible() const override { return visibleMock; }
+    bool mainWindowVisible() const override { return visibleMock; }
     void setMainWindowVisible(bool visible) override { visibleMock = visible; }
 
     QList<ModeFlow::Core::ThemeData> availableThemes() const override {
@@ -268,7 +270,7 @@ public:
     void setLoggingEnabled(bool enabled) override { loggingEnabledValue = enabled; }
 
     QString languageCode = QStringLiteral("en_US");
-    bool autostartEnabled = false;
+    bool autostartEnabledValue = false;
     int autostartDelaySeconds = 5;
     bool audioConfirmationEnabled = true;
     bool autoUpdateEnabledValue = true;
@@ -507,7 +509,7 @@ void ModeFlowTests::settingsAcceptCommitsAutostartAndConfig() {
     QCOMPARE(settingsManager.autostartRequests.size(), 1);
     QCOMPARE(settingsManager.autostartRequests.at(0).first, true);
     QCOMPARE(settingsManager.autostartRequests.at(0).second, 10);
-    QCOMPARE(settingsManager.autostartEnabled, true);
+    QCOMPARE(settingsManager.autostartEnabledValue, true);
     QCOMPARE(settingsManager.autostartDelaySeconds, 10);
     QCOMPARE(settingsManager.audioConfirmationEnabled, false);
     QCOMPARE(settingsManager.languageCode, QStringLiteral("ru_RU"));
@@ -549,7 +551,7 @@ void ModeFlowTests::settingsAcceptRollsBackOnSaveFailure() {
     QCOMPARE(settingsManager.autostartRequests.at(0).second, 12);
     QCOMPARE(settingsManager.autostartRequests.at(1).first, false);
     QCOMPARE(settingsManager.autostartRequests.at(1).second, 5);
-    QCOMPARE(settingsManager.autostartEnabled, false);
+    QCOMPARE(settingsManager.autostartEnabledValue, false);
     QCOMPARE(settingsManager.autostartDelaySeconds, 5);
     QCOMPARE(settingsManager.audioConfirmationEnabled, true);
     QCOMPARE(settingsManager.languageCode, QStringLiteral("en_US"));

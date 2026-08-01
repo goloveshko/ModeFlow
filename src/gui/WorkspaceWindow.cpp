@@ -199,8 +199,7 @@ void WorkspaceWindow::deleteClicked() {
     m_styleManager->forceUnhover();
 
     if (!m_styleManager->confirmAction(
-            this, tr("Delete"),
-            tr("Delete configuration '%1'?").arg(m_workspaceManager->configs()[rowToDelete].name)))
+            this, tr("Delete"), tr("Delete configuration '%1'?").arg(m_workspaceManager->configs()[rowToDelete].name)))
         return;
 
     m_isUpdating = true;
@@ -356,7 +355,7 @@ void WorkspaceWindow::showEvent(QShowEvent* event) {
 
         if (m_firstShow) {
             m_firstShow = false;
-            if (m_settingsManager->isMainWindowMaximized()) {
+            if (m_settingsManager->mainWindowMaximized()) {
                 showMaximized();
             }
         }
@@ -468,8 +467,8 @@ void WorkspaceWindow::deleteProfileByRow(int row) {
 
     m_styleManager->forceUnhover();
 
-    if (!m_styleManager->confirmAction(
-            this, tr("Delete"), tr("Delete configuration '%1'?").arg(m_workspaceManager->configs()[row].name)))
+    if (!m_styleManager->confirmAction(this, tr("Delete"),
+                                       tr("Delete configuration '%1'?").arg(m_workspaceManager->configs()[row].name)))
         return;
 
     m_isUpdating = true;
@@ -510,7 +509,7 @@ void WorkspaceWindow::applyProfileByRow(int row) {
 }
 
 void WorkspaceWindow::saveWindowGeometry() {
-    const bool maximized = m_settingsManager->isMainWindowMaximized();
+    const bool maximized = m_settingsManager->mainWindowMaximized();
     if (!maximized) {
         m_settingsManager->setMainWindowPos(pos());
         m_settingsManager->setMainWindowSize(size());

@@ -22,8 +22,8 @@ public:
     void setLanguage(const QString& locale) override;
     void setLanguagePreference(const QString& locale) override;
 
-    bool isAutostartEnabled() const override;
-    QFuture<bool> isAutostartEnabledAsync() const override;
+    bool autostartEnabled() const override;
+    QFuture<bool> autostartEnabledAsync() const override;
     QFuture<bool> requestAutostartToggleAsync(bool enabled, int delay) override;
     int autostartDelay() const override;
     void setAutostartDelay(int seconds) override;
@@ -49,13 +49,13 @@ public:
 
     QList<ThemeData> availableThemes() const override;
 
-    bool isMainWindowMaximized() const override;
+    bool mainWindowMaximized() const override;
     void setMainWindowMaximized(bool maximized) override;
     QPoint mainWindowPos() const override;
     void setMainWindowPos(const QPoint& pos) override;
     QSize mainWindowSize() const override;
     void setMainWindowSize(const QSize& size) override;
-    bool isMainWindowVisible() const override;
+    bool mainWindowVisible() const override;
     void setMainWindowVisible(bool visible) override;
 
     bool loggingEnabled() const override;

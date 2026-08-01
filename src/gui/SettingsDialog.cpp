@@ -35,7 +35,7 @@ SettingsDialog::SettingsDialog(Core::ISettingsManager* settingsManager, Core::IW
 SettingsDialog::~SettingsDialog() = default;
 
 void SettingsDialog::loadSettings() {
-    ui->checkAutostart->setChecked(m_settingsManager->isAutostartEnabled());
+    ui->checkAutostart->setChecked(m_settingsManager->autostartEnabled());
     ui->spinLogonDelay->setValue(m_settingsManager->autostartDelay());
 
     setupStartupCombo();
@@ -169,7 +169,7 @@ void SettingsDialog::initializeUiState() {
     //   Disable checkbox temporarily while we fetch the state from Task Scheduler in background
     ui->checkAutostart->setEnabled(false);
 
-    m_settingsManager->isAutostartEnabledAsync().then(this, [this](bool isRegistered) {
+    m_settingsManager->autostartEnabledAsync().then(this, [this](bool isRegistered) {
         ui->checkAutostart->setEnabled(true);
         updateAutostartUi(isRegistered);
         captureInitialState();
