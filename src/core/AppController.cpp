@@ -18,6 +18,7 @@
 #include "SettingsManager.h"
 #include "StartupPreflightChecker.h"
 #include "StyleManager.h"
+#include "StyleUtils.h"
 #include "SystemUtils.h"
 #include "TrayController.h"
 #include "UpdateDialog.h"
@@ -200,18 +201,28 @@ void AppController::processThemeChange(Core::Theme oldTheme) {
 
     if (needsRecreation) {
         const bool wasVisible = m_services.workspaceWindow && m_services.workspaceWindow->isVisible();
-        m_services.workspaceWindow->hide();
-        m_services.styleManager->setTheme(newTheme, newStyleKey);
-        m_services.workspaceWindow.reset();
 
-        if (wasVisible) {
-            raiseMainWindow();
+        if (m_services.workspaceWindow && wasVisible) {
+            m_services.workspaceWindow->hide();
         }
-    } else {
-        m_services.styleManager->setTheme(newTheme, newStyleKey);
 
-        if (m_services.workspaceWindow) {
-            m_services.styleManager->applyToWindow(m_services.workspaceWindow.get());
+        QTimer::singleShot(0, this, [this, wasVisible, newTheme, newStyleKey]() {
+            m_services.styleManager->setTheme(newTheme, newStyleKey);
+
+            m_services.workspaceWindow.reset();
+
+            if (wasVisible) {
+                raiseMainWindow();
+            }
+        });
+    } else {
+        if (m_services.workspaceWindow && m_services.workspaceWindow->isVisible()) {
+            Gui::StyleUtils::safeThemeApply(m_services.workspaceWindow.get(), [this, newTheme, newStyleKey]() {
+                m_services.styleManager->setTheme(newTheme, newStyleKey);
+                m_services.styleManager->applyToWindow(m_services.workspaceWindow.get());
+            });
+        } else {
+            m_services.styleManager->setTheme(newTheme, newStyleKey);
         }
     }
 
@@ -261,17 +272,19 @@ void AppController::showSettingsDialog() {
     const QString oldLang = m_services.configManager->language();
     const Theme oldTheme = m_services.styleManager->currentTheme();
 
-    Gui::SettingsDialog dlg(m_services.settingsManager.get(), m_services.workspaceManager.get(),
-                            m_services.styleManager.get(), parentWindow());
+    bool accepted = false;
 
-    connect(&dlg, &Gui::SettingsDialog::hotkeyCaptureChanged, m_services.hotkeyManager.get(),
-            &Services::HotkeyManager::setCaptureMode, Qt::UniqueConnection);
-
-    if (dlg.exec() != QDialog::Accepted) {
-        return;
+    {
+        Gui::SettingsDialog dlg(m_services.settingsManager.get(), m_services.workspaceManager.get(),
+                                m_services.styleManager.get(), parentWindow());
+        connect(&dlg, &Gui::SettingsDialog::hotkeyCaptureChanged, m_services.hotkeyManager.get(),
+                &Services::HotkeyManager::setCaptureMode, Qt::UniqueConnection);
+        accepted = (dlg.exec() == QDialog::Accepted);
     }
 
-    handleSettingsChanges(oldLang, oldTheme);
+    if (accepted) {
+        handleSettingsChanges(oldLang, oldTheme);
+    }
 }
 
 void AppController::showUpdateDialog() {
