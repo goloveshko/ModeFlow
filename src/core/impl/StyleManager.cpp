@@ -34,32 +34,38 @@ QList<QString> orderedQtStyleKeys() {
             availableKeys.insert(key);
         }
     }
+
     QList<QString> result;
 
-    const auto appendIfAvailable = [&result, &availableKeys](const QString& key) {
-        if (availableKeys.contains(key) && !result.contains(key)) {
-            result.append(key);
-        }
-    };
+    const std::array<QStringView, 4> preferredOrder = {u"windows11"_sv, u"windowsvista"_sv, u"windows"_sv,
+                                                       u"fusion"_sv};
 
-    appendIfAvailable(Utils::DefaultQtStyleKey.toString());
-    if (availableKeys.contains(u"windows"_s)) {
-        appendIfAvailable(u"windows"_s);
-    } else {
-        appendIfAvailable(u"windowsvista"_s);
+    for (QStringView key : preferredOrder) {
+        const QString keyStr = key.toString();
+        if (availableKeys.contains(keyStr)) {
+            result.append(keyStr);
+            availableKeys.remove(keyStr);
+        }
     }
-    appendIfAvailable(u"fusion"_s);
+
+    for (const QString& key : availableKeys) {
+        result.append(key);
+    }
 
     return result;
 }
 
 QString qtStyleDisplayName(const QString& styleKey) {
     const QString key = normalizeStyleKey(styleKey);
-    if (key == Utils::DefaultQtStyleKey) {
-        return QCoreApplication::translate("StyleManager", "System");
+
+    if (key == u"windows11"_s) {
+        return QCoreApplication::translate("StyleManager", "Windows 11");
     }
-    if (key == u"windowsvista"_s || key == u"windows"_s) {
-        return QCoreApplication::translate("StyleManager", "Windows");
+    if (key == u"windowsvista"_s) {
+        return QCoreApplication::translate("StyleManager", "Windows Vista");
+    }
+    if (key == u"windows"_s) {
+        return QCoreApplication::translate("StyleManager", "Windows Classic");
     }
     if (key == u"fusion"_s) {
         return QCoreApplication::translate("StyleManager", "Fusion");
@@ -67,7 +73,7 @@ QString qtStyleDisplayName(const QString& styleKey) {
 
     QString displayName = styleKey.trimmed();
     if (displayName.isEmpty()) {
-        return QCoreApplication::translate("StyleManager", "System");
+        return QCoreApplication::translate("StyleManager", "Default");
     }
 
     displayName[0] = displayName[0].toUpper();
@@ -76,7 +82,7 @@ QString qtStyleDisplayName(const QString& styleKey) {
 
 } // namespace
 
-StyleManager::StyleManager(Core::Theme theme, const QString& qtStyleKey, QObject* parent)
+StyleManager::StyleManager(Theme theme, const QString& qtStyleKey, QObject* parent)
     : QObject(parent), m_qtStyleKey(Utils::DefaultQtStyleKey.toString()) {
     setTheme(theme, qtStyleKey);
 }
@@ -93,17 +99,17 @@ QString StyleManager::loadStylesheet(QStringView fileName) const {
     }
 }
 
-QList<Core::ThemeData> StyleManager::availableThemes() const {
-    QList<Core::ThemeData> themes;
+QList<ThemeData> StyleManager::availableThemes() const {
+    QList<ThemeData> themes;
 
-    themes.append({tr("Light"), Core::Theme::Light, QString(), false});
-    themes.append({tr("Dark"), Core::Theme::Dark, QString(), false});
+    themes.append({tr("Light"), Theme::Light, QString(), false});
+    themes.append({tr("Dark"), Theme::Dark, QString(), false});
 
     const QList<QString> qtStyles = orderedQtStyleKeys();
     if (!qtStyles.isEmpty()) {
-        themes.append({tr("System styles"), Core::Theme::Light, QString(), true});
+        themes.append({tr("System styles"), Theme::Light, QString(), true});
         for (const QString& styleKey : qtStyles) {
-            themes.append({qtStyleDisplayName(styleKey), Core::Theme::Qt, styleKey, false});
+            themes.append({qtStyleDisplayName(styleKey), Theme::Qt, styleKey, false});
         }
     }
 
@@ -114,7 +120,7 @@ void StyleManager::applyToWindow(QWidget* window) {
     if (!window)
         return;
 
-    if (m_currentTheme == Core::Theme::Qt) {
+    if (m_currentTheme == Theme::Qt) {
         Gui::StyleUtils::resetWindowEffects(window);
         return;
     }
@@ -122,7 +128,7 @@ void StyleManager::applyToWindow(QWidget* window) {
     window->setUpdatesEnabled(false);
 
     using namespace ModeFlow::Gui;
-    bool isDark = (m_currentTheme == Core::Theme::Dark);
+    bool isDark = (m_currentTheme == Theme::Dark);
 
     StyleUtils::extendFrame(window);
     StyleUtils::applyMica(window, isDark);
@@ -134,32 +140,43 @@ void StyleManager::applyToWindow(QWidget* window) {
     StyleUtils::refreshFrame(window);
 }
 
-void StyleManager::setTheme(Core::Theme theme, const QString& qtStyleKey) {
-    m_currentTheme = theme;
-    if (!qtStyleKey.isEmpty()) {
-        m_qtStyleKey = normalizeStyleKey(qtStyleKey);
+QStyle* StyleManager::createDefaultNativeStyle() const {
+    if (QStyle* style = QStyleFactory::create(Utils::DefaultQtStyleKey.toString())) {
+        return style;
+    }
+    if (QStyle* style = QStyleFactory::create(u"windowsvista"_s)) {
+        return style;
+    }
+    return QStyleFactory::create(u"windows"_s);
+}
+
+void StyleManager::applyQtNativeTheme(const QString& styleKey) {
+    const QString stylesheet = loadStylesheet(Styles::System);
+    Gui::StyleBridge::instance().updateStyle(stylesheet);
+    Gui::FontAwesome::invalidateCache();
+
+    const QString targetKey = styleKey.isEmpty() ? Utils::DefaultQtStyleKey.toString() : styleKey;
+    QStyle* style = QStyleFactory::create(targetKey);
+
+    if (!style) {
+        m_qtStyleKey = Utils::DefaultQtStyleKey.toString();
+        style = createDefaultNativeStyle();
     }
 
-    if (theme == Core::Theme::Qt) {
-        const QString stylesheet = loadStylesheet(Core::Styles::System);
-        Gui::StyleBridge::instance().updateStyle(stylesheet);
-        Gui::FontAwesome::invalidateCache();
+    if (style) {
+        qApp->setStyle(style);
+    }
+    qApp->setStyleSheet(stylesheet);
+}
 
-        const QString styleKey = m_qtStyleKey.isEmpty() ? Utils::DefaultQtStyleKey.toString() : m_qtStyleKey;
-        if (QStyle* style = QStyleFactory::create(styleKey)) {
-            qApp->setStyle(style);
-        } else {
-            m_qtStyleKey = Utils::DefaultQtStyleKey.toString();
-            qApp->setStyle(QStyleFactory::create(Utils::DefaultQtStyleKey.toString()));
-        }
-        qApp->setStyleSheet(stylesheet);
-        return;
+void StyleManager::applyFluentTheme(Theme theme) {
+    if (QStyle* baseStyle = createDefaultNativeStyle()) {
+        qApp->setStyle(baseStyle);
     }
 
-    bool isDark = theme == Core::Theme::Dark;
-
-    QString stylesheet = loadStylesheet(Core::Styles::Common);
-    stylesheet += loadStylesheet(isDark ? Core::Styles::Dark : Core::Styles::Light);
+    const bool isDark = (theme == Theme::Dark);
+    QString stylesheet = loadStylesheet(Styles::Common);
+    stylesheet += loadStylesheet(isDark ? Styles::Dark : Styles::Light);
 
     Gui::StyleBridge::instance().updateStyle(stylesheet);
     Gui::FontAwesome::invalidateCache();
@@ -167,7 +184,20 @@ void StyleManager::setTheme(Core::Theme theme, const QString& qtStyleKey) {
     qApp->setStyleSheet(stylesheet);
 }
 
-Core::Theme StyleManager::currentTheme() const {
+void StyleManager::setTheme(Theme theme, const QString& qtStyleKey) {
+    m_currentTheme = theme;
+    if (!qtStyleKey.isEmpty()) {
+        m_qtStyleKey = normalizeStyleKey(qtStyleKey);
+    }
+
+    if (theme == Theme::Qt) {
+        applyQtNativeTheme(m_qtStyleKey);
+    } else {
+        applyFluentTheme(theme);
+    }
+}
+
+Theme StyleManager::currentTheme() const {
     return m_currentTheme;
 }
 

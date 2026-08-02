@@ -12,14 +12,14 @@ namespace ModeFlow::Core {
 class StyleManager : public QObject, public IStyleManager {
     Q_OBJECT
 public:
-    explicit StyleManager(Core::Theme theme, const QString& qtStyleKey, QObject* parent = nullptr);
+    explicit StyleManager(Theme theme, const QString& qtStyleKey, QObject* parent = nullptr);
 
-    QList<Core::ThemeData> availableThemes() const;
+    QList<ThemeData> availableThemes() const;
 
     void applyToWindow(QWidget* window) override;
 
-    void setTheme(Core::Theme theme, const QString& qtStyleKey = QString()) override;
-    Core::Theme currentTheme() const override;
+    void setTheme(Theme theme, const QString& qtStyleKey = QString()) override;
+    Theme currentTheme() const override;
     QString currentQtStyleKey() const override;
 
     int showMessageBox(QWidget* parent, QMessageBox::Icon icon, const QString& title, const QString& text,
@@ -39,8 +39,13 @@ public:
     void forceUnhover() override;
 
 private:
+    void applyQtNativeTheme(const QString& styleKey);
+    void applyFluentTheme(Theme theme);
+    QStyle* createDefaultNativeStyle() const;
     QString loadStylesheet(QStringView fileName) const;
-    Core::Theme m_currentTheme = Core::Theme::Light;
+
+private:
+    Theme m_currentTheme = Theme::Light;
     QString m_qtStyleKey;
 };
 
