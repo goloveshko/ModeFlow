@@ -225,19 +225,6 @@
         </spacer>
        </item>
        <item>
-        <widget class="QToolButton" name="btnUpdate">
-         <property name="visible">
-          <bool>false</bool>
-         </property>
-         <property name="toolTip">
-          <string>Update available</string>
-         </property>
-         <property name="text">
-          <string notr="true">U</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QToolButton" name="btnSettings">
          <property name="toolTip">
           <string>Settings</string>

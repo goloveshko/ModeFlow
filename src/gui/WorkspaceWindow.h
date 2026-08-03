@@ -97,6 +97,8 @@ private:
     int currentRow() const;
     QModelIndex currentIndex() const;
 
+    void updateMoreButtonState();
+
 private:
     std::unique_ptr<Ui::WorkspaceWindow> ui;
     Core::IWorkspaceManager* m_workspaceManager;
@@ -116,6 +118,9 @@ private:
 
     QTimer* m_autosaveTimer = nullptr;
     bool m_firstShow = true;
+
+    bool m_hasPendingUpdate = false;
+    QString m_pendingUpdateVersion;
 };
 
 } // namespace ModeFlow::Gui

@@ -14,6 +14,7 @@
 #include "ProfileExchangeController.h"
 #include "ProfileIconMenu.h"
 #include "ProfileListView.h"
+#include "StyleUtils.h"
 
 namespace ModeFlow::Gui {
 
@@ -90,13 +91,16 @@ void WorkspaceWindow::initMoreMenu() {
     m_exportAction = m_moreMenu->addAction(FontAwesome::icon(FontAwesome::FileExport, 20), tr("Export Profiles"),
                                            m_exchangeController.get(), &ProfileExchangeController::doExport);
     m_moreMenu->addSeparator();
-    m_checkUpdatesAction = m_moreMenu->addAction(FontAwesome::icon(FontAwesome::CloudArrowDown, 20),
-                                                 tr("Check for Updates..."), this, &WorkspaceWindow::forceUpdateCheck);
+
+    m_checkUpdatesAction = m_moreMenu->addAction(FontAwesome::icon(FontAwesome::CloudArrowDown, 20), QString(), this,
+                                                 &WorkspaceWindow::forceUpdateCheck);
     m_logViewerAction = m_moreMenu->addAction(FontAwesome::icon(FontAwesome::FileLines, 20), tr("View Log"), this,
                                               &WorkspaceWindow::showLogViewer);
 
     ui->btnMore->setMenu(m_moreMenu);
     ui->btnMore->setPopupMode(QToolButton::InstantPopup);
+
+    updateMoreButtonState();
 }
 
 void WorkspaceWindow::setupConnections() {
@@ -112,7 +116,6 @@ void WorkspaceWindow::setupConnections() {
 
     connect(ui->btnSettings, &QToolButton::clicked, this, &WorkspaceWindow::showSettingsDialog);
     connect(ui->btnAbout, &QToolButton::clicked, this, &WorkspaceWindow::showAboutDialog);
-    connect(ui->btnUpdate, &QToolButton::clicked, this, &WorkspaceWindow::showUpdateDialog);
 
     connect(m_exchangeController.get(), &ProfileExchangeController::exchangeCompleted, this, [this]() {
         notifySettingsChanged();
@@ -401,7 +404,6 @@ void WorkspaceWindow::refreshVisualState() {
     ui->btnSettings->setIcon(FontAwesome::icon(FontAwesome::Settings, toolbarIconSize));
     ui->btnMore->setIcon(FontAwesome::icon(FontAwesome::EllipsisVertical, toolbarIconSize));
     ui->btnAbout->setIcon(FontAwesome::icon(FontAwesome::Info, toolbarIconSize));
-    ui->btnUpdate->setIcon(FontAwesome::icon(FontAwesome::CloudArrowDown, toolbarIconSize));
 
     if (m_importAction)
         m_importAction->setIcon(FontAwesome::icon(FontAwesome::FileImport, 20));
@@ -416,8 +418,6 @@ void WorkspaceWindow::refreshVisualState() {
         m_detailsController->refreshVisualState();
     }
 
-    // Force the profile list viewport to repaint itself.
-    // This dynamically triggers the delegate to draw/move the active status dot!
     ui->configList->viewport()->update();
 }
 
@@ -441,12 +441,29 @@ bool WorkspaceWindow::toggleVisibility() {
 }
 
 void WorkspaceWindow::setUpdateAvailable(bool available, const QString& version) {
-    if (available) {
-        ui->btnUpdate->setToolTip(tr("Update available: v%1 — click to view").arg(version));
-        ui->btnUpdate->setVisible(true);
+    m_hasPendingUpdate = available;
+    m_pendingUpdateVersion = version;
+
+    updateMoreButtonState();
+    refreshVisualState();
+}
+
+void WorkspaceWindow::updateMoreButtonState() {
+    ui->btnMore->setProperty("hasUpdate", m_hasPendingUpdate);
+
+    if (m_hasPendingUpdate) {
+        ui->btnMore->setToolTip(tr("Update available: v%1 — click for details").arg(m_pendingUpdateVersion));
+        if (m_checkUpdatesAction) {
+            m_checkUpdatesAction->setText(tr("Update Available (v%1)...").arg(m_pendingUpdateVersion));
+        }
     } else {
-        ui->btnUpdate->setVisible(false);
+        ui->btnMore->setToolTip(tr("More options"));
+        if (m_checkUpdatesAction) {
+            m_checkUpdatesAction->setText(tr("Check for Updates..."));
+        }
     }
+
+    StyleUtils::repolish(ui->btnMore);
 }
 
 void WorkspaceWindow::showToolTipOnMoreButton(const QString& text) {
