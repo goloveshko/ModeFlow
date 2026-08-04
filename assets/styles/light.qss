@@ -689,3 +689,66 @@ QLabel#labelEmptyDesc {
     font-size: 9.5pt;
     color: rgba(0, 0, 0, 0.55);
 }
+
+/* ── More Button Update Badge State ─────────────────────── */
+#WorkspaceWindow QToolButton#btnMore[hasUpdate="true"] {
+    background-color: rgba(30, 93, 153, 0.12);
+    border: 1px solid rgba(30, 93, 153, 0.35);
+    border-radius: 6px;
+}
+
+#WorkspaceWindow QToolButton#btnMore[hasUpdate="true"]:hover {
+    background-color: rgba(30, 93, 153, 0.22);
+    border-color: rgba(30, 93, 153, 0.5);
+}
+
+/* ── Update Dialog Styling ───────────────────────────────── */
+QFrame#versionCardFrame {
+    background-color: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+}
+
+#UpdateDialog QLabel#titleLabel {
+    font-size: 14pt;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+#UpdateDialog QLabel#subtitleLabel {
+    font-size: 9.5pt;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+#UpdateDialog QLabel#labelCurrentVersion {
+    font-size: 9.5pt;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+#UpdateDialog QLabel#labelArrow {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #1e5d99;
+}
+
+#UpdateDialog QLabel#labelNewVersion {
+    font-size: 9.5pt;
+    font-weight: 600;
+    color: #1e5d99;
+}
+
+#UpdateDialog QPushButton#skipBtn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    text-decoration: none;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+#UpdateDialog QPushButton#skipBtn:hover {
+    color: rgba(0, 0, 0, 0.85);
+    text-decoration: underline;
+}

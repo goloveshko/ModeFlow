@@ -1,12 +1,12 @@
 ﻿#include <QCheckBox>
 #include <QComboBox>
+#include <QMessageBox>
 #include <QSignalSpy>
 #include <QSpinBox>
-#include <QtTest>
 #include <QtConcurrent>
-#include <QMessageBox>
+#include <QtTest>
 
-// Fixed: Explicitly include required Qt and core types to prevent LNK/C++ compiler errors
+// Explicitly include required Qt and core types
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -14,9 +14,14 @@
 #include <QPoint>
 #include <QSize>
 
-#include "ConfigManager.h"
+#include "AppLauncher.h"
+#include "AudioDeviceManager.h"
 #include "CliParser.h"
+#include "CommandLineBuilder.h"
+#include "ConfigManager.h"
 #include "ConfigTypes.h"
+#include "DisplayManager.h"
+#include "HotkeyManager.h"
 #include "ISettingsManager.h"
 #include "IStyleManager.h"
 #include "IWorkspaceManager.h"
@@ -24,13 +29,8 @@
 #include "SettingsDialog.h"
 #include "WindowsAutostartManager.h"
 #include "WorkspaceModel.h"
-#include "WorkspaceWindow.h"
-#include "CommandLineBuilder.h"
 #include "WorkspaceService.h"
-#include "DisplayManager.h"
-#include "AudioDeviceManager.h"
-#include "AppLauncher.h"
-#include "HotkeyManager.h"
+#include "WorkspaceWindow.h"
 
 namespace {
 
@@ -269,6 +269,9 @@ public:
     bool loggingEnabled() const override { return loggingEnabledValue; }
     void setLoggingEnabled(bool enabled) override { loggingEnabledValue = enabled; }
 
+    QString skippedVersion() const override { return skippedVersionValue; }
+    void setSkippedVersion(const QString& version) override { skippedVersionValue = version; }
+
     QString languageCode = QStringLiteral("en_US");
     bool autostartEnabledValue = false;
     int autostartDelaySeconds = 5;
@@ -291,6 +294,7 @@ public:
 
     bool askConfirmationMock = true;
     bool loggingEnabledValue = false;
+    QString skippedVersionValue;
 };
 
 class FakeDisplayManagerForWS : public ModeFlow::Services::DisplayManager {
@@ -322,7 +326,6 @@ public:
 
     QString getDefaultOutputDeviceId() override { return m_defaultOutputDeviceId; }
 
-    // Override the synchronous call to record and simulate successful switches
     void setDefaultOutputDevice(const QString& id) override {
         m_lastSetOutputDeviceId = id;
         m_defaultOutputDeviceId = id;
@@ -385,6 +388,7 @@ private slots:
     void commandLineBuilder_generatesCorrectArguments();
     void cliParser_parsesArgumentsCorrectly();
     void configManager_isThreadSafeAndConsistent();
+    void configManager_skippedVersion_persistsCorrectly();
 
     void workspaceService_applyStatusName();
     void workspaceService_noChangeEmitsSuccess();
@@ -612,17 +616,15 @@ void ModeFlowTests::cliParser_parsesArgumentsCorrectly() {
         QCOMPARE(options.delaySeconds, 15);
     }
 
-    // Scenario 3: Protection from Idiots (delay passed as "invalid")
+    // Scenario 3: Fallback safety when delay is passed as an invalid string
     {
-        QStringList args = {
-            QStringLiteral("ModeFlow.exe"), QStringLiteral("--silent-restart"), QStringLiteral("--delay"),
-            QStringLiteral("invalid") // Incorrect value
-        };
+        QStringList args = {QStringLiteral("ModeFlow.exe"), QStringLiteral("--silent-restart"),
+                            QStringLiteral("--delay"), QStringLiteral("invalid")};
         const auto [mode, options] = CliParser::parse(args);
 
         QCOMPARE(mode, CliParser::RunMode::NormalGui);
         QVERIFY(options.isSilentRestart);
-        QCOMPARE(options.delaySeconds, 0); // Should safely reset to 0
+        QCOMPARE(options.delaySeconds, 0);
     }
 }
 
@@ -630,28 +632,23 @@ void ModeFlowTests::configManager_isThreadSafeAndConsistent() {
     using namespace ModeFlow::Core;
     ConfigManager config;
 
-    // Let's set default values
     config.setTheme(Theme::Light);
     config.setLanguage(QStringLiteral("en_US"));
 
-    // Let's run 1000 iterations of reading/writing in parallel
     const int iterations = 1000;
 
-    // Writer thread 1: constantly changes the theme
     auto writer1 = QtConcurrent::run([&config]() {
         for (int i = 0; i < iterations; ++i) {
             config.setTheme(i % 2 == 0 ? Theme::Dark : Theme::Light);
         }
     });
 
-    // Writer thread 2: constantly changes the language
     auto writer2 = QtConcurrent::run([&config]() {
         for (int i = 0; i < iterations; ++i) {
             config.setLanguage(i % 2 == 0 ? QStringLiteral("ru_RU") : QStringLiteral("en_US"));
         }
     });
 
-    // Reader thread 1: parallelly reads the theme and checks data validity
     auto reader1 = QtConcurrent::run([&config]() {
         for (int i = 0; i < iterations; ++i) {
             Theme t = config.currentTheme();
@@ -659,7 +656,6 @@ void ModeFlowTests::configManager_isThreadSafeAndConsistent() {
         }
     });
 
-    // Reader thread 2: parallelly reads the language and checks data validity
     auto reader2 = QtConcurrent::run([&config]() {
         for (int i = 0; i < iterations; ++i) {
             QString lang = config.language();
@@ -667,17 +663,21 @@ void ModeFlowTests::configManager_isThreadSafeAndConsistent() {
         }
     });
 
-    // Wait for all threads to complete.
-    // If the mutexes are working correctly, we will not get any deadlocks
-    // or memory corruption in the heap.
     writer1.waitForFinished();
     writer2.waitForFinished();
     reader1.waitForFinished();
     reader2.waitForFinished();
 
-    // Check the final state for validity
     Theme finalTheme = config.currentTheme();
     QVERIFY(finalTheme == Theme::Light || finalTheme == Theme::Dark);
+}
+
+void ModeFlowTests::configManager_skippedVersion_persistsCorrectly() {
+    using namespace ModeFlow::Core;
+    ConfigManager config;
+
+    config.setSkippedVersion(QStringLiteral("0.9.1"));
+    QCOMPARE(config.skippedVersion(), QStringLiteral("0.9.1"));
 }
 
 void ModeFlowTests::workspaceService_applyStatusName() {
@@ -806,7 +806,6 @@ void ModeFlowTests::workspaceService_audioSwitch() {
 
     service.applyWorkspaceConfig(config);
 
-    // Verify that the core service synchronously invoked setDefaultOutputDevice with correct ID
     QCOMPARE(audio.m_lastSetOutputDeviceId, QStringLiteral("new-audio"));
     QCOMPARE(finishedSpy.count(), 1);
     QCOMPARE(finishedSpy.at(0).at(1).value<ModeFlow::Core::WorkspaceService::ApplyStatus>(),
@@ -1058,13 +1057,11 @@ void ModeFlowTests::workspaceConfig_appsToLaunchJsonRoundTrip() {
 void ModeFlowTests::winKeyTranslator_translatesCorrectly() {
     ModeFlow::Utils::WinKeyTranslator translator;
 
-    // Validate translations inside valid GUI/Shortcut contexts
     QCOMPARE(translator.translate("QShortcut", "Meta"), QStringLiteral("Win"));
     QCOMPARE(translator.translate("QKeySequence", "Ctrl"), QStringLiteral("Ctrl"));
     QCOMPARE(translator.translate("QKeySequenceEdit", "Alt"), QStringLiteral("Alt"));
     QCOMPARE(translator.translate("QKeySequenceEdit", "Shift"), QStringLiteral("Shift"));
 
-    // Verify fallback (should return empty string for unrelated contexts)
     QCOMPARE(translator.translate("QWidget", "Meta"), QString());
     QCOMPARE(translator.translate("QShortcut", "SomeOtherKey"), QString());
 }

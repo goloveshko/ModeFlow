@@ -64,6 +64,9 @@ public:
     bool askConfirmation() const override;
     void setAskConfirmation(bool enabled) override;
 
+    QString skippedVersion() const override;
+    void setSkippedVersion(const QString& version) override;
+
 private:
     ConfigManager* m_config;
     Services::WindowsAutostartManager* m_autostart;

@@ -42,6 +42,7 @@ private:
     QNetworkAccessManager m_network;
     QString m_cacheFilePath;
     bool m_checkInProgress = false;
+    bool m_isManualCheck = false;
     bool m_updateAvailable = false;
     QString m_latestVersion;
     QUrl m_downloadUrl;

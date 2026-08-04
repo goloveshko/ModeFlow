@@ -160,4 +160,12 @@ void SettingsManager::setAskConfirmation(bool enabled) {
     m_config->setAskConfirmation(enabled);
 }
 
+QString SettingsManager::skippedVersion() const {
+    return m_config->skippedVersion();
+}
+
+void SettingsManager::setSkippedVersion(const QString& version) {
+    m_config->setSkippedVersion(version);
+}
+
 } // namespace ModeFlow::Core

@@ -101,6 +101,8 @@ bool ConfigManager::loadConfig() {
     snapshot.mainWindowSize = s.value(u"window/size"_sv, QSize(600, 450)).toSize();
 
     snapshot.lastUpdateCheckTimestamp = s.value(u"update/lastCheckTimestamp"_sv, 0).toLongLong();
+    snapshot.skippedVersion = s.value(u"update/skippedVersion"_sv).toString();
+
     snapshot.loggingEnabled = s.value(u"loggingEnabled"_sv, false).toBool();
 
     // Fast atomic move of state snapshot under lock
@@ -159,6 +161,8 @@ bool ConfigManager::saveConfig() {
     s.setValue(u"window/size"_sv, snapshot.mainWindowSize);
 
     s.setValue(u"update/lastCheckTimestamp"_sv, snapshot.lastUpdateCheckTimestamp);
+    s.setValue(u"update/skippedVersion"_sv, snapshot.skippedVersion);
+
     s.setValue(u"loggingEnabled"_sv, snapshot.loggingEnabled);
 
     s.sync();
@@ -352,6 +356,16 @@ bool ConfigManager::loggingEnabled() const {
 void ConfigManager::setLoggingEnabled(bool enabled) {
     QMutexLocker locker(&m_mutex);
     m_state.loggingEnabled = enabled;
+}
+
+QString ConfigManager::skippedVersion() const {
+    QMutexLocker locker(&m_mutex);
+    return m_state.skippedVersion;
+}
+
+void ConfigManager::setSkippedVersion(const QString& version) {
+    QMutexLocker locker(&m_mutex);
+    m_state.skippedVersion = version;
 }
 
 } // namespace ModeFlow::Core

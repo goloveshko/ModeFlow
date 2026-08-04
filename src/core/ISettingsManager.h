@@ -54,6 +54,9 @@ public:
 
     virtual bool askConfirmation() const = 0;
     virtual void setAskConfirmation(bool enabled) = 0;
+
+    virtual QString skippedVersion() const = 0;
+    virtual void setSkippedVersion(const QString& version) = 0;
 };
 } // namespace ModeFlow::Core
 

@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
     LogManager::setup(config.loggingEnabled() || options.enableLogging);
 
     qCDebug(lcMain) << "--- Log Session Started ---";
-    qCDebug(lcMain) << "Application Version:" << APP_VERSION_STR;
+    qCDebug(lcMain) << "Application Version:" << ModeFlow::Info::Version;
     qCDebug(lcMain) << "OS Version:" << QSysInfo::prettyProductName();
 
 #ifdef QT_DEBUG

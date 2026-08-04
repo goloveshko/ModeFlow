@@ -602,8 +602,20 @@
 <context>
     <name>ModeFlow::Gui::UpdateDialog</name>
     <message>
-        <source>Update Available — v%1</source>
-        <translation>Доступно обновление — v%1</translation>
+        <source>Update Available</source>
+        <translation>Доступно обновление</translation>
+    </message>
+    <message>
+        <source>A new version of ModeFlow is ready to install.</source>
+        <translation>Готова к установке новая версия ModeFlow.</translation>
+    </message>
+    <message>
+        <source>Installed: v%1</source>
+        <translation>Установлена: v%1</translation>
+    </message>
+    <message>
+        <source>Latest: v%1</source>
+        <translation>Доступна: v%1</translation>
     </message>
     <message>
         <source>No changelog available.</source>
@@ -613,6 +625,10 @@
 <context>
     <name>ModeFlow::Gui::WorkspaceWindow</name>
     <message>
+        <source>Update Available (v%1)...</source>
+        <translation>Доступно обновление: v%1</translation>
+    </message>
+    <message>
         <source>Delete</source>
         <translation>Удаление</translation>
     </message>
@@ -621,16 +637,20 @@
         <translation>Удалить конфигурацию «%1»?</translation>
     </message>
     <message>
+        <source>More options</source>
+        <translation>Дополнительно</translation>
+    </message>
+    <message>
         <source>View Log</source>
         <translation>Просмотр лога</translation>
     </message>
     <message>
-        <source>Check for Updates...</source>
-        <translation>Проверить обновления...</translation>
+        <source>Update available: v%1 — click for details</source>
+        <translation>Доступно обновление v%1 — нажмите для подробностей</translation>
     </message>
     <message>
-        <source>Update available: v%1 — click to view</source>
-        <translation>Доступно обновление: v%1 — нажмите для просмотра</translation>
+        <source>Check for Updates...</source>
+        <translation>Проверить обновления...</translation>
     </message>
     <message>
         <source>Export Profiles</source>
@@ -862,16 +882,24 @@
 <context>
     <name>StyleManager</name>
     <message>
-        <source>System</source>
-        <translation>Системная</translation>
+        <source>Windows 11</source>
+        <translation>Windows 11</translation>
     </message>
     <message>
-        <source>Windows</source>
-        <translation>Windows</translation>
+        <source>Windows Vista</source>
+        <translation>Windows Vista</translation>
+    </message>
+    <message>
+        <source>Windows Classic</source>
+        <translation>Windows Classic</translation>
     </message>
     <message>
         <source>Fusion</source>
         <translation>Fusion</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation>По умолчанию</translation>
     </message>
 </context>
 <context>
@@ -881,12 +909,20 @@
         <translation>Доступно обновление</translation>
     </message>
     <message>
-        <source>Download</source>
-        <translation>Скачать</translation>
+        <source>A new version of ModeFlow is ready to install.</source>
+        <translation>Готова к установке новая версия ModeFlow.</translation>
     </message>
     <message>
-        <source>Close</source>
-        <translation>Закрыть</translation>
+        <source>Skip this version</source>
+        <translation>Пропустить эту версию</translation>
+    </message>
+    <message>
+        <source>Remind Me Later</source>
+        <translation>Напомнить позже</translation>
+    </message>
+    <message>
+        <source>Download</source>
+        <translation>Скачать</translation>
     </message>
 </context>
 <context>
@@ -946,10 +982,6 @@
     <message>
         <source>List of applications to launch when this profile is activated.</source>
         <translation>Список приложений для запуска при активации этого профиля.</translation>
-    </message>
-    <message>
-        <source>Update available</source>
-        <translation>Доступно обновление</translation>
     </message>
     <message>
         <source>Settings</source>

@@ -36,6 +36,7 @@ struct ConfigState {
     bool askConfirmation = true;
     qint64 lastUpdateCheckTimestamp = 0;
 
+    QString skippedVersion;
     bool loggingEnabled = false;
 
     bool operator==(const ConfigState&) const = default;
@@ -107,6 +108,9 @@ public:
 
     bool loggingEnabled() const;
     void setLoggingEnabled(bool enabled);
+
+    QString skippedVersion() const;
+    void setSkippedVersion(const QString& version);
 
 private:
     ConfigState takeSnapshot() const;

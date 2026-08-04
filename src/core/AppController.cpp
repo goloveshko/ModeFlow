@@ -23,6 +23,7 @@
 #include "TrayController.h"
 #include "UpdateDialog.h"
 #include "UpdateService.h"
+#include "VersionInfo.h"
 #include "WorkspaceManager.h"
 #include "WorkspaceService.h"
 #include "WorkspaceWindow.h"
@@ -301,9 +302,20 @@ void AppController::showUpdateDialog() {
     const QString version = m_services.updateService->latestVersion();
     const QString changelog = m_services.updateService->changelog();
     const QUrl downloadUrl = m_services.updateService->downloadUrl();
+    const QString currentVersion = Info::Version;
 
-    Gui::UpdateDialog dlg(m_services.styleManager.get(), version, changelog, downloadUrl, parentWindow());
-    dlg.exec();
+    Gui::UpdateDialog dlg(m_services.styleManager.get(), currentVersion, version, changelog, downloadUrl,
+                          parentWindow());
+    const int result = dlg.exec();
+
+    if (result == Gui::UpdateDialog::SkipVersionResult) {
+        qCDebug(lcCore) << "User chose to skip update version:" << version;
+        m_services.settingsManager->setSkippedVersion(version);
+        m_services.settingsManager->saveSettings();
+        if (m_services.workspaceWindow) {
+            m_services.workspaceWindow->setUpdateAvailable(false, {});
+        }
+    }
 }
 
 QWidget* AppController::parentWindow() const {

@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    ModeFlow – Dark Theme
    Fluent Design for Windows 11
    ============================================================ */
@@ -698,3 +698,65 @@ QLabel#labelEmptyDesc {
     color: rgba(255, 255, 255, 0.55);
 }
 
+/* ── More Button Update Badge State ─────────────────────── */
+#WorkspaceWindow QToolButton#btnMore[hasUpdate="true"] {
+    background-color: rgba(108, 168, 186, 0.16);
+    border: 1px solid rgba(108, 168, 186, 0.45);
+    border-radius: 6px;
+}
+
+#WorkspaceWindow QToolButton#btnMore[hasUpdate="true"]:hover {
+    background-color: rgba(108, 168, 186, 0.28);
+    border-color: rgba(108, 168, 186, 0.65);
+}
+
+/* ── Update Dialog Styling ───────────────────────────────── */
+QFrame#versionCardFrame {
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+}
+
+#UpdateDialog QLabel#titleLabel {
+    font-size: 14pt;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+#UpdateDialog QLabel#subtitleLabel {
+    font-size: 9.5pt;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+#UpdateDialog QLabel#labelCurrentVersion {
+    font-size: 9.5pt;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+#UpdateDialog QLabel#labelArrow {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #6ca8ba;
+}
+
+#UpdateDialog QLabel#labelNewVersion {
+    font-size: 9.5pt;
+    font-weight: 600;
+    color: #6ca8ba;
+}
+
+#UpdateDialog QPushButton#skipBtn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    text-decoration: none;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+#UpdateDialog QPushButton#skipBtn:hover {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: underline;
+}

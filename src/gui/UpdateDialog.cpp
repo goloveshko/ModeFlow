@@ -8,18 +8,13 @@
 
 namespace ModeFlow::Gui {
 
-using namespace Qt::StringLiterals;
-
-UpdateDialog::UpdateDialog(Core::IStyleManager* sm, const QString& version, const QString& changelog,
-                           const QUrl& downloadUrl, QWidget* parent)
+UpdateDialog::UpdateDialog(Core::IStyleManager* sm, const QString& currentVersion, const QString& latestVersion,
+                           const QString& changelog, const QUrl& downloadUrl, QWidget* parent)
     : BaseDialog(sm, parent), ui(std::make_unique<Ui::UpdateDialog>()) {
     ui->setupUi(this);
 
-    auto titleFont = ui->titleLabel->font();
-    titleFont.setPointSize(titleFont.pointSize() + 2);
-    titleFont.setBold(true);
-    ui->titleLabel->setFont(titleFont);
-    ui->titleLabel->setText(tr("Update Available — v%1").arg(version));
+    ui->labelCurrentVersion->setText(tr("Installed: v%1").arg(currentVersion));
+    ui->labelNewVersion->setText(tr("Latest: v%1").arg(latestVersion));
 
     if (!changelog.isEmpty()) {
         ui->changelogBrowser->setMarkdown(changelog);
@@ -29,10 +24,12 @@ UpdateDialog::UpdateDialog(Core::IStyleManager* sm, const QString& version, cons
 
     connect(ui->downloadBtn, &QPushButton::clicked, this, [this, downloadUrl]() {
         QDesktopServices::openUrl(downloadUrl);
-        accept();
+        done(DownloadResult);
     });
 
-    connect(ui->closeBtn, &QPushButton::clicked, this, &UpdateDialog::reject);
+    connect(ui->skipBtn, &QPushButton::clicked, this, [this]() { done(SkipVersionResult); });
+
+    connect(ui->closeBtn, &QPushButton::clicked, this, [this]() { done(CloseResult); });
 }
 
 UpdateDialog::~UpdateDialog() = default;

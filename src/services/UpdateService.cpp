@@ -33,9 +33,11 @@ void UpdateService::checkForUpdates(bool force) {
     if (m_checkInProgress)
         return;
 
+    m_isManualCheck = force;
+
     if (!force && !shouldCheck()) {
         qCDebug(lcService) << "Update check skipped (last check was <24h ago)";
-        if (m_updateAvailable) {
+        if (m_updateAvailable && m_configManager && m_latestVersion != m_configManager->skippedVersion()) {
             emit updateAvailable(m_latestVersion, m_downloadUrl, m_changelog);
         } else {
             emit noUpdateAvailable();
@@ -78,9 +80,9 @@ void UpdateService::onCheckReply(QNetworkReply* reply) {
     }
 
     const QJsonObject manifest = doc.object();
-    const QString latestVersion = manifest["version"].toString();
-    const QString changelog = manifest["changelog"].toString();
-    const QUrl downloadUrl(manifest["url"].toString());
+    const QString latestVersion = manifest[u"version"_s].toString();
+    const QString changelog = manifest[u"changelog"_s].toString();
+    const QUrl downloadUrl(manifest[u"url"_s].toString());
 
     if (latestVersion.isEmpty() || downloadUrl.isEmpty()) {
         qCWarning(lcService) << "Update manifest is missing required fields";
@@ -90,8 +92,8 @@ void UpdateService::onCheckReply(QNetworkReply* reply) {
 
     markChecked();
 
-    if (!isNewerVersion(latestVersion, APP_VERSION_STR)) {
-        qCDebug(lcService) << "Already up to date:" << APP_VERSION_STR;
+    if (!isNewerVersion(latestVersion, Info::Version)) {
+        qCDebug(lcService) << "Already up to date:" << Info::Version;
         clearCache();
         emit noUpdateAvailable();
         return;
@@ -104,6 +106,13 @@ void UpdateService::onCheckReply(QNetworkReply* reply) {
     m_changelog = changelog;
 
     saveUpdateToCache(manifest);
+
+    // Suppress update notification on automatic check if user chose to skip this specific version
+    if (!m_isManualCheck && m_configManager && m_configManager->skippedVersion() == latestVersion) {
+        qCDebug(lcService) << "Update" << latestVersion << "was skipped by user preference.";
+        emit noUpdateAvailable();
+        return;
+    }
 
     emit updateAvailable(latestVersion, downloadUrl, changelog);
 }
@@ -153,11 +162,11 @@ void UpdateService::loadCachedUpdate() {
     }
 
     const QJsonObject manifest = doc.object();
-    const QString version = manifest["version"].toString();
-    const QString url = manifest["url"].toString();
-    const QString changelog = manifest["changelog"].toString();
+    const QString version = manifest[u"version"_s].toString();
+    const QString url = manifest[u"url"_s].toString();
+    const QString changelog = manifest[u"changelog"_s].toString();
 
-    if (!isNewerVersion(version, APP_VERSION_STR)) {
+    if (!isNewerVersion(version, Info::Version)) {
         clearCache();
         return;
     }
