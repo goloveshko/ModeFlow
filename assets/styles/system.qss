@@ -2,15 +2,15 @@
    ModeFlow – System Theme (Pure Native Windows Look)
    ============================================================ */
 
-/* ── Spin Box ────────────────────────────────────────────── */
-QSpinBox {
-    padding: 1px;
+/* ── 1. Global & Windows ──────────────────────────────────── */
+QFileDialog {
+    background-color: rgb(240, 240, 240);
 }
 
-/* ── Tool Button (icon-only buttons: settings, about) ────── */
+/* ── 2. Buttons ───────────────────────────────────────────── */
 QToolButton {
     color: rgba(0, 0, 0, 0.6);
-    background-color: transparent;
+    background-color: transparent;Ы
     border: none;
     border-radius: 6px;
     padding: 6px;
@@ -38,27 +38,58 @@ QPushButton::menu-indicator {
     image: none;
 }
 
-#AboutDialog QLabel#labelIcon {
-    image: url(:/icons/light/icon.svg);
+QToolButton#btnBrowse {
+    border-radius: 4px;
+    padding: 4px;
+    margin: 1px;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-#AboutDialog QLabel#labelTitle {
-    font-size: 18pt;
-    font-weight: 700;
-    color: #1a1a1a;
+QToolButton#btnSettings:hover,
+QToolButton#btnAbout:hover,
+QToolButton#btnBrowse:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-#AboutDialog QLabel#labelVersion,
-#AboutDialog QLabel#labelDescription {
-    color: rgba(0, 0, 0, 0.7);
+QToolButton#btnSettings:focus,
+QToolButton#btnAbout:focus,
+QToolButton#btnBrowse:focus {
+    background: rgba(30, 93, 153, 0.1);
+    border: 1px solid rgba(30, 93, 153, 0.45);
 }
 
-#AboutDialog QLabel#labelDisclaimer {
-    font-size: 8pt;
-    font-style: italic;
-    color: rgba(0, 0, 0, 0.4);
+/* ── 3. Input & Choice Controls ───────────────────────────── */
+QSpinBox {
+    padding: 1px;
 }
 
+/* ── 4. StyleBridge Property Provider ─────────────────────── */
+#styleBridge {
+    qproperty-iconprefix: ":/icons/light";
+    qproperty-iconnormal: rgba(53, 79, 104, 0.9);
+    qproperty-iconactive: rgba(30, 93, 153, 0.95);
+    qproperty-icondisabled: rgba(0, 0, 0, 0.28);
+    qproperty-sidebaritemhoverbg: rgba(0, 0, 0, 0.05);
+    qproperty-sidebaritemselectedbg: rgba(30, 93, 153, 0.12);
+    qproperty-sidebartextnormal: #5d5d5d;
+    qproperty-sidebartextselected: #1f2f3f;
+    qproperty-sidebaraccent: #1e5d99;
+    /* LogViewer colors */
+    qproperty-logtimestamp: #707070;
+    qproperty-logcategory: #0066cc;
+    qproperty-logfunction: #7f7f00;
+    qproperty-logdebug: #666666;
+    qproperty-loginfo: #2e7d32;
+    qproperty-logwarning: #e65100;
+    qproperty-logcritical: #c62828;
+    qproperty-logfatal: #8e0000;
+}
+
+/* ── 5. Component-Specific Styles ─────────────────────────── */
+
+/* WorkspaceWindow */
 #WorkspaceWindow QPushButton#btnCapture,
 #AboutDialog QPushButton#btnGithub,
 #AboutDialog QPushButton#btnNewVersion,
@@ -81,62 +112,12 @@ QPushButton::menu-indicator {
     color: rgba(47, 112, 174, 0.95);
 }
 
-#AboutDialog QLabel#labelSeparator {
-    color: rgba(128, 128, 128, 0.35);
-    font-size: 14px;
-    font-weight: 400;
-    background: transparent;
+#WorkspaceWindow QToolButton#btnMore[hasUpdate="true"] {
+    background-color: rgba(30, 93, 153, 0.12);
+    border: 1px solid rgba(30, 93, 153, 0.35);
 }
 
-#styleBridge {
-    qproperty-iconprefix: ":/icons/light";
-    qproperty-iconnormal: rgba(53, 79, 104, 0.9);
-    qproperty-iconactive: rgba(30, 93, 153, 0.95);
-    qproperty-icondisabled: rgba(0, 0, 0, 0.28);
-
-    qproperty-sidebaritemhoverbg: rgba(0, 0, 0, 0.05);
-    qproperty-sidebaritemselectedbg: rgba(30, 93, 153, 0.12);
-    qproperty-sidebartextnormal: #5d5d5d;
-    qproperty-sidebartextselected: #1f2f3f;
-    qproperty-sidebaraccent: #1e5d99;
-
-    /* LogViewer colors */
-    qproperty-logtimestamp: #707070;
-    qproperty-logcategory: #0066CC;
-    qproperty-logfunction: #7F7F00;
-    qproperty-logdebug: #666666;
-    qproperty-loginfo: #2E7D32;
-    qproperty-logwarning: #E65100;
-    qproperty-logcritical: #C62828;
-    qproperty-logfatal: #8E0000;
-}
-
-QToolButton#btnAdd:hover,
-QToolButton#btnRemove:hover,
-QToolButton#btnSettings:hover,
-QToolButton#btnAbout:hover,
-QToolButton#btnBrowse:hover {
-    background: rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-QToolButton#btnAdd:focus,
-QToolButton#btnRemove:focus,
-QToolButton#btnSettings:focus,
-QToolButton#btnAbout:focus,
-QToolButton#btnBrowse:focus {
-    background: rgba(30, 93, 153, 0.1);
-    border: 1px solid rgba(30, 93, 153, 0.45);
-}
-
-QToolButton#btnBrowse {
-    border-radius: 4px;
-    padding: 4px;
-    margin: 1px;
-    background: rgba(0, 0, 0, 0.02);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
+/* Row Widgets */
 QWidget#profileRowWidget QToolButton#btnDeleteProfileInline,
 QWidget#appRowWidget QToolButton#btnDeleteAppInline {
     border: none;
@@ -152,60 +133,36 @@ QWidget#appRowWidget QToolButton#btnDeleteAppInline:hover {
     border-radius: 4px;
 }
 
-QToolButton#btnFollow:checked {
-    background-color: rgba(30, 93, 153, 0.12);
-    border: 1px solid rgba(30, 93, 153, 0.28);
+/* AboutDialog */
+#AboutDialog QLabel#labelIcon {
+    image: url(:/icons/light/icon.svg);
 }
 
-#btnRecordLog {
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    background-color: rgba(0, 0, 0, 0.02);
-    border-radius: 4px;
-}
-
-#btnRecordLog:checked {
-    color: #D32F2F;
-    border-color: rgba(211, 47, 47, 0.35);
-    background-color: rgba(211, 47, 47, 0.12);
-}
-
-#btnRecordLog:hover {
-    background-color: rgba(0, 0, 0, 0.06);
-}
-
-QFileDialog {
-    background-color: rgb(240, 240, 240);
-}
-
-QFileDialog QTreeView,
-QFileDialog QListView {
-    background-color: rgba(255, 255, 255, 0.6);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 6px;
+#AboutDialog QLabel#labelTitle {
+    font-size: 18pt;
+    font-weight: 700;
     color: #1a1a1a;
 }
 
-/* ── File Dialog Dropdowns (System Theme Contrast Fix) ───── */
-QFileDialog QAbstractItemView,
-QFileDialog QComboBox QAbstractItemView {
-    background-color: #ffffff !important;
-    color: #1a1a1a !important;
-    border: 1px solid rgba(0, 0, 0, 0.12) !important;
+#AboutDialog QLabel#labelVersion,
+#AboutDialog QLabel#labelDescription {
+    color: rgba(0, 0, 0, 0.7);
 }
 
-QFileDialog QAbstractItemView::item:selected {
-    background-color: rgba(30, 93, 153, 0.08) !important;
-    color: #1a1a1a !important;
+#AboutDialog QLabel#labelDisclaimer {
+    font-size: 8pt;
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.4);
 }
 
-/* ── More Button Update Badge State ─────────────────────── */
-#WorkspaceWindow QToolButton#btnMore[hasUpdate="true"] {
-    background-color: rgba(30, 93, 153, 0.12);
-    border: 1px solid rgba(30, 93, 153, 0.35);
-    border-radius: 6px;
+#AboutDialog QLabel#labelSep1 {
+    color: rgba(128, 128, 128, 0.35);
+    font-size: 14px;
+    font-weight: 400;
+    background: transparent;
 }
 
-/* ── Update Dialog Styling ───────────────────────────────── */
+/* UpdateDialog */
 #UpdateDialog QLabel#titleLabel {
     font-size: 14pt;
     font-weight: 600;
@@ -222,12 +179,7 @@ QFileDialog QAbstractItemView::item:selected {
     color: rgba(0, 0, 0, 0.7);
 }
 
-#UpdateDialog QLabel#labelArrow {
-    font-size: 11pt;
-    font-weight: 600;
-    color: #1e5d99;
-}
-
+#UpdateDialog QLabel#labelArrow,
 #UpdateDialog QLabel#labelNewVersion {
     font-size: 9.5pt;
     font-weight: 600;
@@ -248,4 +200,47 @@ QFileDialog QAbstractItemView::item:selected {
 #UpdateDialog QPushButton#skipBtn:hover {
     color: rgba(0, 0, 0, 0.85);
     text-decoration: underline;
+}
+
+/* LogViewerDialog */
+QToolButton#btnFollow:checked {
+    background-color: rgba(30, 93, 153, 0.12);
+    border: 1px solid rgba(30, 93, 153, 0.28);
+}
+
+#btnRecordLog {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 4px;
+}
+
+#btnRecordLog:checked {
+    color: #d32f2f;
+    border-color: rgba(211, 47, 47, 0.35);
+    background-color: rgba(211, 47, 47, 0.12);
+}
+
+#btnRecordLog:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+/* QFileDialog */
+QFileDialog QTreeView,
+QFileDialog QListView {
+    background-color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+    color: #1a1a1a;
+}
+
+QFileDialog QAbstractItemView,
+QFileDialog QComboBox QAbstractItemView {
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
+    border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+QFileDialog QAbstractItemView::item:selected {
+    background-color: rgba(30, 93, 153, 0.08) !important;
+    color: #1a1a1a !important;
 }

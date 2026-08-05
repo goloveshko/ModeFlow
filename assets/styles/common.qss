@@ -1,63 +1,78 @@
-/* ============================================================
+﻿/* ============================================================
    ModeFlow – Common Styles
-   Theme-agnostic rules, applied on top of dark.qss / light.qss
+   Theme-agnostic base rules, applied on top of dark.qss / light.qss
    ============================================================ */
 
-/* ── Global ──────────────────────────────────────────────── */
+/* ── 1. Global ────────────────────────────────────────────── */
 * {
     font-family: "Segoe UI Variable Text", "Segoe UI", sans-serif;
     font-size: 9pt;
     outline: 0;
 }
 
-/* ── Tab Widget ──────────────────────────────────────────── */
-QTabBar {
-    background: transparent;
+QLabel {
+    background-color: transparent;
 }
 
-QTabBar::tab {
-    background: transparent;
-    padding: 8px 20px;
-    margin-right: 2px;
-    border-bottom: 2px solid transparent;
+QToolTip {
+    border-radius: 6px;
+    padding: 5px 10px;
 }
 
-/* ── Push Button ─────────────────────────────────────────── */
+QSizeGrip {
+    width: 16px;
+    height: 16px;
+    margin: 0 6px 6px 0;
+    padding: 0;
+    border-radius: 4px;
+}
+
+/* ── 2. Buttons ───────────────────────────────────────────── */
 QPushButton {
     border-radius: 6px;
     padding: 6px 16px;
-    margin: 1px; /* Reserve room for a visible focus/default ring. */
+    margin: 1px;
 }
 
-/* ── Tool Button ─────────────────────────────────────────── */
+QDialog QPushButton {
+    min-width: 80px;
+}
+
 QToolButton {
     background-color: transparent;
     border: none;
     border-radius: 6px;
     padding: 6px;
-    margin: 1px; /* Reserve room for a visible focus ring. */
+    margin: 1px;
 }
 
-/* ── Line Edit ───────────────────────────────────────────── */
+QToolButton::menu-indicator,
+QPushButton::menu-indicator {
+    image: none;
+}
+
+/* ── 3. Input & Choice Controls ───────────────────────────── */
 QLineEdit,
-QTextEdit {
-    border-radius: 4px;
-    padding: 5px 10px;
+QTextEdit,
+QPlainTextEdit,
+QKeySequenceEdit,
+QSpinBox,
+QComboBox {
+    margin: 1px;
     selection-background-color: #0078d4;
 }
 
-/* ── Key Sequence Edit ───────────────────────────────────── */
-QKeySequenceEdit {
-    border-radius: 4px;
-    padding: 5px 10px;
-    selection-background-color: #0078d4;
-}
-
-/* ── Spin Box ────────────────────────────────────────────── */
+QLineEdit,
+QTextEdit,
+QKeySequenceEdit,
 QSpinBox {
     border-radius: 4px;
     padding: 5px 10px;
-    selection-background-color: #0078d4;
+}
+
+QPlainTextEdit {
+    border-radius: 6px;
+    padding: 4px;
 }
 
 QSpinBox::up-button,
@@ -68,14 +83,7 @@ QSpinBox::down-button {
     border-radius: 3px;
 }
 
-/* CSS triangle – border trick, works in QSS unlike content: */
-QSpinBox::up-arrow {
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    width: 0;
-    height: 0;
-}
-
+QSpinBox::up-arrow,
 QSpinBox::down-arrow {
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
@@ -83,7 +91,6 @@ QSpinBox::down-arrow {
     height: 0;
 }
 
-/* ── Combo Box ───────────────────────────────────────────── */
 QComboBox {
     border-radius: 4px;
     padding: 5px 10px;
@@ -95,7 +102,6 @@ QComboBox::drop-down {
     width: 24px;
 }
 
-/* CSS triangle for dropdown arrow */
 QComboBox::down-arrow {
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
@@ -116,33 +122,6 @@ QComboBox QAbstractItemView::item {
     background-color: transparent;
 }
 
-/* ── List View ───────────────────────────────────────────── */
-QListView {
-    border: none;
-    outline: none;
-    padding-top: 10px;
-}
-
-/* Item styling is handled by delegate, not QSS */
-QListView::item {
-    background: transparent;
-    border: none;
-}
-
-/* ── List Widget (standalone lists without custom delegate) ── */
-QListWidget {
-    padding-top: 0px;
-}
-
-QListWidget::item {
-    border: none;
-}
-
-QListWidget::item:selected {
-    border: none;
-}
-
-/* ── Check Box ───────────────────────────────────────────── */
 QCheckBox {
     spacing: 8px;
     background: transparent;
@@ -158,34 +137,38 @@ QCheckBox::indicator:checked {
     image: url(:/icons/check_mark.svg);
 }
 
-/* ── Label ───────────────────────────────────────────────── */
-QLabel {
-    background-color: transparent;
+/* ── 4. Lists, Tabs & Scrollbars ──────────────────────────── */
+QTabBar {
+    background: transparent;
 }
 
-/* ── Group Box ───────────────────────────────────────────── */
-QGroupBox {
+QTabBar::tab {
+    background: transparent;
+    padding: 8px 20px;
+    margin-right: 2px;
+    border-bottom: 2px solid transparent;
+}
+
+QListView {
     border: none;
-    padding-top: 4px;
-    background-color: transparent;
+    outline: none;
+    padding-top: 10px;
 }
 
-QGroupBox::title {
-    subcontrol-origin: margin;
-    subcontrol-position: top left;
-    left: 0px;
-    top: 4px;
-    padding: 0 6px 0 0;
-    letter-spacing: 0.3px;
-}
-
-/* ── Frame separators ────────────────────────────────────── */
-QFrame[frameShape="4"],
-QFrame[frameShape="5"] {
+QListView::item {
+    background: transparent;
     border: none;
 }
 
-/* ── Scroll Area ─────────────────────────────────────────── */
+QListWidget {
+    padding-top: 0px;
+}
+
+QListWidget::item,
+QListWidget::item:selected {
+    border: none;
+}
+
 QScrollArea {
     border: none;
     background-color: transparent;
@@ -195,7 +178,6 @@ QScrollArea QWidget {
     background-color: transparent;
 }
 
-/* ── Scroll Bar ──────────────────────────────────────────── */
 QScrollBar:vertical {
     background: transparent;
     width: 6px;
@@ -234,21 +216,34 @@ QScrollBar::sub-page:horizontal {
     width: 0;
 }
 
-/* ── Plain Text Edit ─────────────────────────────────────── */
-QPlainTextEdit {
-    border-radius: 6px;
-    padding: 4px;
-    selection-background-color: #0078d4;
+/* ── 5. Containers & Menus ────────────────────────────────── */
+QGroupBox {
+    border: none;
+    padding-top: 4px;
+    background-color: transparent;
 }
 
-/* ── Menu ────────────────────────────────────────────────── */
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    left: 0px;
+    top: 4px;
+    padding: 0 6px 0 0;
+    letter-spacing: 0.3px;
+}
+
+QFrame[frameShape="4"],
+QFrame[frameShape="5"] {
+    border: none;
+}
+
 QMenu {
     border-radius: 8px;
     padding: 4px;
 }
 
 QMenu#moreMenu {
-	icon-size: 20px;
+    icon-size: 20px;
     background-color: #ffffff;
     border: 1px solid #e2e8f0;
 }
@@ -284,21 +279,58 @@ QToolButton#profileIconOption {
     margin: 0;
 }
 
-/* ── Tool Tip ────────────────────────────────────────────── */
-QToolTip {
+/* ── 6. Component-Specific Styles ─────────────────────────── */
+
+/* WorkspaceWindow */
+#WorkspaceWindow QPushButton#btnCapture,
+#WorkspaceWindow QPushButton#btnCreateProfile {
+    background: transparent;
+    border: none;
+    text-align: center;
+    font-weight: 500;
+}
+
+#WorkspaceWindow QPushButton#btnCapture:hover {
+    text-decoration: underline;
+}
+
+#WorkspaceWindow QPushButton#btnCreateProfile {
+    border-radius: 0px;
+    outline: none;
+    qproperty-iconsize: 14px 14px;
+    padding: 10px 16px;
+    margin: 0;
+}
+
+QToolButton#btnSettings,
+QToolButton#btnAbout,
+QToolButton#btnBrowse {
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+QToolButton#btnSettings:hover,
+QToolButton#btnAbout:hover,
+QToolButton#btnBrowse:hover {
     border-radius: 6px;
-    padding: 5px 10px;
 }
 
-/* ── Size Grip ───────────────────────────────────────────── */
-QSizeGrip {
-    width: 16px;
-    height: 16px;
-    margin: 0 6px 6px 0;
+/* Inline List Row Widgets */
+QWidget#appRowWidget QToolButton#btnDeleteAppInline,
+QWidget#profileRowWidget QToolButton#btnDeleteProfileInline {
+    border: none;
+    background: transparent;
     padding: 0;
-    border-radius: 4px;
+    margin: 0;
+    qproperty-iconsize: 0px 0px;
 }
 
+QWidget#appRowWidget:hover QToolButton#btnDeleteAppInline,
+QWidget#profileRowWidget:hover QToolButton#btnDeleteProfileInline {
+    qproperty-iconsize: 14px 14px;
+}
+
+/* AboutDialog */
 #AboutDialog QLabel#labelTitle {
     font-size: 18pt;
     font-weight: 700;
@@ -309,7 +341,6 @@ QSizeGrip {
     font-style: italic;
 }
 
-#WorkspaceWindow QPushButton#btnCapture,
 #AboutDialog QPushButton#btnGithub,
 #AboutDialog QPushButton#btnNewVersion,
 #AboutDialog QPushButton#btnLicenses {
@@ -322,88 +353,15 @@ QSizeGrip {
     font-weight: 500;
 }
 
-#WorkspaceWindow QPushButton#btnCapture:hover,
 #AboutDialog QPushButton#btnGithub:hover,
 #AboutDialog QPushButton#btnNewVersion:hover,
 #AboutDialog QPushButton#btnLicenses:hover {
     text-decoration: underline;
 }
 
-#AboutDialog QLabel#labelSeparator {
+#AboutDialog QLabel#labelSep1 {
     color: rgba(128, 128, 128, 0.35);
     font-size: 14px;
     font-weight: 400;
     background: transparent;
-}
-
-QLineEdit,
-QSpinBox,
-QComboBox {
-    margin: 1px;
-}
-
-QToolButton#btnAdd,
-QToolButton#btnRemove,
-QToolButton#btnSettings,
-QToolButton#btnAbout,
-QToolButton#btnBrowse {
-    background: transparent;
-    border: 1px solid transparent;
-}
-
-QToolButton#btnAdd:hover,
-QToolButton#btnRemove:hover,
-QToolButton#btnSettings:hover,
-QToolButton#btnAbout:hover,
-QToolButton#btnBrowse:hover {
-    border-radius: 6px;
-}
-
-QToolButton::menu-indicator,
-QPushButton::menu-indicator {
-    image: none;
-}
-
-QWidget#appRowWidget QToolButton#btnDeleteAppInline {
-    border: none;
-    background: transparent;
-    padding: 0;
-    margin: 0;
-    qproperty-iconSize: 0px 0px;
-}
-
-QWidget#appRowWidget:hover QToolButton#btnDeleteAppInline {
-    qproperty-iconSize: 14px 14px;
-}
-
-QWidget#profileRowWidget QToolButton#btnDeleteProfileInline {
-    border: none;
-    background: transparent;
-    padding: 0;
-    margin: 0;
-    qproperty-iconSize: 0px 0px;
-}
-
-QWidget#profileRowWidget:hover QToolButton#btnDeleteProfileInline {
-    qproperty-iconSize: 14px 14px;
-}
-
-QWidget#appRowWidget[selected="true"] QToolButton#btnDeleteAppInline {
-    qproperty-iconSize: 0px 0px;
-}
-
-#WorkspaceWindow QPushButton#btnCreateProfile {
-    background: transparent;
-    border: none;
-    border-radius: 0px;
-    outline: none;
-    text-align: center;
-    qproperty-iconSize: 14px 14px;
-    padding: 10px 16px;
-    margin: 0;
-    font-weight: 500;
-}
-
-QDialog QPushButton {
-    min-width: 80px;
 }

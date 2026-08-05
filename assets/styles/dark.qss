@@ -23,40 +23,53 @@
    - Selected backgrounds and focus accents: use primary accent or soft accent background.
 */
 
-/* ── Window & Dialogs ────────────────────────────────────── */
-QDialog {
+/* ── 1. Global & Windows ──────────────────────────────────── */
+QDialog,
+QFileDialog {
     background-color: rgb(28, 28, 28);
 }
 
-/* ── Widget base ─────────────────────────────────────────── */
+QMessageBox {
+    background-color: rgba(30, 30, 30, 0.9);
+}
+
 QWidget {
     background-color: transparent;
     color: #e0e0e0;
 }
 
-/* ── Tab Widget ──────────────────────────────────────────── */
-QTabWidget::pane {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background-color: #252525;
-    border-radius: 8px;
-}
-
-QTabBar::tab {
-    color: rgba(255, 255, 255, 0.55);
-}
-
-QTabBar::tab:selected {
+QLabel {
     color: #e0e0e0;
-    border-bottom: 2px solid #6ca8ba;
 }
 
-QTabBar::tab:hover:!selected {
-    background: rgba(32, 32, 32, 0.8);
-    color: rgba(255, 255, 255, 0.85);
-    border-radius: 4px 4px 0 0;
+QToolTip {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* ── Push Button ─────────────────────────────────────────── */
+QSizeGrip {
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+QSizeGrip:hover {
+    background-color: rgba(108, 168, 186, 0.16);
+    border: 1px solid rgba(108, 168, 186, 0.34);
+}
+
+QSizeGrip:pressed {
+    background-color: rgba(108, 168, 186, 0.24);
+    border: 1px solid rgba(108, 168, 186, 0.46);
+}
+
+QStatusBar {
+    background-color: #1c1c1c;
+    color: rgba(255, 255, 255, 0.5);
+    border-top: 1px solid rgba(32, 32, 32, 0.8);
+}
+
+/* ── 2. Buttons ───────────────────────────────────────────── */
 QPushButton {
     background-color: rgba(32, 32, 32, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -88,11 +101,10 @@ QPushButton:disabled {
     color: rgba(255, 255, 255, 0.28);
 }
 
-/* ── Primary Push Button (Dark Theme) ────────────────────── */
 QPushButton:default {
-    background-color: #6ca8ba; /* Solid Fluent Accent for Dark Theme */
+    background-color: #6ca8ba;
     border: 1px solid #6ca8ba;
-    color: #0d1e21; /* High-contrast dark text on light-blue background */
+    color: #0d1e21;
     font-weight: 600;
 }
 
@@ -114,7 +126,6 @@ QPushButton:default:disabled {
     color: rgba(255, 255, 255, 0.28);
 }
 
-/* ── Tool Button (icon-only buttons: settings, about) ────── */
 QToolButton {
     margin: 2px;
 }
@@ -133,9 +144,35 @@ QToolButton:pressed {
     background-color: rgba(255, 255, 255, 0.03);
 }
 
-/* ── Line Edit ───────────────────────────────────────────── */
+QToolButton#btnSettings:hover,
+QToolButton#btnAbout:hover,
+QToolButton#btnProfileIcon:hover,
+QToolButton#btnBrowse:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+}
+
+QToolButton#btnSettings:focus,
+QToolButton#btnAbout:focus,
+QToolButton#btnProfileIcon:focus,
+QToolButton#btnBrowse:focus {
+    background: rgba(108, 168, 186, 0.14);
+    border: 1px solid rgba(108, 168, 186, 0.5);
+    border-radius: 6px;
+}
+
+QToolButton#btnProfileIcon,
+QToolButton#btnBrowse {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ── 3. Input & Choice Controls ───────────────────────────── */
 QLineEdit,
-QTextEdit {
+QTextEdit,
+QKeySequenceEdit,
+QSpinBox {
     background-color: rgba(0, 0, 0, 0.2);
     color: #e0e0e0;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -145,14 +182,21 @@ QTextEdit {
 }
 
 QLineEdit:hover,
-QTextEdit:hover {
+QTextEdit:hover,
+QSpinBox:hover {
     background-color: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 QLineEdit:focus,
-QTextEdit:focus {
+QTextEdit:focus,
+QKeySequenceEdit:focus,
+QSpinBox:focus {
     border-color: #6ca8ba;
+}
+
+QLineEdit:focus,
+QTextEdit:focus {
     background-color: rgba(0, 0, 0, 0.25);
 }
 
@@ -164,44 +208,7 @@ QTextEdit:read-only {
 }
 
 QLineEdit:disabled,
-QTextEdit:disabled {
-    color: rgba(255, 255, 255, 0.28);
-    background-color: rgba(255, 255, 255, 0.03);
-}
-
-/* ── Key Sequence Edit ───────────────────────────────────── */
-QKeySequenceEdit {
-    background-color: rgba(0, 0, 0, 0.2);
-    color: #e0e0e0;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom-color: rgba(255, 255, 255, 0.16);
-    selection-background-color: #6ca8ba;
-    selection-color: #08151a;
-}
-
-QKeySequenceEdit:focus {
-    border-color: #6ca8ba;
-}
-
-/* ── Spin Box ────────────────────────────────────────────── */
-QSpinBox {
-    background-color: rgba(0, 0, 0, 0.2);
-    color: #e0e0e0;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom-color: rgba(255, 255, 255, 0.16);
-    selection-background-color: #6ca8ba;
-    selection-color: #08151a;
-}
-
-QSpinBox:hover {
-    background-color: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-}
-
-QSpinBox:focus {
-    border-color: #6ca8ba;
-}
-
+QTextEdit:disabled,
 QSpinBox:disabled {
     color: rgba(255, 255, 255, 0.28);
     background-color: rgba(255, 255, 255, 0.03);
@@ -231,7 +238,6 @@ QSpinBox::down-arrow:disabled {
     border-top-color: rgba(255, 255, 255, 0.22);
 }
 
-/* ── Combo Box ───────────────────────────────────────────── */
 QComboBox {
     background-color: rgba(32, 32, 32, 0.8);
     color: #e0e0e0;
@@ -270,7 +276,6 @@ QComboBox QAbstractItemView {
 }
 
 QComboBox QAbstractItemView::item:hover {
-
     background-color: rgba(255, 255, 255, 0.07);
 }
 
@@ -279,34 +284,6 @@ QComboBox QAbstractItemView::item:selected {
     color: #e7f1f4;
 }
 
-/* ── List View ───────────────────────────────────────────── */
-QListView {
-    background-color: rgba(0, 0, 0, 0.15);
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
-    padding-bottom: 10px;
-}
-
-QListWidget {
-    background-color: rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 4px;
-}
-
-QListWidget::item {
-    color: #aaaaaa;
-    padding: 4px 8px;
-}
-
-QListWidget::item:selected {
-    background-color: rgba(108, 168, 186, 0.16);
-    color: #eef4f6;
-}
-
-QListWidget::item:hover:!selected {
-    background-color: rgba(255, 255, 255, 0.07);
-}
-
-/* ── Check Box ───────────────────────────────────────────── */
 QCheckBox {
     color: #e8e8e8;
 }
@@ -351,63 +328,69 @@ QCheckBox::indicator:checked:disabled {
     background-color: #5e6878;
 }
 
-/* ── Label ───────────────────────────────────────────────── */
-QLabel {
-    color: #e0e0e0;
-}
-
-/* ── Group Box (Fluent Cards for Dark Theme) ─────────────── */
-QGroupBox {
-    background-color: rgba(255, 255, 255, 0.03); /* Soft translucent card background on top of Mica */
-    border: 1px solid rgba(255, 255, 255, 0.08); /* Low-contrast Fluent border */
+/* ── 4. Lists, Tabs & Scrollbars ──────────────────────────── */
+QTabWidget::pane {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: #252525;
     border-radius: 8px;
-    margin-top: 24px; /* Leaves perfect whitespace for the section header to sit above */
-    padding: 12px 12px 12px 12px; /* Generous padding inside the card container */
 }
 
-QGroupBox::title {
-    subcontrol-origin: margin;
-    subcontrol-position: top left;
-    left: 4px;
-    top: 4px; /* Positions the text cleanly above the card's top border */
-    font-weight: 600;
-    font-size: 9.5pt;
-    color: rgba(255, 255, 255, 0.9);
+QTabBar::tab {
+    color: rgba(255, 255, 255, 0.55);
 }
 
-/* ── Frame separators ────────────────────────────────────── */
-QFrame[frameShape="4"],
-QFrame[frameShape="5"] {
-    color: rgba(255, 255, 255, 0.1);
-    background-color: rgba(255, 255, 255, 0.1);
+QTabBar::tab:selected {
+    color: #e0e0e0;
+    border-bottom: 2px solid #6ca8ba;
 }
 
-/* ── Scroll Bar ──────────────────────────────────────────── */
-QScrollBar::handle:vertical {
-    background: rgba(255, 255, 255, 0.18);
+QTabBar::tab:hover:!selected {
+    background: rgba(32, 32, 32, 0.8);
+    color: rgba(255, 255, 255, 0.85);
+    border-radius: 4px 4px 0 0;
 }
 
-QScrollBar::handle:vertical:hover {
-    background: rgba(255, 255, 255, 0.38);
+QListView {
+    background-color: rgba(0, 0, 0, 0.15);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 10px;
 }
 
-QScrollBar::handle:vertical:pressed {
-    background: rgba(255, 255, 255, 0.55);
+QListWidget {
+    background-color: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
 }
 
+QListWidget::item {
+    color: #aaaaaa;
+    padding: 4px 8px;
+}
+
+QListWidget::item:selected {
+    background-color: rgba(108, 168, 186, 0.16);
+    color: #eef4f6;
+}
+
+QListWidget::item:hover:!selected {
+    background-color: rgba(255, 255, 255, 0.07);
+}
+
+QScrollBar::handle:vertical,
 QScrollBar::handle:horizontal {
     background: rgba(255, 255, 255, 0.18);
 }
 
+QScrollBar::handle:vertical:hover,
 QScrollBar::handle:horizontal:hover {
     background: rgba(255, 255, 255, 0.38);
 }
 
+QScrollBar::handle:vertical:pressed,
 QScrollBar::handle:horizontal:pressed {
     background: rgba(255, 255, 255, 0.55);
 }
 
-/* ── Plain Text Edit ─────────────────────────────────────── */
 QPlainTextEdit {
     background-color: rgba(0, 0, 0, 0.3);
     color: rgba(255, 255, 255, 0.9);
@@ -420,7 +403,31 @@ QPlainTextEdit:focus {
     border-color: rgba(108, 168, 186, 0.68);
 }
 
-/* ── Menu ────────────────────────────────────────────────── */
+/* ── 5. Containers & Menus ────────────────────────────────── */
+QGroupBox {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    margin-top: 24px;
+    padding: 12px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    left: 4px;
+    top: 4px;
+    font-weight: 600;
+    font-size: 9.5pt;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+QFrame[frameShape="4"],
+QFrame[frameShape="5"] {
+    color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
 QMenu {
     background-color: #2c2c2c;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -472,68 +479,7 @@ QToolButton#profileIconOption[selected="true"] {
     border: 1px solid rgba(108, 168, 186, 0.42);
 }
 
-/* ── Tool Tip ────────────────────────────────────────────── */
-QToolTip {
-    background-color: #2d2d2d;
-    color: #e0e0e0;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-QSizeGrip {
-    background-color: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-QSizeGrip:hover {
-    background-color: rgba(108, 168, 186, 0.16);
-    border: 1px solid rgba(108, 168, 186, 0.34);
-}
-
-QSizeGrip:pressed {
-    background-color: rgba(108, 168, 186, 0.24);
-    border: 1px solid rgba(108, 168, 186, 0.46);
-}
-
-/* ── Status Bar ──────────────────────────────────────────── */
-QStatusBar {
-    background-color: #1c1c1c;
-    color: rgba(255, 255, 255, 0.5);
-    border-top: 1px solid rgba(32, 32, 32, 0.8);
-}
-
-#AboutDialog QLabel#labelIcon {
-    image: url(:/icons/dark/icon.svg);
-}
-
-/* About Dialog */
-#AboutDialog QLabel#labelTitle {
-    color: #ffffff;
-}
-
-#AboutDialog QLabel#labelVersion,
-#AboutDialog QLabel#labelDescription {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-#AboutDialog QLabel#labelDisclaimer {
-    color: rgba(255, 255, 255, 0.4);
-}
-
-/* Links */
-#WorkspaceWindow QPushButton#btnCapture,
-#AboutDialog QPushButton#btnGithub,
-#AboutDialog QPushButton#btnNewVersion,
-#AboutDialog QPushButton#btnLicenses {
-    color: rgba(149, 189, 202, 0.88);
-}
-
-#WorkspaceWindow QPushButton#btnCapture:hover,
-#AboutDialog QPushButton#btnGithub:hover,
-#AboutDialog QPushButton#btnNewVersion:hover,
-#AboutDialog QPushButton#btnLicenses:hover {
-    color: rgba(180, 210, 220, 0.96);
-}
-
+/* ── 6. StyleBridge Property Provider ─────────────────────── */
 #styleBridge {
     qproperty-iconprefix: ":/icons/dark";
     qproperty-iconnormal: rgba(214, 222, 228, 0.84);
@@ -548,81 +494,36 @@ QStatusBar {
 
     /* LogViewer colors */
     qproperty-logtimestamp: #808080;
-    qproperty-logcategory: #64B4FF;
-    qproperty-logfunction: #B4B464;
+    qproperty-logcategory: #64b4ff;
+    qproperty-logfunction: #b4b464;
     qproperty-logdebug: #888888;
-    qproperty-loginfo: #4CAF50;
-    qproperty-logwarning: #FF9800;
-    qproperty-logcritical: #F44336;
-    qproperty-logfatal: #B71C1C;
+    qproperty-loginfo: #4caf50;
+    qproperty-logwarning: #ff9800;
+    qproperty-logcritical: #f44336;
+    qproperty-logfatal: #b71c1c;
 }
 
-QMessageBox {
-    background-color: rgba(30, 30, 30, 0.9);
+/* ── 7. Component-Specific Styles ─────────────────────────── */
+
+/* WorkspaceWindow */
+#WorkspaceWindow QPushButton#btnCapture,
+#WorkspaceWindow QPushButton#btnGithub,
+#WorkspaceWindow QPushButton#btnNewVersion,
+#WorkspaceWindow QPushButton#btnLicenses {
+    color: rgba(149, 189, 202, 0.88);
 }
 
-QToolButton#btnAdd:hover,
-QToolButton#btnRemove:hover,
-QToolButton#btnSettings:hover,
-QToolButton#btnAbout:hover,
-QToolButton#btnProfileIcon:hover,
-QToolButton#btnBrowse:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-}
-
-QToolButton#btnAdd:focus,
-QToolButton#btnRemove:focus,
-QToolButton#btnSettings:focus,
-QToolButton#btnAbout:focus,
-QToolButton#btnProfileIcon:focus,
-QToolButton#btnBrowse:focus {
-    background: rgba(108, 168, 186, 0.14);
-    border: 1px solid rgba(108, 168, 186, 0.5);
-    border-radius: 6px;
-}
-
-QToolButton#btnProfileIcon,
-QToolButton#btnBrowse {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-#WorkspaceWindow QToolButton#btnUpdate {
-    color: rgba(149, 189, 202, 0.96);
-}
-
-QWidget#profileRowWidget QToolButton#btnDeleteProfileInline,
-QWidget#appRowWidget QToolButton#btnDeleteAppInline {
-    border: 1px solid rgba(255, 255, 255, 0.08); /* Very soft low-contrast outline */
-    background-color: rgba(255, 255, 255, 0.02); /* Translucent resting fill */
-    border-radius: 4px;
-    padding: 0;
-    margin: 0;
-}
-
-QWidget#profileRowWidget QToolButton#btnDeleteProfileInline:hover,
-QWidget#appRowWidget QToolButton#btnDeleteAppInline:hover {
-	background-color: rgba(244, 67, 54, 0.18); /* Soft warnings-red fill */
-    border: 1px solid rgba(244, 67, 54, 0.35);  /* Red outline */
-}
-
-QWidget#appRowWidget QLabel#appAddIconLabel,
-QWidget#appRowWidget QLabel#appAddTextLabel {
-    color: rgba(255, 255, 255, 0.4);
-}
-
-QWidget#appRowWidget:hover QLabel#profileIconLabel,
-QWidget#appRowWidget:hover QLabel#appAddTextLabel {
-    color: #6ca8ba;
+#WorkspaceWindow QPushButton#btnCapture:hover,
+#WorkspaceWindow QPushButton#btnGithub:hover,
+#WorkspaceWindow QPushButton#btnNewVersion:hover,
+#WorkspaceWindow QPushButton#btnLicenses:hover {
+    color: rgba(180, 210, 220, 0.96);
 }
 
 #WorkspaceWindow QPushButton#btnCreateProfile {
     background-color: rgba(0, 0, 0, 0.15);
     color: rgba(255, 255, 255, 0.5);
-    
-    border-right: 1px solid rgba(255, 255, 255, 0.05); 
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -631,74 +532,6 @@ QWidget#appRowWidget:hover QLabel#appAddTextLabel {
     color: #eef4f6;
 }
 
-/* ── Log Viewer Active Auto-scroll Button (Dark Theme) ───── */
-QToolButton#btnFollow:checked {
-    background-color: rgba(108, 168, 186, 0.16); /* Soft biqyuoise theme accent */
-    border: 1px solid rgba(108, 168, 186, 0.34);
-}
-
-/* ── Log Viewer Record Button (Dark Theme) ──────────────── */
-#btnRecordLog {
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background-color: rgba(255, 255, 255, 0.02);
-    border-radius: 4px;
-}
-
-#btnRecordLog:checked {
-    color: #F44336;
-    border-color: rgba(244, 67, 54, 0.35);
-    background-color: rgba(244, 67, 54, 0.12);
-}
-
-#btnRecordLog:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-}
-
-/* ── File Dialog (DontUseNativeDialog Styling) ───────────── */
-QFileDialog {
-    background-color: rgb(28, 28, 28);
-}
-
-/* Beautiful dark translucent file grid containers on top of Mica */
-QFileDialog QTreeView,
-QFileDialog QListView {
-    background-color: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
-    color: #e0e0e0;
-}
-
-/* ── File Dialog Dropdowns (Dark Theme Contrast Fix) ─────── */
-QFileDialog QAbstractItemView,
-QFileDialog QComboBox QAbstractItemView {
-    background-color: #2c2c2c !important;
-    color: #e0e0e0 !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-}
-
-QFileDialog QAbstractItemView::item:selected {
-    background-color: rgba(108, 168, 186, 0.2) !important;
-    color: #e7f1f4 !important;
-}
-
-/* Soft, semi-transparent grey for the Fluent empty-state illustration */
-QLabel#labelEmptyIcon {
-    font-family: "Font Awesome 7 Free";
-    color: rgba(255, 255, 255, 0.25);
-}
-
-QLabel#labelEmptyTitle {
-    font-size: 11pt;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-}
-
-QLabel#labelEmptyDesc {
-    font-size: 9.5pt;
-    color: rgba(255, 255, 255, 0.55);
-}
-
-/* ── More Button Update Badge State ─────────────────────── */
 #WorkspaceWindow QToolButton#btnMore[hasUpdate="true"] {
     background-color: rgba(108, 168, 186, 0.16);
     border: 1px solid rgba(108, 168, 186, 0.45);
@@ -710,7 +543,41 @@ QLabel#labelEmptyDesc {
     border-color: rgba(108, 168, 186, 0.65);
 }
 
-/* ── Update Dialog Styling ───────────────────────────────── */
+/* Row Widgets */
+QWidget#profileRowWidget QToolButton#btnDeleteProfileInline,
+QWidget#appRowWidget QToolButton#btnDeleteAppInline {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
+    padding: 0;
+    margin: 0;
+}
+
+QWidget#profileRowWidget QToolButton#btnDeleteProfileInline:hover,
+QWidget#appRowWidget QToolButton#btnDeleteAppInline:hover {
+    background-color: rgba(244, 67, 54, 0.18);
+    border: 1px solid rgba(244, 67, 54, 0.35);
+}
+
+/* AboutDialog */
+#AboutDialog QLabel#labelIcon {
+    image: url(:/icons/dark/icon.svg);
+}
+
+#AboutDialog QLabel#labelTitle {
+    color: #ffffff;
+}
+
+#AboutDialog QLabel#labelVersion,
+#AboutDialog QLabel#labelDescription {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+#AboutDialog QLabel#labelDisclaimer {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* UpdateDialog */
 QFrame#versionCardFrame {
     background-color: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -733,12 +600,7 @@ QFrame#versionCardFrame {
     color: rgba(255, 255, 255, 0.7);
 }
 
-#UpdateDialog QLabel#labelArrow {
-    font-size: 11pt;
-    font-weight: 600;
-    color: #6ca8ba;
-}
-
+#UpdateDialog QLabel#labelArrow,
 #UpdateDialog QLabel#labelNewVersion {
     font-size: 9.5pt;
     font-weight: 600;
@@ -759,4 +621,63 @@ QFrame#versionCardFrame {
 #UpdateDialog QPushButton#skipBtn:hover {
     color: rgba(255, 255, 255, 0.85);
     text-decoration: underline;
+}
+
+/* LogViewerDialog */
+QToolButton#btnFollow:checked {
+    background-color: rgba(108, 168, 186, 0.16);
+    border: 1px solid rgba(108, 168, 186, 0.34);
+}
+
+#btnRecordLog {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
+}
+
+#btnRecordLog:checked {
+    color: #f44336;
+    border-color: rgba(244, 67, 54, 0.35);
+    background-color: rgba(244, 67, 54, 0.12);
+}
+
+#btnRecordLog:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+QLabel#labelEmptyIcon {
+    font-family: "Font Awesome 7 Free";
+    color: rgba(255, 255, 255, 0.25);
+}
+
+QLabel#labelEmptyTitle {
+    font-size: 11pt;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+QLabel#labelEmptyDesc {
+    font-size: 9.5pt;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* QFileDialog */
+QFileDialog QTreeView,
+QFileDialog QListView {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    color: #e0e0e0;
+}
+
+QFileDialog QAbstractItemView,
+QFileDialog QComboBox QAbstractItemView {
+    background-color: #2c2c2c !important;
+    color: #e0e0e0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+QFileDialog QAbstractItemView::item:selected {
+    background-color: rgba(108, 168, 186, 0.2) !important;
+    color: #e7f1f4 !important;
 }
