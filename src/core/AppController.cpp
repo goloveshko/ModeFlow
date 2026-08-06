@@ -12,6 +12,7 @@
 #include "LocalizationManager.h"
 #include "LogViewerDialog.h"
 #include "Logging.h"
+#include "MainWindow.h"
 #include "ServiceFactory.h"
 #include "ServiceWiring.h"
 #include "SettingsDialog.h"
@@ -26,7 +27,6 @@
 #include "VersionInfo.h"
 #include "WorkspaceManager.h"
 #include "WorkspaceService.h"
-#include "WorkspaceWindow.h"
 
 namespace ModeFlow::Core {
 
@@ -127,15 +127,15 @@ void AppController::setupAutoUpdateChecking() {
     connect(m_services.updateService.get(), &Services::UpdateService::updateAvailable, this,
             [this](const QString& version, const QUrl&, const QString&) {
                 m_pendingUpdateVersion = version;
-                if (m_services.workspaceWindow) {
-                    m_services.workspaceWindow->setUpdateAvailable(true, version);
+                if (m_services.mainWindow) {
+                    m_services.mainWindow->setUpdateAvailable(true, version);
                 }
             });
 
     connect(m_services.updateService.get(), &Services::UpdateService::noUpdateAvailable, this, [this]() {
         m_pendingUpdateVersion.clear();
-        if (m_services.workspaceWindow) {
-            m_services.workspaceWindow->setUpdateAvailable(false, {});
+        if (m_services.mainWindow) {
+            m_services.mainWindow->setUpdateAvailable(false, {});
         }
     });
 
@@ -158,16 +158,16 @@ void AppController::setupAutoUpdateChecking() {
     m_updateTimer.start();
 }
 
-void AppController::ensureWorkspaceWindow() {
-    if (m_services.workspaceWindow) {
+void AppController::ensureMainWindow() {
+    if (m_services.mainWindow) {
         return;
     }
 
-    ServiceFactory::createWorkspaceWindow(m_services);
+    ServiceFactory::createMainWindow(m_services);
     ServiceWiring::wireWindowConnections(m_services, this);
 
     if (!m_pendingUpdateVersion.isEmpty()) {
-        m_services.workspaceWindow->setUpdateAvailable(true, m_pendingUpdateVersion);
+        m_services.mainWindow->setUpdateAvailable(true, m_pendingUpdateVersion);
     }
 }
 
@@ -177,9 +177,9 @@ void AppController::raiseMainWindow() {
         return;
     }
 
-    ensureWorkspaceWindow();
+    ensureMainWindow();
 
-    m_services.workspaceWindow->raiseWindow();
+    m_services.mainWindow->raiseWindow();
 }
 
 void AppController::handleSettingsChanges(const QString& oldLang, Core::Theme oldTheme) {
@@ -201,26 +201,26 @@ void AppController::processThemeChange(Core::Theme oldTheme) {
         (oldTheme == Theme::Qt && newTheme != Theme::Qt) || (oldTheme != Theme::Qt && newTheme == Theme::Qt);
 
     if (needsRecreation) {
-        const bool wasVisible = m_services.workspaceWindow && m_services.workspaceWindow->isVisible();
+        const bool wasVisible = m_services.mainWindow && m_services.mainWindow->isVisible();
 
-        if (m_services.workspaceWindow && wasVisible) {
-            m_services.workspaceWindow->hide();
+        if (m_services.mainWindow && wasVisible) {
+            m_services.mainWindow->hide();
         }
 
         QTimer::singleShot(0, this, [this, wasVisible, newTheme, newStyleKey]() {
             m_services.styleManager->setTheme(newTheme, newStyleKey);
 
-            m_services.workspaceWindow.reset();
+            m_services.mainWindow.reset();
 
             if (wasVisible) {
                 raiseMainWindow();
             }
         });
     } else {
-        if (m_services.workspaceWindow && m_services.workspaceWindow->isVisible()) {
-            Gui::StyleUtils::safeThemeApply(m_services.workspaceWindow.get(), [this, newTheme, newStyleKey]() {
+        if (m_services.mainWindow && m_services.mainWindow->isVisible()) {
+            Gui::StyleUtils::safeThemeApply(m_services.mainWindow.get(), [this, newTheme, newStyleKey]() {
                 m_services.styleManager->setTheme(newTheme, newStyleKey);
-                m_services.styleManager->applyToWindow(m_services.workspaceWindow.get());
+                m_services.styleManager->applyToWindow(m_services.mainWindow.get());
             });
         } else {
             m_services.styleManager->setTheme(newTheme, newStyleKey);
@@ -312,14 +312,14 @@ void AppController::showUpdateDialog() {
         qCDebug(lcCore) << "User chose to skip update version:" << version;
         m_services.settingsManager->setSkippedVersion(version);
         m_services.settingsManager->saveSettings();
-        if (m_services.workspaceWindow) {
-            m_services.workspaceWindow->setUpdateAvailable(false, {});
+        if (m_services.mainWindow) {
+            m_services.mainWindow->setUpdateAvailable(false, {});
         }
     }
 }
 
 QWidget* AppController::parentWindow() const {
-    return m_services.workspaceWindow ? m_services.workspaceWindow.get() : nullptr;
+    return m_services.mainWindow ? m_services.mainWindow.get() : nullptr;
 }
 
 void AppController::applyStartupConfig() {
@@ -442,20 +442,20 @@ void AppController::forceUpdateCheck() {
                                          showUpdateDialog();
                                      });
 
-    const auto c2 = QObject::connect(
-        m_services.updateService.get(), &Services::UpdateService::noUpdateAvailable, this, [this, cleanupConns]() {
-            cleanupConns();
-            if (m_services.workspaceWindow) {
-                m_services.workspaceWindow->showToolTipOnMoreButton(tr("You are up to date."));
-            }
-        });
+    const auto c2 = QObject::connect(m_services.updateService.get(), &Services::UpdateService::noUpdateAvailable, this,
+                                     [this, cleanupConns]() {
+                                         cleanupConns();
+                                         if (m_services.mainWindow) {
+                                             m_services.mainWindow->showToolTipOnMoreButton(tr("You are up to date."));
+                                         }
+                                     });
 
     const auto c3 = QObject::connect(m_services.updateService.get(), &Services::UpdateService::checkFailed, this,
                                      [this, cleanupConns](const QString& error) {
                                          cleanupConns();
-                                         if (m_services.workspaceWindow) {
-                                             m_services.workspaceWindow->showToolTipOnMoreButton(
-                                                 tr("Update check failed") + u": "_s + error);
+                                         if (m_services.mainWindow) {
+                                             m_services.mainWindow->showToolTipOnMoreButton(tr("Update check failed") +
+                                                                                            u": "_s + error);
                                          }
                                      });
 

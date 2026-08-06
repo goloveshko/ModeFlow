@@ -21,7 +21,7 @@ To prevent tight coupling and decouple dependency creation from business logic, 
     *   *UI Components:* Main window, dialogs, and tray icon controllers.
 3.  **Strict RAII Ownership:** To prevent dangerous double-destruction vulnerabilities common in Qt (where a `QObject` parent deletes its children, but a smart pointer also owns them), all services managed by `std::unique_ptr` inside `AppServices` are created with `nullptr` as their `QObject` parent. They are owned **exclusively** by their smart pointers.
 4.  **`ServiceWiring`:** Connects signals and slots across thread boundaries. By enforcing connections here, individual components remain 100% blind to each other’s concrete implementations.
-    *   *Lazy-loading Connections:* To prevent `nullptr` connection errors on startup, connections involving the main window (`WorkspaceWindow`) are safely isolated inside `wireWindowConnections()`. This method is executed strictly once, right after the main window is instantiated on demand.
+    *   *Lazy-loading Connections:* To prevent `nullptr` connection errors on startup, connections involving the main window (`MainWindow`) are safely isolated inside `wireWindowConnections()`. This method is executed strictly once, right after the main window is instantiated on demand.
 
 ---
 
@@ -30,7 +30,7 @@ To prevent tight coupling and decouple dependency creation from business logic, 
 ModeFlow behaves as a lightweight, non-blocking background service. To prevent GUI stuttering (blocking the main thread during heavy OS driver queries), tasks are divided into distinct execution contexts:
 
 ### A. Main GUI Thread
-*   Manages the event loop, draws UI components (`WorkspaceWindow`, `SettingsDialog`), and processes window frames (Mica, immersive dark mode).
+*   Manages the event loop, draws UI components (`MainWindow`, `SettingsDialog`), and processes window frames (Mica, immersive dark mode).
 *   Coordinates application state transitions.
 
 ### B. Concurrent Thread Pool (QThreadPool & QtConcurrent)
@@ -53,7 +53,7 @@ ModeFlow behaves as a lightweight, non-blocking background service. To prevent G
 Writing settings to disk/registry synchronously via `QSettings::sync()` can cause microscopic UI stutters. ModeFlow implements a **Consolidated Persistence Pattern** that completely removes disk I/O from normal runtime operations:
 
 1.  **In-Memory Synchronization:** During the session, window sizes, positions, maximized states, and visibility are written instantly to `ConfigManager`'s memory. No physical disk writes are performed when the window is shown or hidden.
-2.  **Safe closeEvent Handling:** When a user closes the window, it hides to the tray. To prevent Windows shutdown phases or programmatic exits from falsely overwriting the visibility state to `false` during the widget destruction phase, `WorkspaceWindow::closeEvent()` uses `event->spontaneous()`. It only writes `setMainWindowVisible(false)` when the close event is spontaneous (user clicked X or Alt+F4).
+2.  **Safe closeEvent Handling:** When a user closes the window, it hides to the tray. To prevent Windows shutdown phases or programmatic exits from falsely overwriting the visibility state to `false` during the widget destruction phase, `MainWindow::closeEvent()` uses `event->spontaneous()`. It only writes `setMainWindowVisible(false)` when the close event is spontaneous (user clicked X or Alt+F4).
 3.  **Single-Point Disk Flush:** The physical disk synchronization (`saveConfig()`) is connected to the global `QCoreApplication::aboutToQuit` signal. This guarantees that all settings, window sizes, and active profiles are successfully saved to the registry/INI file **exactly once** during application shutdowns, Windows restarts, or sign-outs.
 
 ---
@@ -79,10 +79,10 @@ To prevent multiple instances of the utility from running simultaneously, ModeFl
 
 ## 🎨 5. UI/UX Component Separation (Passive Presenters)
 
-To prevent `WorkspaceWindow` from becoming a bloated "God Object" managing layouts, database transactions, and custom controls, its responsibilities are strictly decoupled into independent, modular components:
+To prevent `MainWindow` from becoming a bloated "God Object" managing layouts, database transactions, and custom controls, its responsibilities are strictly decoupled into independent, modular components:
 
 ```
-                  [WorkspaceWindow] (View Coordinator)
+                  [MainWindow] (View Coordinator)
                          │
       ┌──────────────────┼──────────────────┐
       ▼                  ▼                  ▼

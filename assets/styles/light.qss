@@ -495,40 +495,40 @@ QToolButton#profileIconOption[selected="true"] {
 
 /* ── 7. Component-Specific Styles ─────────────────────────── */
 
-/* WorkspaceWindow */
-#WorkspaceWindow QPushButton#btnCapture,
+/* MainWindow */
+#MainWindow QPushButton#btnCapture,
 #AboutDialog QPushButton#btnGithub,
 #AboutDialog QPushButton#btnNewVersion,
 #AboutDialog QPushButton#btnLicenses {
     color: rgba(30, 93, 153, 0.88);
 }
 
-#WorkspaceWindow QPushButton#btnCapture:hover,
+#MainWindow QPushButton#btnCapture:hover,
 #AboutDialog QPushButton#btnGithub:hover,
 #AboutDialog QPushButton#btnNewVersion:hover,
 #AboutDialog QPushButton#btnLicenses:hover {
     color: rgba(47, 112, 174, 0.95);
 }
 
-#WorkspaceWindow QPushButton#btnCreateProfile {
+#MainWindow QPushButton#btnCreateProfile {
     background-color: rgba(255, 255, 255, 0.1);
     color: rgba(0, 0, 0, 0.5);
     border-right: 1px solid rgba(0, 0, 0, 0.08);
     border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-#WorkspaceWindow QPushButton#btnCreateProfile:hover {
+#MainWindow QPushButton#btnCreateProfile:hover {
     background-color: rgba(0, 0, 0, 0.05);
     color: #1f2f3f;
 }
 
-#WorkspaceWindow QToolButton#btnMore[hasUpdate="true"] {
+#MainWindow QToolButton#btnMore[hasUpdate="true"] {
     background-color: rgba(30, 93, 153, 0.12);
     border: 1px solid rgba(30, 93, 153, 0.35);
     border-radius: 6px;
 }
 
-#WorkspaceWindow QToolButton#btnMore[hasUpdate="true"]:hover {
+#MainWindow QToolButton#btnMore[hasUpdate="true"]:hover {
     background-color: rgba(30, 93, 153, 0.22);
     border-color: rgba(30, 93, 153, 0.5);
 }

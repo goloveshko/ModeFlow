@@ -13,7 +13,7 @@ class WindowsAutostartManager;
 } // namespace ModeFlow::Services
 
 namespace ModeFlow::Gui {
-class WorkspaceWindow;
+class MainWindow;
 class TrayController;
 } // namespace ModeFlow::Gui
 
@@ -50,7 +50,7 @@ struct AppServices {
     std::unique_ptr<WorkspaceManager> workspaceManager;
     std::unique_ptr<SettingsManager> settingsManager;
 
-    std::unique_ptr<Gui::WorkspaceWindow> workspaceWindow;
+    std::unique_ptr<Gui::MainWindow> mainWindow;
     std::unique_ptr<Gui::TrayController> trayController;
 };
 

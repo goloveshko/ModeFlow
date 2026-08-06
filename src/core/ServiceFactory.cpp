@@ -7,6 +7,7 @@
 #include "DisplayManager.h"
 #include "HotkeyManager.h"
 #include "LocalizationManager.h"
+#include "MainWindow.h"
 #include "SettingsManager.h"
 #include "StyleManager.h"
 #include "TrayController.h"
@@ -14,7 +15,6 @@
 #include "WindowsAutostartManager.h"
 #include "WorkspaceManager.h"
 #include "WorkspaceService.h"
-#include "WorkspaceWindow.h"
 
 namespace ModeFlow::Core {
 
@@ -51,8 +51,8 @@ void ServiceFactory::createHardwareServices(AppServices& services, QObject* pare
     services.updateService = std::make_unique<Services::UpdateService>(services.configManager.get());
 }
 
-void ServiceFactory::createWorkspaceWindow(AppServices& services) {
-    services.workspaceWindow = std::make_unique<Gui::WorkspaceWindow>(
+void ServiceFactory::createMainWindow(AppServices& services) {
+    services.mainWindow = std::make_unique<Gui::MainWindow>(
         services.workspaceManager.get(), services.settingsManager.get(), services.styleManager.get());
 }
 

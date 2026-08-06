@@ -281,20 +281,20 @@ QToolButton#profileIconOption {
 
 /* ── 6. Component-Specific Styles ─────────────────────────── */
 
-/* WorkspaceWindow */
-#WorkspaceWindow QPushButton#btnCapture,
-#WorkspaceWindow QPushButton#btnCreateProfile {
+/* MainWindow */
+#MainWindow QPushButton#btnCapture,
+#MainWindow QPushButton#btnCreateProfile {
     background: transparent;
     border: none;
     text-align: center;
     font-weight: 500;
 }
 
-#WorkspaceWindow QPushButton#btnCapture:hover {
+#MainWindow QPushButton#btnCapture:hover {
     text-decoration: underline;
 }
 
-#WorkspaceWindow QPushButton#btnCreateProfile {
+#MainWindow QPushButton#btnCreateProfile {
     border-radius: 0px;
     outline: none;
     qproperty-iconsize: 14px 14px;

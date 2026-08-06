@@ -26,11 +26,11 @@
 #include "IStyleManager.h"
 #include "IWorkspaceManager.h"
 #include "LocalizationManager.h"
+#include "MainWindow.h"
 #include "SettingsDialog.h"
 #include "WindowsAutostartManager.h"
 #include "WorkspaceModel.h"
 #include "WorkspaceService.h"
-#include "WorkspaceWindow.h"
 
 namespace {
 
@@ -457,8 +457,8 @@ void ModeFlowTests::workspaceDeletePersistsAndEmitsRefresh() {
     FakeWorkspaceManager workspaceManager;
     FakeSettingsManager settingsManager;
     FakeStyleManager styleManager;
-    ModeFlow::Gui::WorkspaceWindow window(&workspaceManager, &settingsManager, &styleManager);
-    QSignalSpy refreshSpy(&window, &ModeFlow::Gui::WorkspaceWindow::profilesChanged);
+    ModeFlow::Gui::MainWindow window(&workspaceManager, &settingsManager, &styleManager);
+    QSignalSpy refreshSpy(&window, &ModeFlow::Gui::MainWindow::profilesChanged);
 
     QVERIFY(QMetaObject::invokeMethod(&window, "deleteClicked", Qt::DirectConnection));
 
@@ -472,8 +472,8 @@ void ModeFlowTests::workspaceDeleteSaveFailureDoesNotEmitRefresh() {
     workspaceManager.saveShouldSucceed = false;
     FakeSettingsManager settingsManager;
     FakeStyleManager styleManager;
-    ModeFlow::Gui::WorkspaceWindow window(&workspaceManager, &settingsManager, &styleManager);
-    QSignalSpy refreshSpy(&window, &ModeFlow::Gui::WorkspaceWindow::profilesChanged);
+    ModeFlow::Gui::MainWindow window(&workspaceManager, &settingsManager, &styleManager);
+    QSignalSpy refreshSpy(&window, &ModeFlow::Gui::MainWindow::profilesChanged);
 
     QVERIFY(QMetaObject::invokeMethod(&window, "deleteClicked", Qt::DirectConnection));
 

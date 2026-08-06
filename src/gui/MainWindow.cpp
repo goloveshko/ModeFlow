@@ -1,6 +1,6 @@
-﻿#include "WorkspaceWindow.h"
+﻿#include "MainWindow.h"
 
-#include "ui_WorkspaceWindow.h"
+#include "ui_MainWindow.h"
 
 #include <QToolTip>
 
@@ -26,9 +26,9 @@ int resolvedIconExtent(const QSize& iconSize, int fallback) {
 }
 } // namespace
 
-WorkspaceWindow::WorkspaceWindow(Core::IWorkspaceManager* workspaceManager, Core::ISettingsManager* settingsManager,
-                                 Core::IStyleManager* sm, QWidget* parent)
-    : BaseDialog(sm, parent), ui(std::make_unique<Ui::WorkspaceWindow>()), m_workspaceManager(workspaceManager),
+MainWindow::MainWindow(Core::IWorkspaceManager* workspaceManager, Core::ISettingsManager* settingsManager,
+                       Core::IStyleManager* sm, QWidget* parent)
+    : BaseDialog(sm, parent), ui(std::make_unique<Ui::MainWindow>()), m_workspaceManager(workspaceManager),
       m_settingsManager(settingsManager) {
     Q_ASSERT(m_workspaceManager);
     Q_ASSERT(m_settingsManager);
@@ -38,9 +38,9 @@ WorkspaceWindow::WorkspaceWindow(Core::IWorkspaceManager* workspaceManager, Core
     init();
 }
 
-WorkspaceWindow::~WorkspaceWindow() = default;
+MainWindow::~MainWindow() = default;
 
-void WorkspaceWindow::init() {
+void MainWindow::init() {
     refreshVisualState();
 
     m_autosaveTimer = new QTimer(this);
@@ -78,7 +78,7 @@ void WorkspaceWindow::init() {
     updateUI();
 }
 
-void WorkspaceWindow::initMoreMenu() {
+void MainWindow::initMoreMenu() {
     if (m_moreMenu) {
         m_moreMenu->deleteLater();
     }
@@ -93,9 +93,9 @@ void WorkspaceWindow::initMoreMenu() {
     m_moreMenu->addSeparator();
 
     m_checkUpdatesAction = m_moreMenu->addAction(FontAwesome::icon(FontAwesome::CloudArrowDown, 20), QString(), this,
-                                                 &WorkspaceWindow::forceUpdateCheck);
+                                                 &MainWindow::forceUpdateCheck);
     m_logViewerAction = m_moreMenu->addAction(FontAwesome::icon(FontAwesome::FileLines, 20), tr("View Log"), this,
-                                              &WorkspaceWindow::showLogViewer);
+                                              &MainWindow::showLogViewer);
 
     ui->btnMore->setMenu(m_moreMenu);
     ui->btnMore->setPopupMode(QToolButton::InstantPopup);
@@ -103,19 +103,19 @@ void WorkspaceWindow::initMoreMenu() {
     updateMoreButtonState();
 }
 
-void WorkspaceWindow::setupConnections() {
+void MainWindow::setupConnections() {
     connect(ui->configList->selectionModel(), &QItemSelectionModel::currentRowChanged, this,
-            &WorkspaceWindow::on_selectionChanged);
+            &MainWindow::on_selectionChanged);
 
-    connect(ui->configList, &ProfileListView::createRequested, this, &WorkspaceWindow::addClicked);
-    connect(ui->configList, &ProfileListView::deleteRequested, this, &WorkspaceWindow::deleteProfileByRow);
-    connect(ui->configList, &ProfileListView::duplicateRequested, this, &WorkspaceWindow::duplicateProfileByRow);
-    connect(ui->configList, &ProfileListView::applyRequested, this, &WorkspaceWindow::applyProfileByRow);
+    connect(ui->configList, &ProfileListView::createRequested, this, &MainWindow::addClicked);
+    connect(ui->configList, &ProfileListView::deleteRequested, this, &MainWindow::deleteProfileByRow);
+    connect(ui->configList, &ProfileListView::duplicateRequested, this, &MainWindow::duplicateProfileByRow);
+    connect(ui->configList, &ProfileListView::applyRequested, this, &MainWindow::applyProfileByRow);
 
-    connect(ui->btnCreateProfile, &QPushButton::clicked, this, &WorkspaceWindow::addClicked);
+    connect(ui->btnCreateProfile, &QPushButton::clicked, this, &MainWindow::addClicked);
 
-    connect(ui->btnSettings, &QToolButton::clicked, this, &WorkspaceWindow::showSettingsDialog);
-    connect(ui->btnAbout, &QToolButton::clicked, this, &WorkspaceWindow::showAboutDialog);
+    connect(ui->btnSettings, &QToolButton::clicked, this, &MainWindow::showSettingsDialog);
+    connect(ui->btnAbout, &QToolButton::clicked, this, &MainWindow::showAboutDialog);
 
     connect(m_exchangeController.get(), &ProfileExchangeController::exchangeCompleted, this, [this]() {
         notifySettingsChanged();
@@ -123,17 +123,16 @@ void WorkspaceWindow::setupConnections() {
         restoreSelection();
     });
 
-    connect(m_detailsController.get(), &ProfileDetailsController::profileChanged, this,
-            &WorkspaceWindow::scheduleAutosave);
+    connect(m_detailsController.get(), &ProfileDetailsController::profileChanged, this, &MainWindow::scheduleAutosave);
     connect(m_detailsController.get(), &ProfileDetailsController::hotkeyCaptureChanged, this,
-            &WorkspaceWindow::hotkeyCaptureChanged);
+            &MainWindow::hotkeyCaptureChanged);
     connect(m_detailsController.get(), &ProfileDetailsController::validateSpecificHotkey, this,
-            &WorkspaceWindow::validateSpecificHotkey);
+            &MainWindow::validateSpecificHotkey);
 
-    connect(m_autosaveTimer, &QTimer::timeout, this, &WorkspaceWindow::autosaveCurrentProfile);
+    connect(m_autosaveTimer, &QTimer::timeout, this, &MainWindow::autosaveCurrentProfile);
 }
 
-void WorkspaceWindow::raiseWindow() {
+void MainWindow::raiseWindow() {
     if (isMinimized()) {
         showNormal();
     } else if (!isVisible()) {
@@ -143,7 +142,7 @@ void WorkspaceWindow::raiseWindow() {
     activateWindow();
 }
 
-void WorkspaceWindow::validateSpecificHotkey() {
+void MainWindow::validateSpecificHotkey() {
     if (m_isUpdating)
         return;
 
@@ -165,7 +164,7 @@ void WorkspaceWindow::validateSpecificHotkey() {
     }
 }
 
-void WorkspaceWindow::restoreSelection() {
+void MainWindow::restoreSelection() {
     int row = m_workspaceManager->selectedRow();
 
     if (row == -1 && m_workspaceManager->model()->rowCount() > 0) {
@@ -177,7 +176,7 @@ void WorkspaceWindow::restoreSelection() {
     }
 }
 
-void WorkspaceWindow::addClicked() {
+void MainWindow::addClicked() {
     int row = currentRow();
     if (row != -1)
         saveCurrentToModel(row);
@@ -192,7 +191,7 @@ void WorkspaceWindow::addClicked() {
     updateUI();
 }
 
-void WorkspaceWindow::deleteClicked() {
+void MainWindow::deleteClicked() {
     QModelIndex index = currentIndex();
     if (!index.isValid())
         return;
@@ -221,7 +220,7 @@ void WorkspaceWindow::deleteClicked() {
     }
 }
 
-void WorkspaceWindow::on_selectionChanged(const QModelIndex& current, const QModelIndex& previous) {
+void MainWindow::on_selectionChanged(const QModelIndex& current, const QModelIndex& previous) {
     if (m_isUpdating)
         return;
 
@@ -243,11 +242,11 @@ void WorkspaceWindow::on_selectionChanged(const QModelIndex& current, const QMod
     }
 }
 
-void WorkspaceWindow::on_btnCapture_clicked() {
+void MainWindow::on_btnCapture_clicked() {
     captureCurrentSettings();
 }
 
-void WorkspaceWindow::saveCurrentToModel(int row) {
+void MainWindow::saveCurrentToModel(int row) {
     if (row < 0 || row >= m_workspaceManager->model()->rowCount())
         return;
 
@@ -257,7 +256,7 @@ void WorkspaceWindow::saveCurrentToModel(int row) {
     m_workspaceManager->updateConfig(row, cfg);
 }
 
-void WorkspaceWindow::autosaveCurrentProfile() {
+void MainWindow::autosaveCurrentProfile() {
     const int row = currentRow();
     if (m_isUpdating || row < 0 || row >= m_workspaceManager->model()->rowCount()) {
         return;
@@ -267,7 +266,7 @@ void WorkspaceWindow::autosaveCurrentProfile() {
     persistProfiles();
 }
 
-void WorkspaceWindow::scheduleAutosave() {
+void MainWindow::scheduleAutosave() {
     if (m_isUpdating || currentRow() < 0 || !m_autosaveTimer) {
         return;
     }
@@ -276,7 +275,7 @@ void WorkspaceWindow::scheduleAutosave() {
     m_autosaveTimer->start();
 }
 
-void WorkspaceWindow::loadRowToUi(int row) {
+void MainWindow::loadRowToUi(int row) {
     if (row < 0 || row >= m_workspaceManager->model()->rowCount())
         return;
     m_isUpdating = true;
@@ -287,11 +286,11 @@ void WorkspaceWindow::loadRowToUi(int row) {
     m_isUpdating = false;
 }
 
-void WorkspaceWindow::notifySettingsChanged() {
+void MainWindow::notifySettingsChanged() {
     emit profilesChanged();
 }
 
-bool WorkspaceWindow::persistProfiles() {
+bool MainWindow::persistProfiles() {
     if (!m_workspaceManager->saveWorkspaces()) {
         return false;
     }
@@ -300,7 +299,7 @@ bool WorkspaceWindow::persistProfiles() {
     return true;
 }
 
-void WorkspaceWindow::setCurrentRowSilently(int row) {
+void MainWindow::setCurrentRowSilently(int row) {
     m_isUpdating = true;
 
     if (row >= 0 && row < m_workspaceManager->model()->rowCount()) {
@@ -315,14 +314,14 @@ void WorkspaceWindow::setCurrentRowSilently(int row) {
     m_isUpdating = false;
 }
 
-void WorkspaceWindow::captureCurrentSettings() {
+void MainWindow::captureCurrentSettings() {
     if (currentRow() < 0)
         return;
 
     m_detailsController->captureCurrentSettings();
 }
 
-void WorkspaceWindow::changeEvent(QEvent* event) {
+void MainWindow::changeEvent(QEvent* event) {
     if (event->type() == QEvent::LanguageChange) {
         QSignalBlocker blocker(this);
         ui->retranslateUi(this);
@@ -341,7 +340,7 @@ void WorkspaceWindow::changeEvent(QEvent* event) {
     BaseDialog::changeEvent(event);
 }
 
-void WorkspaceWindow::showEvent(QShowEvent* event) {
+void MainWindow::showEvent(QShowEvent* event) {
     BaseDialog::showEvent(event);
 
     if (!m_styleManager)
@@ -365,7 +364,7 @@ void WorkspaceWindow::showEvent(QShowEvent* event) {
     }
 }
 
-void WorkspaceWindow::closeEvent(QCloseEvent* event) {
+void MainWindow::closeEvent(QCloseEvent* event) {
     emit hotkeyCaptureChanged(false);
 
     // Stop the autosave timer safely.
@@ -386,18 +385,18 @@ void WorkspaceWindow::closeEvent(QCloseEvent* event) {
     event->accept();
 }
 
-void WorkspaceWindow::hideEvent(QHideEvent* event) {
+void MainWindow::hideEvent(QHideEvent* event) {
     saveWindowGeometry();
     BaseDialog::hideEvent(event);
 }
 
-void WorkspaceWindow::updateUI() {
+void MainWindow::updateUI() {
     bool enable = m_workspaceManager->model()->rowCount() > 0;
 
     m_detailsController->updateUI(enable);
 }
 
-void WorkspaceWindow::refreshVisualState() {
+void MainWindow::refreshVisualState() {
     const int toolbarIconSize = resolvedIconExtent(ui->btnSettings->iconSize(), 16);
 
     ui->btnCreateProfile->setIcon(FontAwesome::icon(FontAwesome::Plus, toolbarIconSize));
@@ -421,15 +420,15 @@ void WorkspaceWindow::refreshVisualState() {
     ui->configList->viewport()->update();
 }
 
-int WorkspaceWindow::currentRow() const {
+int MainWindow::currentRow() const {
     return ui->configList->currentIndex().row();
 }
 
-QModelIndex WorkspaceWindow::currentIndex() const {
+QModelIndex MainWindow::currentIndex() const {
     return ui->configList->currentIndex();
 }
 
-bool WorkspaceWindow::toggleVisibility() {
+bool MainWindow::toggleVisibility() {
     if (isVisible()) {
         emit hotkeyCaptureChanged(false);
         hide();
@@ -440,7 +439,7 @@ bool WorkspaceWindow::toggleVisibility() {
     return true;
 }
 
-void WorkspaceWindow::setUpdateAvailable(bool available, const QString& version) {
+void MainWindow::setUpdateAvailable(bool available, const QString& version) {
     m_hasPendingUpdate = available;
     m_pendingUpdateVersion = version;
 
@@ -448,7 +447,7 @@ void WorkspaceWindow::setUpdateAvailable(bool available, const QString& version)
     refreshVisualState();
 }
 
-void WorkspaceWindow::updateMoreButtonState() {
+void MainWindow::updateMoreButtonState() {
     ui->btnMore->setProperty("hasUpdate", m_hasPendingUpdate);
 
     if (m_hasPendingUpdate) {
@@ -466,7 +465,7 @@ void WorkspaceWindow::updateMoreButtonState() {
     StyleUtils::repolish(ui->btnMore);
 }
 
-void WorkspaceWindow::showToolTipOnMoreButton(const QString& text) {
+void MainWindow::showToolTipOnMoreButton(const QString& text) {
     if (!isVisible())
         return;
 
@@ -478,7 +477,7 @@ void WorkspaceWindow::showToolTipOnMoreButton(const QString& text) {
     QToolTip::showText(globalPos, text, ui->btnMore);
 }
 
-void WorkspaceWindow::deleteProfileByRow(int row) {
+void MainWindow::deleteProfileByRow(int row) {
     if (row < 0 || row >= m_workspaceManager->model()->rowCount())
         return;
 
@@ -504,7 +503,7 @@ void WorkspaceWindow::deleteProfileByRow(int row) {
     }
 }
 
-void WorkspaceWindow::duplicateProfileByRow(int row) {
+void MainWindow::duplicateProfileByRow(int row) {
     if (row < 0 || row >= m_workspaceManager->model()->rowCount())
         return;
 
@@ -516,7 +515,7 @@ void WorkspaceWindow::duplicateProfileByRow(int row) {
     setCurrentRowSilently(lastRow);
 }
 
-void WorkspaceWindow::applyProfileByRow(int row) {
+void MainWindow::applyProfileByRow(int row) {
     if (row < 0 || row >= m_workspaceManager->model()->rowCount())
         return;
 
@@ -525,7 +524,7 @@ void WorkspaceWindow::applyProfileByRow(int row) {
     emit activateProfile(cfg);
 }
 
-void WorkspaceWindow::saveWindowGeometry() {
+void MainWindow::saveWindowGeometry() {
     const bool maximized = m_settingsManager->mainWindowMaximized();
     if (!maximized) {
         m_settingsManager->setMainWindowPos(pos());
@@ -533,7 +532,7 @@ void WorkspaceWindow::saveWindowGeometry() {
     }
 }
 
-void WorkspaceWindow::restoreWindowGeometry() {
+void MainWindow::restoreWindowGeometry() {
     const QPoint savedPos = m_settingsManager->mainWindowPos();
     const QSize savedSize = m_settingsManager->mainWindowSize();
 

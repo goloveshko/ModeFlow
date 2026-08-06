@@ -9,9 +9,9 @@
 #include "HotkeyManager.h"
 #include "LocalizationManager.h"
 #include "Logging.h"
+#include "MainWindow.h"
 #include "TrayController.h"
 #include "WorkspaceService.h"
-#include "WorkspaceWindow.h"
 
 namespace ModeFlow::Core {
 
@@ -88,24 +88,24 @@ void ServiceWiring::wireServiceConnections(AppServices& s, AppController* contro
 }
 
 void ServiceWiring::wireWindowConnections(AppServices& s, AppController* controller) {
-    QObject::connect(s.workspaceWindow.get(), &Gui::WorkspaceWindow::activateProfile, controller,
+    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::activateProfile, controller,
                      &AppController::confirmAndApplyProfile, Qt::UniqueConnection);
-    QObject::connect(s.workspaceWindow.get(), &Gui::WorkspaceWindow::profilesChanged, controller,
-                     &AppController::profilesChanged, Qt::UniqueConnection);
-    QObject::connect(s.workspaceWindow.get(), &Gui::WorkspaceWindow::hotkeyCaptureChanged, s.hotkeyManager.get(),
+    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::profilesChanged, controller, &AppController::profilesChanged,
+                     Qt::UniqueConnection);
+    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::hotkeyCaptureChanged, s.hotkeyManager.get(),
                      &Services::HotkeyManager::setCaptureMode, Qt::UniqueConnection);
-    QObject::connect(s.workspaceWindow.get(), &Gui::WorkspaceWindow::showSettingsDialog, controller,
+    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::showSettingsDialog, controller,
                      &AppController::showSettingsDialog, Qt::UniqueConnection);
-    QObject::connect(s.workspaceWindow.get(), &Gui::WorkspaceWindow::showAboutDialog, controller,
-                     &AppController::showAboutDialog, Qt::UniqueConnection);
-    QObject::connect(s.workspaceWindow.get(), &Gui::WorkspaceWindow::showUpdateDialog, controller,
+    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::showAboutDialog, controller, &AppController::showAboutDialog,
+                     Qt::UniqueConnection);
+    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::showUpdateDialog, controller,
                      &AppController::showUpdateDialog, Qt::UniqueConnection);
-    QObject::connect(s.workspaceWindow.get(), &Gui::WorkspaceWindow::forceUpdateCheck, controller,
+    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::forceUpdateCheck, controller,
                      &AppController::forceUpdateCheck, Qt::UniqueConnection);
-    QObject::connect(s.workspaceWindow.get(), &Gui::WorkspaceWindow::showLogViewer, controller,
+    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::showLogViewer, controller,
                      &AppController::showLogViewerDialog, Qt::UniqueConnection);
 
-    auto* window = s.workspaceWindow.get();
+    auto* window = s.mainWindow.get();
     QObject::connect(s.workspaceService.get(), &WorkspaceService::configApplyFinished, window,
                      [window](const WorkspaceConfig&, WorkspaceService::ApplyStatus status) {
                          if (status == WorkspaceService::ApplyStatus::Success) {

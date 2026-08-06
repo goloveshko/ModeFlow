@@ -34,7 +34,7 @@ private:
     void setupAutoUpdateChecking();
 
     void applyStartupConfig();
-    void ensureWorkspaceWindow();
+    void ensureMainWindow();
 
     void handleSettingsChanges(const QString& oldLang, Core::Theme oldTheme);
     void processThemeChange(Core::Theme oldTheme);

@@ -10,7 +10,7 @@ class ServiceFactory {
 public:
     static void createCoreServices(AppServices& services);
     static void createHardwareServices(AppServices& services, QObject* parent);
-    static void createWorkspaceWindow(AppServices& services);
+    static void createMainWindow(AppServices& services);
 };
 
 } // namespace ModeFlow::Core

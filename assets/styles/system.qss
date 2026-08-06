@@ -89,8 +89,8 @@ QSpinBox {
 
 /* ── 5. Component-Specific Styles ─────────────────────────── */
 
-/* WorkspaceWindow */
-#WorkspaceWindow QPushButton#btnCapture,
+/* MainWindow */
+#MainWindow QPushButton#btnCapture,
 #AboutDialog QPushButton#btnGithub,
 #AboutDialog QPushButton#btnNewVersion,
 #AboutDialog QPushButton#btnLicenses {
@@ -104,7 +104,7 @@ QSpinBox {
     color: rgba(30, 93, 153, 0.88);
 }
 
-#WorkspaceWindow QPushButton#btnCapture:hover,
+#MainWindow QPushButton#btnCapture:hover,
 #AboutDialog QPushButton#btnGithub:hover,
 #AboutDialog QPushButton#btnNewVersion:hover,
 #AboutDialog QPushButton#btnLicenses:hover {
@@ -112,7 +112,7 @@ QSpinBox {
     color: rgba(47, 112, 174, 0.95);
 }
 
-#WorkspaceWindow QToolButton#btnMore[hasUpdate="true"] {
+#MainWindow QToolButton#btnMore[hasUpdate="true"] {
     background-color: rgba(30, 93, 153, 0.12);
     border: 1px solid rgba(30, 93, 153, 0.35);
 }

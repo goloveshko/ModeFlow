@@ -105,6 +105,7 @@ set(COMMON_SOURCES
     src/gui/HotkeyValidation.cpp src/gui/HotkeyValidation.h
     src/gui/LogHighlighter.cpp src/gui/LogHighlighter.h
     src/gui/LogViewerDialog.cpp src/gui/LogViewerDialog.h src/gui/LogViewerDialog.ui
+    src/gui/MainWindow.cpp src/gui/MainWindow.h src/gui/MainWindow.ui
     src/gui/ProfileDetailsController.cpp src/gui/ProfileDetailsController.h
     src/gui/ProfileExchangeController.cpp src/gui/ProfileExchangeController.h
     src/gui/ProfileIconMenu.cpp src/gui/ProfileIconMenu.h
@@ -113,7 +114,6 @@ set(COMMON_SOURCES
     src/gui/StyleBridge.cpp src/gui/StyleBridge.h
     src/gui/TrayController.cpp src/gui/TrayController.h
     src/gui/UpdateDialog.cpp src/gui/UpdateDialog.h src/gui/UpdateDialog.ui
-    src/gui/WorkspaceWindow.cpp src/gui/WorkspaceWindow.h src/gui/WorkspaceWindow.ui
 
     # SERVICES
     src/services/AudioDeviceManager.cpp src/services/AudioDeviceManager.h

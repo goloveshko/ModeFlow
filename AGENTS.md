@@ -42,7 +42,7 @@ src/
     WorkspaceModel  — Profile list model (exposes ActiveRole to track live applied profile)
     WorkspaceService — Coordinates workspace configuration (display switch -> settle delay -> audio & apps)
   gui/            — Qt dialogs, widgets, and MVC controllers
-    WorkspaceWindow  — Main window (pure View, decoupled from data mapping and file dialogs)
+    MainWindow  — Main window (pure View, decoupled from data mapping and file dialogs)
     ProfileDetailsController — Presenter managing the right-side profile forms, autocomplete, and hardware capture
     ProfileExchangeController — Presenter managing non-blocking QFileDialog import/export transactions
     ProfileIconMenu  — Custom grid-based QMenu widget for selecting profile icons (self-managing theme changes)
@@ -84,7 +84,7 @@ src/
 * Use Qt6's `.then(this, [this](T result) { ... })` asynchronous continuations to update UI elements safely and sequentially.
 
 ### 2. Separation of Concerns in UI & Services
-* **Pure Views (Decoupling):** `WorkspaceWindow` is a pure presenter. It must never contain business logic (like duplicating configurations, generating default names, or managing file dialogs). These operations must be delegated to `IWorkspaceManager` or dedicated controllers (`ProfileDetailsController`, `ProfileExchangeController`).
+* **Pure Views (Decoupling):** `MainWindow` is a pure presenter. It must never contain business logic (like duplicating configurations, generating default names, or managing file dialogs). These operations must be delegated to `IWorkspaceManager` or dedicated controllers (`ProfileDetailsController`, `ProfileExchangeController`).
 * **No Direct QFileDialog Calls:** Never call static `QFileDialog` methods inside UI views. Always route file dialog transactions through `m_styleManager->getOpenFileName()` or `getSaveFileName()`. This ensures that file dialogs are rendered as beautiful, rounded, Mica-glass Fluent frames matching the active theme, and prevents noisy Windows COM thread exceptions.
 * **Data Provider Sorting:** UI elements (comboboxes and tray menus) should never sort or filter raw device lists themselves. `WorkspaceManagerImpl::getAvailableDisplays()` and `getAvailableAudioOutputs()` must return lists that are already sorted and grouped (active first) via `Utils::DeviceUtils::sortAndGroupDevices()`.
 * **Dynamic Menu Generation:** The system tray menus (`TrayController`) must be populated dynamically on `aboutToShow()` to prevent stale states.
@@ -101,7 +101,7 @@ src/
 * **No Inline QSS Styles:** All styling, colors, card layouts, margins, and hover effects must be declared strictly in `.qss` resource files. Use `#SettingsDialog QPushButton#btnSave` and similar object names.
 * **Consolidated Disk Writes:** To prevent redundant disk I/O and micro-stutters during normal show/hide window toggles, do NOT call `saveSettings()` inside `showEvent` and `hideEvent`. Update the states in `ConfigManager` memory, and flush all configuration changes to disk exactly once during explicit application shutdown (`QCoreApplication::aboutToQuit`).
 * **Active Profile Visual Feedback:** The active, applied profile must be visually highlighted in the sidebar list. `NavigationDelegate` must query `WorkspaceModel::ActiveRole` and draw a subtle 6px Fluent accent-colored dot on the left side of the name (between the icon and text). The text and icon of the active row must also use the active theme accent.
-* **Safe closeEvent Handling:** To prevent Windows shutdown phases or programmatic exits (`qApp->quit()`) from falsely overwriting the visibility state to `false` inside `hideEvent()`, use `event->spontaneous()` inside `WorkspaceWindow::closeEvent()`. Only write `setMainWindowVisible(false)` when the event is spontaneous (user clicked X or pressed Alt+F4).
+* **Safe closeEvent Handling:** To prevent Windows shutdown phases or programmatic exits (`qApp->quit()`) from falsely overwriting the visibility state to `false` inside `hideEvent()`, use `event->spontaneous()` inside `MainWindow::closeEvent()`. Only write `setMainWindowVisible(false)` when the event is spontaneous (user clicked X or pressed Alt+F4).
 
 ## Adding a New Service
 

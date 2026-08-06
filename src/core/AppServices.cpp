@@ -7,6 +7,7 @@
 #include "DisplayManager.h"
 #include "HotkeyManager.h"
 #include "LocalizationManager.h"
+#include "MainWindow.h"
 #include "SettingsManager.h"
 #include "StyleManager.h"
 #include "TrayController.h"
@@ -14,7 +15,6 @@
 #include "WindowsAutostartManager.h"
 #include "WorkspaceManager.h"
 #include "WorkspaceService.h"
-#include "WorkspaceWindow.h"
 
 namespace ModeFlow::Core {
 

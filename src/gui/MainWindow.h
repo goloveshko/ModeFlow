@@ -17,7 +17,7 @@ class ISettingsManager;
 } // namespace ModeFlow::Core
 
 namespace Ui {
-class WorkspaceWindow;
+class MainWindow;
 }
 
 namespace ModeFlow::Gui {
@@ -26,12 +26,12 @@ class ProfileIconMenu;
 class ProfileExchangeController;
 class ProfileDetailsController;
 
-class WorkspaceWindow : public BaseDialog {
+class MainWindow : public BaseDialog {
     Q_OBJECT
 public:
-    WorkspaceWindow(Core::IWorkspaceManager* workspaceManager, Core::ISettingsManager* settingsManager,
-                    Core::IStyleManager* sm, QWidget* parent = nullptr);
-    ~WorkspaceWindow();
+    MainWindow(Core::IWorkspaceManager* workspaceManager, Core::ISettingsManager* settingsManager,
+               Core::IStyleManager* sm, QWidget* parent = nullptr);
+    ~MainWindow();
 
     void raiseWindow();
 
@@ -100,7 +100,7 @@ private:
     void updateMoreButtonState();
 
 private:
-    std::unique_ptr<Ui::WorkspaceWindow> ui;
+    std::unique_ptr<Ui::MainWindow> ui;
     Core::IWorkspaceManager* m_workspaceManager;
     Core::ISettingsManager* m_settingsManager;
 

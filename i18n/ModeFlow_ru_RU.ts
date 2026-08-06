@@ -623,7 +623,7 @@
     </message>
 </context>
 <context>
-    <name>ModeFlow::Gui::WorkspaceWindow</name>
+    <name>ModeFlow::Gui::MainWindow</name>
     <message>
         <source>Update Available (v%1)...</source>
         <translation>Доступно обновление: v%1</translation>
@@ -926,7 +926,7 @@
     </message>
 </context>
 <context>
-    <name>WorkspaceWindow</name>
+    <name>MainWindow</name>
     <message>
         <source>ModeFlow - Workspace Manager</source>
         <translation>ModeFlow — Менеджер пространств</translation>
