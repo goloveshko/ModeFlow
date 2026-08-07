@@ -1,9 +1,10 @@
-#include "AppServices.h"
+﻿#include "AppServices.h"
 
 #include "AppLauncher.h"
 #include "AudioDeviceManager.h"
 #include "AudioFeedbackService.h"
 #include "ConfigManager.h"
+#include "DialogManager.h"
 #include "DisplayManager.h"
 #include "HotkeyManager.h"
 #include "LocalizationManager.h"

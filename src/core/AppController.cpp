@@ -2,43 +2,32 @@
 
 #include <QMessageBox>
 
-#include "AboutDialog.h"
 #include "AppLauncher.h"
 #include "AudioDeviceManager.h"
 #include "CommandLineBuilder.h"
 #include "Constants.h"
+#include "DialogManager.h"
 #include "DisplayManager.h"
 #include "HotkeyManager.h"
 #include "LocalizationManager.h"
-#include "LogViewerDialog.h"
 #include "Logging.h"
 #include "MainWindow.h"
 #include "ServiceFactory.h"
 #include "ServiceWiring.h"
-#include "SettingsDialog.h"
 #include "SettingsManager.h"
 #include "StartupPreflightChecker.h"
 #include "StyleManager.h"
 #include "StyleUtils.h"
 #include "SystemUtils.h"
 #include "TrayController.h"
-#include "UpdateDialog.h"
 #include "UpdateService.h"
-#include "VersionInfo.h"
 #include "WorkspaceManager.h"
 #include "WorkspaceService.h"
 
 namespace ModeFlow::Core {
 
 namespace {
-using namespace Qt::StringLiterals;
 constexpr int StartupSilentRestartDelayMs = 1200;
-
-struct SetterGuard {
-    AppController* controller;
-    SetterGuard(AppController* c, ActiveDialog d) : controller(c) { controller->setActiveDialog(d); }
-    ~SetterGuard() { controller->setActiveDialog(ActiveDialog::None); }
-};
 } // namespace
 
 AppController::AppController(QObject* parent) : QObject(parent) {
@@ -232,96 +221,6 @@ void AppController::processThemeChange(Core::Theme oldTheme) {
     }
 }
 
-void AppController::showAboutDialog() {
-    if (m_activeDialog != ActiveDialog::None)
-        return;
-
-    m_services.styleManager->forceUnhover();
-    SetterGuard guard(this, ActiveDialog::About);
-
-    const bool updateAvailable = m_services.updateService && m_services.updateService->isUpdateAvailable();
-    const QString latestVersion = m_services.updateService ? m_services.updateService->latestVersion() : QString();
-
-    Gui::AboutDialog dlg(m_services.styleManager.get(), updateAvailable, latestVersion, parentWindow());
-    const int result = dlg.exec();
-
-    if (result == 2) {
-        showUpdateDialog();
-        QTimer::singleShot(0, this, &AppController::showAboutDialog);
-    }
-}
-
-void AppController::showLogViewerDialog() {
-    if (m_activeDialog != ActiveDialog::None)
-        return;
-
-    m_services.styleManager->forceUnhover();
-    SetterGuard guard(this, ActiveDialog::LogViewer);
-
-    Gui::LogViewerDialog dlg(m_services.settingsManager.get(), m_services.styleManager.get(), parentWindow());
-    dlg.exec();
-}
-
-void AppController::showSettingsDialog() {
-    if (m_activeDialog != ActiveDialog::None)
-        return;
-
-    m_services.styleManager->forceUnhover();
-
-    SetterGuard guard(this, ActiveDialog::Settings);
-
-    const QString oldLang = m_services.configManager->language();
-    const Theme oldTheme = m_services.styleManager->currentTheme();
-
-    bool accepted = false;
-
-    {
-        Gui::SettingsDialog dlg(m_services.settingsManager.get(), m_services.workspaceManager.get(),
-                                m_services.styleManager.get(), parentWindow());
-        connect(&dlg, &Gui::SettingsDialog::hotkeyCaptureChanged, m_services.hotkeyManager.get(),
-                &Services::HotkeyManager::setCaptureMode, Qt::UniqueConnection);
-        accepted = (dlg.exec() == QDialog::Accepted);
-    }
-
-    if (accepted) {
-        handleSettingsChanges(oldLang, oldTheme);
-    }
-}
-
-void AppController::showUpdateDialog() {
-    if (m_activeDialog != ActiveDialog::None && m_activeDialog != ActiveDialog::About)
-        return;
-
-    if (!m_services.updateService || !m_services.updateService->isUpdateAvailable())
-        return;
-
-    m_services.styleManager->forceUnhover();
-
-    SetterGuard guard(this, ActiveDialog::About);
-
-    const QString version = m_services.updateService->latestVersion();
-    const QString changelog = m_services.updateService->changelog();
-    const QUrl downloadUrl = m_services.updateService->downloadUrl();
-    const QString currentVersion = Info::Version;
-
-    Gui::UpdateDialog dlg(m_services.styleManager.get(), currentVersion, version, changelog, downloadUrl,
-                          parentWindow());
-    const int result = dlg.exec();
-
-    if (result == Gui::UpdateDialog::SkipVersionResult) {
-        qCDebug(lcCore) << "User chose to skip update version:" << version;
-        m_services.settingsManager->setSkippedVersion(version);
-        m_services.settingsManager->saveSettings();
-        if (m_services.mainWindow) {
-            m_services.mainWindow->setUpdateAvailable(false, {});
-        }
-    }
-}
-
-QWidget* AppController::parentWindow() const {
-    return m_services.mainWindow ? m_services.mainWindow.get() : nullptr;
-}
-
 void AppController::applyStartupConfig() {
     const auto& configs = m_services.workspaceManager->configs();
     if (configs.isEmpty())
@@ -439,7 +338,7 @@ void AppController::forceUpdateCheck() {
     const auto c1 = QObject::connect(m_services.updateService.get(), &Services::UpdateService::updateAvailable, this,
                                      [this, cleanupConns](const QString&, const QUrl&, const QString&) {
                                          cleanupConns();
-                                         showUpdateDialog();
+                                         m_services.dialogManager->showUpdateDialog();
                                      });
 
     const auto c2 = QObject::connect(m_services.updateService.get(), &Services::UpdateService::noUpdateAvailable, this,
@@ -503,18 +402,7 @@ void AppController::showNonBlockingError(const QString& message) {
 }
 
 void AppController::confirmAndApplyProfile(const WorkspaceConfig& config) {
-    m_services.styleManager->forceUnhover();
-
-    bool confirmed = true;
-
-    if (m_services.configManager->askConfirmation()) {
-        const QString title = tr("Apply Profile");
-        const QString text = tr("Apply profile '%1'?").arg(config.name);
-
-        confirmed = m_services.styleManager->confirmAction(parentWindow(), title, text);
-    }
-
-    if (confirmed) {
+    if (m_services.dialogManager && m_services.dialogManager->confirmApplyProfile(config)) {
         m_services.workspaceService->applyWorkspaceConfig(config);
     }
 }

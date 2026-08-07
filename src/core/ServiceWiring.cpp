@@ -5,6 +5,7 @@
 #include "AudioDeviceManager.h"
 #include "AudioFeedbackService.h"
 #include "ConfigManager.h"
+#include "DialogManager.h"
 #include "DisplayManager.h"
 #include "HotkeyManager.h"
 #include "LocalizationManager.h"
@@ -67,8 +68,14 @@ void ServiceWiring::wireServiceConnections(AppServices& s, AppController* contro
 
     QObject::connect(s.trayController.get(), &Gui::TrayController::showMainWindow, controller,
                      &AppController::raiseMainWindow, Qt::UniqueConnection);
-    QObject::connect(s.trayController.get(), &Gui::TrayController::showSettingsDialog, controller,
-                     &AppController::showSettingsDialog, Qt::UniqueConnection);
+    QObject::connect(s.trayController.get(), &Gui::TrayController::showSettingsDialog, s.dialogManager.get(),
+                     &Gui::DialogManager::showSettingsDialog, Qt::UniqueConnection);
+
+    QObject::connect(s.dialogManager.get(), &Gui::DialogManager::settingsAccepted, controller,
+                     &AppController::handleSettingsChanges, Qt::UniqueConnection);
+
+    QObject::connect(s.dialogManager.get(), &Gui::DialogManager::activeDialogChanged, s.trayController.get(),
+                     &Gui::TrayController::activeDialogChanged, Qt::UniqueConnection);
 
     QObject::connect(s.trayController.get(), &Gui::TrayController::activateProfile, controller,
                      &AppController::confirmAndApplyProfile, Qt::UniqueConnection);
@@ -94,16 +101,8 @@ void ServiceWiring::wireWindowConnections(AppServices& s, AppController* control
                      Qt::UniqueConnection);
     QObject::connect(s.mainWindow.get(), &Gui::MainWindow::hotkeyCaptureChanged, s.hotkeyManager.get(),
                      &Services::HotkeyManager::setCaptureMode, Qt::UniqueConnection);
-    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::showSettingsDialog, controller,
-                     &AppController::showSettingsDialog, Qt::UniqueConnection);
-    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::showAboutDialog, controller, &AppController::showAboutDialog,
-                     Qt::UniqueConnection);
-    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::showUpdateDialog, controller,
-                     &AppController::showUpdateDialog, Qt::UniqueConnection);
     QObject::connect(s.mainWindow.get(), &Gui::MainWindow::forceUpdateCheck, controller,
                      &AppController::forceUpdateCheck, Qt::UniqueConnection);
-    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::showLogViewer, controller,
-                     &AppController::showLogViewerDialog, Qt::UniqueConnection);
 
     auto* window = s.mainWindow.get();
     QObject::connect(s.workspaceService.get(), &WorkspaceService::configApplyFinished, window,
@@ -112,6 +111,15 @@ void ServiceWiring::wireWindowConnections(AppServices& s, AppController* control
                              window->refreshVisualState();
                          }
                      });
+
+    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::showSettingsDialog, s.dialogManager.get(),
+                     &Gui::DialogManager::showSettingsDialog, Qt::UniqueConnection);
+    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::showAboutDialog, s.dialogManager.get(),
+                     &Gui::DialogManager::showAboutDialog, Qt::UniqueConnection);
+    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::showUpdateDialog, s.dialogManager.get(),
+                     &Gui::DialogManager::showUpdateDialog, Qt::UniqueConnection);
+    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::showLogViewer, s.dialogManager.get(),
+                     &Gui::DialogManager::showLogViewerDialog, Qt::UniqueConnection);
 }
 
 } // namespace ModeFlow::Core

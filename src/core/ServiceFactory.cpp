@@ -1,9 +1,11 @@
 ﻿#include "ServiceFactory.h"
 
+#include "AppController.h"
 #include "AppLauncher.h"
 #include "AudioDeviceManager.h"
 #include "AudioFeedbackService.h"
 #include "ConfigManager.h"
+#include "DialogManager.h"
 #include "DisplayManager.h"
 #include "HotkeyManager.h"
 #include "LocalizationManager.h"
@@ -49,6 +51,8 @@ void ServiceFactory::createHardwareServices(AppServices& services, QObject* pare
         services.configManager.get(), services.displayManager.get(), services.audioManager.get());
 
     services.updateService = std::make_unique<Services::UpdateService>(services.configManager.get());
+
+    services.dialogManager = std::make_unique<Gui::DialogManager>(services);
 }
 
 void ServiceFactory::createMainWindow(AppServices& services) {

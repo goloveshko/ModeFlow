@@ -15,6 +15,7 @@ class WindowsAutostartManager;
 namespace ModeFlow::Gui {
 class MainWindow;
 class TrayController;
+class DialogManager;
 } // namespace ModeFlow::Gui
 
 namespace ModeFlow::Core {
@@ -52,6 +53,7 @@ struct AppServices {
 
     std::unique_ptr<Gui::MainWindow> mainWindow;
     std::unique_ptr<Gui::TrayController> trayController;
+    std::unique_ptr<Gui::DialogManager> dialogManager;
 };
 
 } // namespace ModeFlow::Core

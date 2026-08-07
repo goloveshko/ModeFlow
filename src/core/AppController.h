@@ -41,18 +41,12 @@ private:
     void restartApp(bool silentRestart = false);
     void showNonBlockingError(const QString& message);
 
-    QWidget* parentWindow() const;
-
 public slots:
     void raiseMainWindow();
     void requestAppExit();
     void confirmAndApplyProfile(const ModeFlow::Core::WorkspaceConfig& config);
 
 private slots:
-    void showAboutDialog();
-    void showLogViewerDialog();
-    void showSettingsDialog();
-    void showUpdateDialog();
     void forceUpdateCheck();
     void profilesChanged();
     void handleStartupSuccess();

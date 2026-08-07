@@ -39,7 +39,7 @@ struct WorkspaceConfig {
     bool operator==(const WorkspaceConfig& other) const { return id == other.id; }
 };
 
-enum class ActiveDialog { None = 0, Settings, About, LogViewer };
+enum class ActiveDialog { None = 0, Settings, About, LogViewer, Update };
 
 struct LanguageData {
     QString label;
