@@ -297,7 +297,7 @@ QToolButton#profileIconOption {
 #MainWindow QPushButton#btnCreateProfile {
     border-radius: 0px;
     outline: none;
-    qproperty-iconsize: 14px 14px;
+    icon-size: 14px 14px;
     padding: 10px 16px;
     margin: 0;
 }
@@ -322,12 +322,12 @@ QWidget#profileRowWidget QToolButton#btnDeleteProfileInline {
     background: transparent;
     padding: 0;
     margin: 0;
-    qproperty-iconsize: 0px 0px;
+    icon-size: 0px 0px;
 }
 
 QWidget#appRowWidget:hover QToolButton#btnDeleteAppInline,
 QWidget#profileRowWidget:hover QToolButton#btnDeleteProfileInline {
-    qproperty-iconsize: 14px 14px;
+    icon-size: 14px 14px;
 }
 
 /* AboutDialog */
