@@ -26,10 +26,6 @@
 
 namespace ModeFlow::Core {
 
-namespace {
-constexpr int StartupSilentRestartDelayMs = 1200;
-} // namespace
-
 AppController::AppController(QObject* parent) : QObject(parent) {
     ServiceFactory::createCoreServices(m_services);
 }
@@ -279,9 +275,9 @@ void AppController::handleStartupSuccess() {
 
         qCDebug(lcCore) << "Display switch confirmed during logon startup. Restarting application in a fresh process "
                            "to rebuild Qt screen state after monitor reconfiguration. Delay ="
-                        << StartupSilentRestartDelayMs << "ms.";
+                        << Utils::StartupSilentRestartDelayMs << "ms.";
 
-        QTimer::singleShot(StartupSilentRestartDelayMs, this, [this]() { restartApp(true); });
+        QTimer::singleShot(Utils::StartupSilentRestartDelayMs, this, [this]() { restartApp(true); });
     }
 }
 

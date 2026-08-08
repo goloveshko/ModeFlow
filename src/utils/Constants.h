@@ -3,10 +3,8 @@
 #include <QStringView>
 
 /**
- * @brief Global constants for ModeFlow application.
- *
- * This file contains all magic numbers used in the application.
- * Each constant has a descriptive name and documentation.
+ * @brief Global constants for the ModeFlow application.
+ * Contains central timeouts, delays, limits, and magic numbers.
  */
 
 namespace ModeFlow::Utils {
@@ -19,11 +17,6 @@ namespace ModeFlow::Utils {
 constexpr int LocalSocketTimeoutMs = 500;
 static_assert(LocalSocketTimeoutMs >= 100 && LocalSocketTimeoutMs <= 5000,
               "LocalSocketTimeoutMs must be between 100ms and 5s");
-
-/** Delay before checking autostart status (ms) */
-constexpr int AutostartStatusCheckDelayMs = 100;
-static_assert(AutostartStatusCheckDelayMs >= 100 && AutostartStatusCheckDelayMs <= 10000,
-              "AutostartStatusCheckDelayMs must be between 100ms and 10s");
 
 /** System readiness poll interval at startup (ms) */
 constexpr int SystemReadyPollIntervalMs = 500;
@@ -55,18 +48,25 @@ constexpr int ElevatedHelperTimeoutMs = 30000;
 static_assert(ElevatedHelperTimeoutMs >= 1000 && ElevatedHelperTimeoutMs <= 120000,
               "ElevatedHelperTimeoutMs must be between 1s and 120s");
 
+/** Silent application restart delay on startup logon display switch (ms) */
+constexpr int StartupSilentRestartDelayMs = 1200;
+static_assert(StartupSilentRestartDelayMs >= 100 && StartupSilentRestartDelayMs <= 10000,
+              "StartupSilentRestartDelayMs must be between 100ms and 10s");
+
+/** Debounce delay for profile auto-saving (ms) */
+constexpr int ProfileAutosaveDebounceMs = 350;
+
 // ============================================================================
 // Sizes and Limits
 // ============================================================================
 
-/** Maximum log file size before rotation (bytes) */
-constexpr int MaxLogFileSizeBytes = 5 * 1024 * 1024; // 5 MB
+/** Maximum log file size before rotation (bytes) — 5 MB */
+constexpr int MaxLogFileSizeBytes = 5 * 1024 * 1024;
 
-/** Maximum application launch delay in profile (seconds) */
-constexpr int MaxAppLaunchDelaySeconds = 300; // 5 minutes
+/** Maximum application launch delay in profile (seconds) — 5 minutes */
+constexpr int MaxAppLaunchDelaySeconds = 300;
 
-inline constexpr int ProfileAutosaveDebounceMs = 350;
-
+/** Default fallback Qt style key */
 inline constexpr QStringView DefaultQtStyleKey = u"windows11";
 
 // ============================================================================
