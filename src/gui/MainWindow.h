@@ -21,6 +21,7 @@ class MainWindow;
 }
 
 namespace ModeFlow::Gui {
+class DialogManager;
 class SettingsDialog;
 class ProfileIconMenu;
 class ProfileExchangeController;
@@ -30,7 +31,7 @@ class MainWindow : public BaseDialog {
     Q_OBJECT
 public:
     MainWindow(Core::IWorkspaceManager* workspaceManager, Core::ISettingsManager* settingsManager,
-               Core::IStyleManager* sm, QWidget* parent = nullptr);
+               Core::IStyleManager* sm, DialogManager* dialogManager, QWidget* parent = nullptr);
     ~MainWindow();
 
     void raiseWindow();
@@ -103,6 +104,7 @@ private:
     std::unique_ptr<Ui::MainWindow> ui;
     Core::IWorkspaceManager* m_workspaceManager;
     Core::ISettingsManager* m_settingsManager;
+    DialogManager* m_dialogManager;
 
     ProfileIconMenu* m_profileIconMenu = nullptr;
     std::unique_ptr<ProfileExchangeController> m_exchangeController;

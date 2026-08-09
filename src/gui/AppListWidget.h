@@ -4,9 +4,10 @@
 #include <QListWidget>
 
 #include "ConfigTypes.h"
-#include "IStyleManager.h"
 
 namespace ModeFlow::Gui {
+
+class DialogManager;
 
 class AppListWidget : public QListWidget {
     Q_OBJECT
@@ -14,10 +15,10 @@ public:
     explicit AppListWidget(QWidget* parent = nullptr);
     ~AppListWidget() override;
 
-    void setStyleManager(Core::IStyleManager* sm) { m_styleManager = sm; }
+    void setDialogManager(DialogManager* dialogManager);
 
     void setApps(const QList<Core::AppLaunchConfig>& apps);
-    QList<Core::AppLaunchConfig> apps() const { return m_apps; }
+    QList<Core::AppLaunchConfig> apps() const;
 
 signals:
     void appsChanged();
@@ -41,7 +42,7 @@ private:
     void appendAddPlaceholderItem();
 
 private:
-    Core::IStyleManager* m_styleManager = nullptr;
+    DialogManager* m_dialogManager = nullptr;
     QList<Core::AppLaunchConfig> m_apps;
 };
 

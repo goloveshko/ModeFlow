@@ -5,6 +5,7 @@
 #include <QToolTip>
 
 #include "Constants.h"
+#include "DialogManager.h"
 #include "FontAwesome.h"
 #include "HotkeyValidation.h"
 #include "ISettingsManager.h"
@@ -27,11 +28,12 @@ int resolvedIconExtent(const QSize& iconSize, int fallback) {
 } // namespace
 
 MainWindow::MainWindow(Core::IWorkspaceManager* workspaceManager, Core::ISettingsManager* settingsManager,
-                       Core::IStyleManager* sm, QWidget* parent)
+                       Core::IStyleManager* sm, DialogManager* dialogManager, QWidget* parent)
     : BaseDialog(sm, parent), ui(std::make_unique<Ui::MainWindow>()), m_workspaceManager(workspaceManager),
-      m_settingsManager(settingsManager) {
+      m_settingsManager(settingsManager), m_dialogManager(dialogManager) {
     Q_ASSERT(m_workspaceManager);
     Q_ASSERT(m_settingsManager);
+    Q_ASSERT(m_dialogManager);
 
     ui->setupUi(this);
 
@@ -49,11 +51,10 @@ void MainWindow::init() {
 
     ui->configList->setWorkspaceManager(m_workspaceManager);
     ui->configList->setStyleManager(m_styleManager);
-    ui->listApps->setStyleManager(m_styleManager);
 
     m_profileIconMenu = new ProfileIconMenu(this);
 
-    m_exchangeController = std::make_unique<ProfileExchangeController>(m_workspaceManager, m_styleManager, this);
+    m_exchangeController = std::make_unique<ProfileExchangeController>(m_workspaceManager, m_dialogManager, this);
 
     ProfileDetailsWidgets widgets;
     widgets.editName = ui->editName;
@@ -198,9 +199,7 @@ void MainWindow::deleteClicked() {
 
     int rowToDelete = index.row();
 
-    m_styleManager->forceUnhover();
-
-    if (!m_styleManager->confirmAction(
+    if (!m_dialogManager->confirmAction(
             this, tr("Delete"), tr("Delete configuration '%1'?").arg(m_workspaceManager->configs()[rowToDelete].name)))
         return;
 
@@ -481,10 +480,8 @@ void MainWindow::deleteProfileByRow(int row) {
     if (row < 0 || row >= m_workspaceManager->model()->rowCount())
         return;
 
-    m_styleManager->forceUnhover();
-
-    if (!m_styleManager->confirmAction(this, tr("Delete"),
-                                       tr("Delete configuration '%1'?").arg(m_workspaceManager->configs()[row].name)))
+    if (!m_dialogManager->confirmAction(this, tr("Delete"),
+                                        tr("Delete configuration '%1'?").arg(m_workspaceManager->configs()[row].name)))
         return;
 
     m_isUpdating = true;
