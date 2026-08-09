@@ -21,6 +21,8 @@ namespace ModeFlow::Gui {
 
 DialogManager::DialogManager(Core::AppServices& services, QObject* parent) : QObject(parent), m_services(services) {}
 
+DialogManager::~DialogManager() = default;
+
 void DialogManager::setActiveDialog(Core::ActiveDialog dialog) {
     if (m_activeDialog == dialog)
         return;
