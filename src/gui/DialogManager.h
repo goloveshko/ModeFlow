@@ -21,6 +21,7 @@ class DialogManager : public QObject {
 
 public:
     explicit DialogManager(Core::AppServices& services, QObject* parent = nullptr);
+    ~DialogManager() override;
 
     Core::ActiveDialog activeDialog() const { return m_activeDialog; }
     void setActiveDialog(Core::ActiveDialog dialog);
@@ -28,38 +29,40 @@ public:
     QWidget* parentWindow() const;
 
     // --- 1. Top-Level Modal App Windows ---
-    void showAboutDialog();
-    void showLogViewerDialog();
-    void showSettingsDialog();
-    void showUpdateDialog();
+    virtual void showAboutDialog();
+    virtual void showLogViewerDialog();
+    virtual void showSettingsDialog();
+    virtual void showUpdateDialog();
 
     // --- 2. Action Confirmations ---
-    bool confirmApplyProfile(const Core::WorkspaceConfig& config);
-    bool confirmAction(const QString& title, const QString& text);
-    bool confirmAction(QWidget* parent, const QString& title, const QString& text);
+    virtual bool confirmApplyProfile(const Core::WorkspaceConfig& config);
+    virtual bool confirmAction(const QString& title, const QString& text);
+    virtual bool confirmAction(QWidget* parent, const QString& title, const QString& text);
 
-    // --- 3. Message Box Alerts (Overloaded: 2-arg auto-parent, 3-arg explicit parent first) ---
-    void showInfo(const QString& title, const QString& text);
-    void showInfo(QWidget* parent, const QString& title, const QString& text);
+    // --- 3. Message Box Alerts ---
+    virtual void showInfo(const QString& title, const QString& text);
+    virtual void showInfo(QWidget* parent, const QString& title, const QString& text);
 
-    void showWarning(const QString& title, const QString& text);
-    void showWarning(QWidget* parent, const QString& title, const QString& text);
+    virtual void showWarning(const QString& title, const QString& text);
+    virtual void showWarning(QWidget* parent, const QString& title, const QString& text);
 
-    void showError(const QString& title, const QString& text);
-    void showError(QWidget* parent, const QString& title, const QString& text);
+    virtual void showError(const QString& title, const QString& text);
+    virtual void showError(QWidget* parent, const QString& title, const QString& text);
 
     // --- 4. File Dialog Pickers ---
-    QString getOpenFileName(const QString& caption, const QString& dir = QString(), const QString& filter = QString());
-    QString getOpenFileName(QWidget* parent, const QString& caption, const QString& dir = QString(),
-                            const QString& filter = QString());
+    virtual QString getOpenFileName(const QString& caption, const QString& dir = QString(),
+                                    const QString& filter = QString());
+    virtual QString getOpenFileName(QWidget* parent, const QString& caption, const QString& dir = QString(),
+                                    const QString& filter = QString());
 
-    QString getSaveFileName(const QString& caption, const QString& dir = QString(), const QString& filter = QString());
-    QString getSaveFileName(QWidget* parent, const QString& caption, const QString& dir = QString(),
-                            const QString& filter = QString());
+    virtual QString getSaveFileName(const QString& caption, const QString& dir = QString(),
+                                    const QString& filter = QString());
+    virtual QString getSaveFileName(QWidget* parent, const QString& caption, const QString& dir = QString(),
+                                    const QString& filter = QString());
 
     // --- 5. App Launch Configuration Dialog ---
-    std::optional<Core::AppLaunchConfig> showAppLaunchDialog(const Core::AppLaunchConfig* initialConfig = nullptr,
-                                                             QWidget* parent = nullptr);
+    virtual std::optional<Core::AppLaunchConfig>
+    showAppLaunchDialog(const Core::AppLaunchConfig* initialConfig = nullptr, QWidget* parent = nullptr);
 
 signals:
     void activeDialogChanged(ModeFlow::Core::ActiveDialog activeDialog);

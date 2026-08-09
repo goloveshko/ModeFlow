@@ -15,11 +15,13 @@
 #include <QSize>
 
 #include "AppLauncher.h"
+#include "AppServices.h"
 #include "AudioDeviceManager.h"
 #include "CliParser.h"
 #include "CommandLineBuilder.h"
 #include "ConfigManager.h"
 #include "ConfigTypes.h"
+#include "DialogManager.h"
 #include "DisplayManager.h"
 #include "HotkeyManager.h"
 #include "ISettingsManager.h"
@@ -370,6 +372,38 @@ public:
     bool m_launchShouldFail = false;
 };
 
+class FakeDialogManager : public ModeFlow::Gui::DialogManager {
+public:
+    inline static ModeFlow::Core::AppServices dummyServices;
+
+    FakeDialogManager() : DialogManager(dummyServices) {}
+
+    bool confirmAction(QWidget* parent, const QString& title, const QString& text) override {
+        Q_UNUSED(parent);
+        lastConfirmTitle = title;
+        lastConfirmText = text;
+        return confirmResult;
+    }
+
+    bool confirmApplyProfile(const ModeFlow::Core::WorkspaceConfig& config) override {
+        lastConfirmedProfileId = config.id;
+        return confirmResult;
+    }
+
+    void showWarning(QWidget* parent, const QString& title, const QString& text) override {
+        Q_UNUSED(parent);
+        lastWarningTitle = title;
+        lastWarningText = text;
+    }
+
+    bool confirmResult = true;
+    QString lastConfirmTitle;
+    QString lastConfirmText;
+    QString lastWarningTitle;
+    QString lastWarningText;
+    QString lastConfirmedProfileId;
+};
+
 } // namespace
 
 class ModeFlowTests : public QObject {
@@ -457,7 +491,9 @@ void ModeFlowTests::workspaceDeletePersistsAndEmitsRefresh() {
     FakeWorkspaceManager workspaceManager;
     FakeSettingsManager settingsManager;
     FakeStyleManager styleManager;
-    ModeFlow::Gui::MainWindow window(&workspaceManager, &settingsManager, &styleManager);
+    FakeDialogManager dialogManager;
+
+    ModeFlow::Gui::MainWindow window(&workspaceManager, &settingsManager, &styleManager, &dialogManager);
     QSignalSpy refreshSpy(&window, &ModeFlow::Gui::MainWindow::profilesChanged);
 
     QVERIFY(QMetaObject::invokeMethod(&window, "deleteClicked", Qt::DirectConnection));
@@ -465,6 +501,7 @@ void ModeFlowTests::workspaceDeletePersistsAndEmitsRefresh() {
     QCOMPARE(workspaceManager.saveCalls, 1);
     QCOMPARE(workspaceManager.model()->rowCount(), 0);
     QCOMPARE(refreshSpy.count(), 1);
+    QCOMPARE(dialogManager.lastConfirmTitle, QStringLiteral("Delete"));
 }
 
 void ModeFlowTests::workspaceDeleteSaveFailureDoesNotEmitRefresh() {
@@ -472,7 +509,9 @@ void ModeFlowTests::workspaceDeleteSaveFailureDoesNotEmitRefresh() {
     workspaceManager.saveShouldSucceed = false;
     FakeSettingsManager settingsManager;
     FakeStyleManager styleManager;
-    ModeFlow::Gui::MainWindow window(&workspaceManager, &settingsManager, &styleManager);
+    FakeDialogManager dialogManager;
+
+    ModeFlow::Gui::MainWindow window(&workspaceManager, &settingsManager, &styleManager, &dialogManager);
     QSignalSpy refreshSpy(&window, &ModeFlow::Gui::MainWindow::profilesChanged);
 
     QVERIFY(QMetaObject::invokeMethod(&window, "deleteClicked", Qt::DirectConnection));
@@ -480,6 +519,7 @@ void ModeFlowTests::workspaceDeleteSaveFailureDoesNotEmitRefresh() {
     QCOMPARE(workspaceManager.saveCalls, 1);
     QCOMPARE(workspaceManager.model()->rowCount(), 0);
     QCOMPARE(refreshSpy.count(), 0);
+    QCOMPARE(dialogManager.lastConfirmTitle, QStringLiteral("Delete"));
 }
 
 void ModeFlowTests::settingsAcceptCommitsAutostartAndConfig() {
