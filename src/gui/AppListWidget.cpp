@@ -7,7 +7,7 @@
 #include <QMimeData>
 #include <QToolButton>
 
-#include "AppLaunchDialog.h"
+#include "DialogManager.h"
 #include "FluentListItemDelegate.h"
 #include "FontAwesome.h"
 
@@ -17,33 +17,37 @@ using namespace Qt::StringLiterals;
 
 AppListWidget::AppListWidget(QWidget* parent) : QListWidget(parent) {
     setAcceptDrops(true);
-
     setItemDelegate(new FluentListItemDelegate(this));
 }
 
 AppListWidget::~AppListWidget() = default;
+
+void AppListWidget::setDialogManager(DialogManager* dialogManager) {
+    m_dialogManager = dialogManager;
+}
 
 void AppListWidget::setApps(const QList<Core::AppLaunchConfig>& apps) {
     m_apps = apps;
     refreshList();
 }
 
+QList<Core::AppLaunchConfig> AppListWidget::apps() const {
+    return m_apps;
+}
+
 void AppListWidget::openEditDialog(int editIndex) {
-    AppLaunchDialog dialog(m_styleManager, this);
+    if (!m_dialogManager)
+        return;
 
-    if (editIndex >= 0 && editIndex < m_apps.size()) {
-        dialog.setAppConfig(m_apps[editIndex]);
-        dialog.setWindowTitle(tr("Edit Program"));
-    } else {
-        dialog.setWindowTitle(tr("Add Program"));
-    }
+    const Core::AppLaunchConfig* initialConfig =
+        (editIndex >= 0 && editIndex < m_apps.size()) ? &m_apps[editIndex] : nullptr;
 
-    if (dialog.exec() == QDialog::Accepted) {
-        Core::AppLaunchConfig cfg = dialog.appConfig();
+    auto result = m_dialogManager->showAppLaunchDialog(initialConfig, this);
+    if (result.has_value()) {
         if (editIndex >= 0 && editIndex < m_apps.size()) {
-            m_apps[editIndex] = cfg;
+            m_apps[editIndex] = result.value();
         } else {
-            m_apps.append(cfg);
+            m_apps.append(result.value());
         }
         refreshList();
         emit appsChanged();
@@ -161,10 +165,8 @@ void AppListWidget::removeApp(int index) {
     QFileInfo fi(app.appPath);
     QString appName = fi.exists() ? fi.fileName() : app.appPath;
 
-    if (m_styleManager) {
-        m_styleManager->forceUnhover();
-
-        bool confirmed = m_styleManager->confirmAction(
+    if (m_dialogManager) {
+        bool confirmed = m_dialogManager->confirmAction(
             this, tr("Delete Program"),
             tr("Are you sure you want to remove '%1' from the startup sequence?").arg(appName));
 

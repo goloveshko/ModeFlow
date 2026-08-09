@@ -3,6 +3,7 @@
 #include <QTimer>
 
 #include "AboutDialog.h"
+#include "AppLaunchDialog.h"
 #include "AppServices.h"
 #include "ConfigManager.h"
 #include "HotkeyManager.h"
@@ -31,34 +32,11 @@ QWidget* DialogManager::parentWindow() const {
     return m_services.mainWindow ? m_services.mainWindow.get() : nullptr;
 }
 
-bool DialogManager::confirmApplyProfile(const Core::WorkspaceConfig& config) {
-    if (!m_services.configManager->askConfirmation()) {
-        return true;
-    }
-
-    m_services.styleManager->forceUnhover();
-    const QString title = tr("Apply Profile");
-    const QString text = tr("Apply profile '%1'?").arg(config.name);
-
-    return m_services.styleManager->confirmAction(parentWindow(), title, text);
+QWidget* DialogManager::resolveParent(QWidget* parent) const {
+    return parent ? parent : parentWindow();
 }
 
-bool DialogManager::confirmAction(const QString& title, const QString& text) {
-    m_services.styleManager->forceUnhover();
-    return m_services.styleManager->confirmAction(parentWindow(), title, text);
-}
-
-void DialogManager::showInfo(const QString& title, const QString& text) {
-    m_services.styleManager->showInfo(parentWindow(), title, text);
-}
-
-void DialogManager::showWarning(const QString& title, const QString& text) {
-    m_services.styleManager->showWarning(parentWindow(), title, text);
-}
-
-void DialogManager::showError(const QString& title, const QString& text) {
-    m_services.styleManager->showError(parentWindow(), title, text);
-}
+// --- 1. Top-Level Modal App Windows ---
 
 void DialogManager::showAboutDialog() {
     if (m_activeDialog != Core::ActiveDialog::None)
@@ -142,13 +120,99 @@ void DialogManager::showUpdateDialog() {
 
         if (result == UpdateDialog::SkipVersionResult) {
             m_services.settingsManager->setSkippedVersion(version);
-            m_services.settingsManager->saveSettings();
 
             if (m_services.mainWindow) {
                 m_services.mainWindow->setUpdateAvailable(false, {});
             }
         }
     }
+}
+
+// --- 2. Action Confirmations ---
+
+bool DialogManager::confirmApplyProfile(const Core::WorkspaceConfig& config) {
+    if (!m_services.configManager->askConfirmation()) {
+        return true;
+    }
+
+    m_services.styleManager->forceUnhover();
+    const QString title = tr("Apply Profile");
+    const QString text = tr("Apply profile '%1'?").arg(config.name);
+
+    return m_services.styleManager->confirmAction(parentWindow(), title, text);
+}
+
+bool DialogManager::confirmAction(const QString& title, const QString& text) {
+    return confirmAction(parentWindow(), title, text);
+}
+
+bool DialogManager::confirmAction(QWidget* parent, const QString& title, const QString& text) {
+    m_services.styleManager->forceUnhover();
+    return m_services.styleManager->confirmAction(resolveParent(parent), title, text);
+}
+
+// --- 3. Message Box Alerts ---
+
+void DialogManager::showInfo(const QString& title, const QString& text) {
+    showInfo(parentWindow(), title, text);
+}
+
+void DialogManager::showInfo(QWidget* parent, const QString& title, const QString& text) {
+    m_services.styleManager->showInfo(resolveParent(parent), title, text);
+}
+
+void DialogManager::showWarning(const QString& title, const QString& text) {
+    showWarning(parentWindow(), title, text);
+}
+
+void DialogManager::showWarning(QWidget* parent, const QString& title, const QString& text) {
+    m_services.styleManager->showWarning(resolveParent(parent), title, text);
+}
+
+void DialogManager::showError(const QString& title, const QString& text) {
+    showError(parentWindow(), title, text);
+}
+
+void DialogManager::showError(QWidget* parent, const QString& title, const QString& text) {
+    m_services.styleManager->showError(resolveParent(parent), title, text);
+}
+
+// --- 4. File Dialog Pickers ---
+
+QString DialogManager::getOpenFileName(const QString& caption, const QString& dir, const QString& filter) {
+    return getOpenFileName(parentWindow(), caption, dir, filter);
+}
+
+QString DialogManager::getOpenFileName(QWidget* parent, const QString& caption, const QString& dir,
+                                       const QString& filter) {
+    return m_services.styleManager->getOpenFileName(resolveParent(parent), caption, dir, filter);
+}
+
+QString DialogManager::getSaveFileName(const QString& caption, const QString& dir, const QString& filter) {
+    return getSaveFileName(parentWindow(), caption, dir, filter);
+}
+
+QString DialogManager::getSaveFileName(QWidget* parent, const QString& caption, const QString& dir,
+                                       const QString& filter) {
+    return m_services.styleManager->getSaveFileName(resolveParent(parent), caption, dir, filter);
+}
+
+std::optional<Core::AppLaunchConfig> DialogManager::showAppLaunchDialog(const Core::AppLaunchConfig* initialConfig,
+                                                                        QWidget* parent) {
+    AppLaunchDialog dialog(m_services.styleManager.get(), resolveParent(parent));
+
+    if (initialConfig) {
+        dialog.setAppConfig(*initialConfig);
+        dialog.setWindowTitle(tr("Edit Program"));
+    } else {
+        dialog.setWindowTitle(tr("Add Program"));
+    }
+
+    if (dialog.exec() == QDialog::Accepted) {
+        return dialog.appConfig();
+    }
+
+    return std::nullopt;
 }
 
 } // namespace ModeFlow::Gui

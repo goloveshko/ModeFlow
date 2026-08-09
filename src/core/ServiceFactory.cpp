@@ -56,8 +56,9 @@ void ServiceFactory::createHardwareServices(AppServices& services, QObject* pare
 }
 
 void ServiceFactory::createMainWindow(AppServices& services) {
-    services.mainWindow = std::make_unique<Gui::MainWindow>(
-        services.workspaceManager.get(), services.settingsManager.get(), services.styleManager.get());
+    services.mainWindow =
+        std::make_unique<Gui::MainWindow>(services.workspaceManager.get(), services.settingsManager.get(),
+                                          services.styleManager.get(), services.dialogManager.get());
 }
 
 } // namespace ModeFlow::Core

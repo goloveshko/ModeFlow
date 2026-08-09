@@ -1,23 +1,24 @@
-#pragma once
+﻿#pragma once
 
 #include <QObject>
 
 namespace ModeFlow::Core {
 class IWorkspaceManager;
-class IStyleManager;
-} // namespace ModeFlow::Core
+}
 
 namespace ModeFlow::Gui {
 
+class DialogManager;
+
 /**
  * @brief Controller responsible for managing profile import/export operations.
- * Fully encapsulates file dialog interactions, duplicate checking, and user notifications.
+ * Uses DialogManager as a unified UI facade for file dialogs and status alerts.
  */
 class ProfileExchangeController : public QObject {
     Q_OBJECT
 public:
-    explicit ProfileExchangeController(Core::IWorkspaceManager* wm, Core::IStyleManager* sm, QWidget* parentWindow);
-
+    explicit ProfileExchangeController(Core::IWorkspaceManager* wm, DialogManager* dialogManager,
+                                       QObject* parent = nullptr);
 public slots:
     void doImport();
     void doExport();
@@ -27,8 +28,7 @@ signals:
 
 private:
     Core::IWorkspaceManager* m_workspaceManager;
-    Core::IStyleManager* m_styleManager;
-    QWidget* m_parentWindow;
+    DialogManager* m_dialogManager;
 };
 
 } // namespace ModeFlow::Gui
