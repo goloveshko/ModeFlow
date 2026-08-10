@@ -201,7 +201,7 @@ QString DialogManager::getSaveFileName(QWidget* parent, const QString& caption, 
 
 std::optional<Core::AppLaunchConfig> DialogManager::showAppLaunchDialog(const Core::AppLaunchConfig* initialConfig,
                                                                         QWidget* parent) {
-    AppLaunchDialog dialog(m_services.styleManager.get(), resolveParent(parent));
+    AppLaunchDialog dialog(this, m_services.styleManager.get(), resolveParent(parent));
 
     if (initialConfig) {
         dialog.setAppConfig(*initialConfig);

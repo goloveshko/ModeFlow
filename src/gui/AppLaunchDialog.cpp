@@ -2,14 +2,15 @@
 
 #include "ui_AppLaunchDialog.h"
 
+#include "DialogManager.h"
 #include "FontAwesome.h"
-#include "IStyleManager.h"
 #include "SystemUtils.h"
 
 namespace ModeFlow::Gui {
 
-AppLaunchDialog::AppLaunchDialog(Core::IStyleManager* sm, QWidget* parent)
-    : BaseDialog(sm, parent), ui(std::make_unique<Ui::AppLaunchDialog>()) {
+AppLaunchDialog::AppLaunchDialog(DialogManager* dm, Core::IStyleManager* sm, QWidget* parent)
+    : BaseDialog(sm, parent), ui(std::make_unique<Ui::AppLaunchDialog>()), m_dialogManager(dm) {
+    Q_ASSERT(m_dialogManager);
     ui->setupUi(this);
 
     connect(ui->btnBrowse, &QToolButton::clicked, this, &AppLaunchDialog::browseClicked);
@@ -42,7 +43,8 @@ Core::AppLaunchConfig AppLaunchDialog::appConfig() const {
 
 void AppLaunchDialog::browseClicked() {
     QString filter = tr("Executable files (*.exe);;All files (*)");
-    QString path = m_styleManager->getOpenFileName(this, tr("Select Program"), ui->editPath->text(), filter);
+
+    QString path = m_dialogManager->getOpenFileName(this, tr("Select Program"), ui->editPath->text(), filter);
 
     if (!path.isEmpty()) {
         ui->editPath->setText(path);
@@ -53,12 +55,12 @@ void AppLaunchDialog::validateAndAccept() {
     const QString path = ui->editPath->text().trimmed();
 
     if (path.isEmpty()) {
-        styleManager()->showWarning(this, tr("Validation"), tr("Please select an executable file."));
+        m_dialogManager->showWarning(this, tr("Validation"), tr("Please select an executable file."));
         return;
     }
 
     if (!Utils::SystemUtils::isValidExecutablePath(path)) {
-        styleManager()->showWarning(this, tr("Validation"), tr("The selected file is not a valid executable."));
+        m_dialogManager->showWarning(this, tr("Validation"), tr("The selected file is not a valid executable."));
         return;
     }
 

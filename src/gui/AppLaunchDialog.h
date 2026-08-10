@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include <QDialog>
-
 #include "BaseDialog.h"
 #include "ConfigTypes.h"
 
@@ -11,11 +9,13 @@ class AppLaunchDialog;
 
 namespace ModeFlow::Gui {
 
+class DialogManager;
+
 class AppLaunchDialog : public BaseDialog {
     Q_OBJECT
 public:
-    explicit AppLaunchDialog(Core::IStyleManager* sm, QWidget* parent = nullptr);
-    ~AppLaunchDialog();
+    explicit AppLaunchDialog(DialogManager* dm, Core::IStyleManager* sm, QWidget* parent = nullptr);
+    ~AppLaunchDialog() override;
 
     void setAppConfig(const Core::AppLaunchConfig& config);
     Core::AppLaunchConfig appConfig() const;
@@ -26,6 +26,7 @@ private slots:
 
 private:
     std::unique_ptr<Ui::AppLaunchDialog> ui;
+    DialogManager* m_dialogManager = nullptr;
 };
 
 } // namespace ModeFlow::Gui
