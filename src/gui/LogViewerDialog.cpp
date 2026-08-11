@@ -4,10 +4,10 @@
 
 #include <QClipboard>
 #include <QDir>
-#include <QFileInfo>
 #include <QProcess>
 #include <QScrollBar>
 
+#include "DialogManager.h"
 #include "FontAwesome.h"
 #include "ISettingsManager.h"
 #include "IStyleManager.h"
@@ -24,8 +24,11 @@ constexpr int FilterDebounceMs = 150;
 constexpr int MaxLogEntries = 50000;
 } // namespace
 
-LogViewerDialog::LogViewerDialog(Core::ISettingsManager* settingsManager, Core::IStyleManager* sm, QWidget* parent)
-    : BaseDialog(sm, parent), ui(std::make_unique<Ui::LogViewerDialog>()), m_settingsManager(settingsManager) {
+LogViewerDialog::LogViewerDialog(DialogManager* dialogManager, Core::ISettingsManager* settingsManager,
+                                 Core::IStyleManager* styleManager, QWidget* parent)
+    : BaseDialog(styleManager, parent), ui(std::make_unique<Ui::LogViewerDialog>()), m_dialogManager(dialogManager),
+      m_settingsManager(settingsManager) {
+    Q_ASSERT(m_dialogManager);
     Q_ASSERT(m_settingsManager);
     ui->setupUi(this);
     init();
@@ -405,14 +408,14 @@ void LogViewerDialog::onCopyClicked() {
 }
 
 void LogViewerDialog::onSaveClicked() {
-    const QString filePath = m_styleManager->getSaveFileName(this, tr("Save Log"), u"log_export.txt"_s,
-                                                             tr("Text files (*.txt);;All files (*)"));
+    const QString filePath = m_dialogManager->getSaveFileName(this, tr("Save Log"), u"log_export.txt"_s,
+                                                              tr("Text files (*.txt);;All files (*)"));
     if (filePath.isEmpty())
         return;
 
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        styleManager()->showWarning(this, tr("Error"), tr("Cannot save to file:\n%1").arg(filePath));
+        m_dialogManager->showWarning(this, tr("Error"), tr("Cannot save to file:\n%1").arg(filePath));
         return;
     }
 
@@ -421,13 +424,13 @@ void LogViewerDialog::onSaveClicked() {
         stream << m_allEntries.at(idx).rawLine << u'\n';
     }
 
-    styleManager()->showInfo(this, tr("Saved"),
-                             tr("Log exported successfully.\n%1 lines written.").arg(m_filteredIndices.size()));
+    m_dialogManager->showInfo(this, tr("Saved"),
+                              tr("Log exported successfully.\n%1 lines written.").arg(m_filteredIndices.size()));
 }
 
 void LogViewerDialog::onOpenFolderClicked() {
     if (m_logFilePath.isEmpty() || !QFile::exists(m_logFilePath)) {
-        styleManager()->showWarning(this, tr("Log File"), tr("Log file does not exist yet."));
+        m_dialogManager->showWarning(this, tr("Log File"), tr("Log file does not exist yet."));
         return;
     }
 

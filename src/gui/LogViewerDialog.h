@@ -15,13 +15,14 @@ class ISettingsManager;
 namespace ModeFlow::Gui {
 
 class LogHighlighter;
+class DialogManager;
 
 class LogViewerDialog : public BaseDialog {
     Q_OBJECT
 
 public:
-    explicit LogViewerDialog(Core::ISettingsManager* settingsManager, Core::IStyleManager* sm,
-                             QWidget* parent = nullptr);
+    explicit LogViewerDialog(DialogManager* dialogManager, Core::ISettingsManager* settingsManager,
+                             Core::IStyleManager* styleManager, QWidget* parent = nullptr);
     ~LogViewerDialog() override;
 
 protected:
@@ -69,6 +70,7 @@ private:
 
     std::unique_ptr<Ui::LogViewerDialog> ui;
     Core::ISettingsManager* m_settingsManager = nullptr;
+    DialogManager* m_dialogManager = nullptr;
     LogHighlighter* m_highlighter = nullptr;
     QString m_logFilePath;
     QList<LogEntry> m_allEntries;

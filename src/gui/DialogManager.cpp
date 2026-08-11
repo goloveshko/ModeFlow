@@ -69,7 +69,7 @@ void DialogManager::showLogViewerDialog() {
     m_services.styleManager->forceUnhover();
     DialogGuard guard(this, Core::ActiveDialog::LogViewer);
 
-    LogViewerDialog dlg(m_services.settingsManager.get(), m_services.styleManager.get(), parentWindow());
+    LogViewerDialog dlg(this, m_services.settingsManager.get(), m_services.styleManager.get(), parentWindow());
     dlg.exec();
 }
 
