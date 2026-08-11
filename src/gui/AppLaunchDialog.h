@@ -14,7 +14,8 @@ class DialogManager;
 class AppLaunchDialog : public BaseDialog {
     Q_OBJECT
 public:
-    explicit AppLaunchDialog(DialogManager* dm, Core::IStyleManager* sm, QWidget* parent = nullptr);
+    explicit AppLaunchDialog(DialogManager* dialogManager, Core::IStyleManager* styleManager,
+                             QWidget* parent = nullptr);
     ~AppLaunchDialog() override;
 
     void setAppConfig(const Core::AppLaunchConfig& config);

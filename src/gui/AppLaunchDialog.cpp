@@ -8,8 +8,8 @@
 
 namespace ModeFlow::Gui {
 
-AppLaunchDialog::AppLaunchDialog(DialogManager* dm, Core::IStyleManager* sm, QWidget* parent)
-    : BaseDialog(sm, parent), ui(std::make_unique<Ui::AppLaunchDialog>()), m_dialogManager(dm) {
+AppLaunchDialog::AppLaunchDialog(DialogManager* dialogManager, Core::IStyleManager* styleManager, QWidget* parent)
+    : BaseDialog(styleManager, parent), ui(std::make_unique<Ui::AppLaunchDialog>()), m_dialogManager(dialogManager) {
     Q_ASSERT(m_dialogManager);
     ui->setupUi(this);
 
