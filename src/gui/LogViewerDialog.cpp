@@ -441,14 +441,12 @@ void LogViewerDialog::onOpenFolderClicked() {
 void LogViewerDialog::onEnableLoggingClicked() {
     m_settingsManager->setLoggingEnabled(true);
     Utils::LogManager::setup(true);
-    m_settingsManager->saveSettings();
     updateViewMode();
 }
 
 void LogViewerDialog::onRecordToggled(bool checked) {
     m_settingsManager->setLoggingEnabled(checked);
     Utils::LogManager::setup(checked);
-    m_settingsManager->saveSettings();
     updateViewMode();
 }
 
