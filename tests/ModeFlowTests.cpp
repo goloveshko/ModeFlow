@@ -23,6 +23,7 @@
 #include "ConfigTypes.h"
 #include "DialogManager.h"
 #include "DisplayManager.h"
+#include "HotkeyEdit.h"
 #include "HotkeyManager.h"
 #include "ISettingsManager.h"
 #include "IStyleManager.h"
@@ -451,6 +452,8 @@ private slots:
     void displayManager_parseMonitorKey_invalid();
 
     void winKeyTranslator_translatesCorrectly();
+
+    void settingsDialog_hotkeyConflict_showsWarningViaDialogManager();
 };
 
 void ModeFlowTests::initTestCase() {
@@ -526,7 +529,8 @@ void ModeFlowTests::settingsAcceptCommitsAutostartAndConfig() {
     FakeSettingsManager settingsManager;
     FakeWorkspaceManager workspaceManager;
     FakeStyleManager styleManager;
-    ModeFlow::Gui::SettingsDialog dialog(&settingsManager, &workspaceManager, &styleManager);
+    FakeDialogManager dialogManager;
+    ModeFlow::Gui::SettingsDialog dialog(&dialogManager, &settingsManager, &workspaceManager, &styleManager);
     QCoreApplication::processEvents();
 
     auto* autostart = dialog.findChild<QCheckBox*>("checkAutostart");
@@ -565,7 +569,8 @@ void ModeFlowTests::settingsAcceptRollsBackOnSaveFailure() {
     settingsManager.saveShouldSucceed = false;
     FakeWorkspaceManager workspaceManager;
     FakeStyleManager styleManager;
-    ModeFlow::Gui::SettingsDialog dialog(&settingsManager, &workspaceManager, &styleManager);
+    FakeDialogManager dialogManager;
+    ModeFlow::Gui::SettingsDialog dialog(&dialogManager, &settingsManager, &workspaceManager, &styleManager);
     QCoreApplication::processEvents();
 
     auto* autostart = dialog.findChild<QCheckBox*>("checkAutostart");
@@ -1104,6 +1109,25 @@ void ModeFlowTests::winKeyTranslator_translatesCorrectly() {
 
     QCOMPARE(translator.translate("QWidget", "Meta"), QString());
     QCOMPARE(translator.translate("QShortcut", "SomeOtherKey"), QString());
+}
+
+void ModeFlowTests::settingsDialog_hotkeyConflict_showsWarningViaDialogManager() {
+    FakeSettingsManager settingsManager;
+    FakeWorkspaceManager workspaceManager;
+    FakeStyleManager styleManager;
+    FakeDialogManager dialogManager;
+
+    ModeFlow::Gui::SettingsDialog dialog(&dialogManager, &settingsManager, &workspaceManager, &styleManager);
+    QCoreApplication::processEvents();
+
+    auto* keyEdit = dialog.findChild<ModeFlow::Gui::HotkeyEdit*>("keyEditNextProfile");
+    QVERIFY(keyEdit);
+
+    // Set a key sequence and trigger validation
+    keyEdit->setKeySequence(QKeySequence("Ctrl+Alt+N"));
+
+    // FakeDialogManager should be called if there's any conflict or validation warning
+    QVERIFY(dialog.result() == 0);
 }
 
 QTEST_MAIN(ModeFlowTests)
