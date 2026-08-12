@@ -52,6 +52,8 @@ void MainWindow::init() {
     ui->configList->setWorkspaceManager(m_workspaceManager);
     ui->configList->setStyleManager(m_styleManager);
 
+    ui->listApps->setDialogManager(m_dialogManager);
+
     m_profileIconMenu = new ProfileIconMenu(this);
 
     m_exchangeController = std::make_unique<ProfileExchangeController>(m_workspaceManager, m_dialogManager, this);
@@ -159,7 +161,7 @@ void MainWindow::validateSpecificHotkey() {
     auto* keyEdit = ui->keyEditSpecific;
 
     if (HotkeyValidation::validateProfileHotkey(keyEdit, m_settingsManager->nextProfileHotkey(), configs, currentId,
-                                                m_styleManager, this)) {
+                                                m_dialogManager, this)) {
         saveCurrentToModel(row);
         scheduleAutosave();
     }

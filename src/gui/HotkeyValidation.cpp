@@ -1,8 +1,9 @@
 ﻿#include "HotkeyValidation.h"
 
 #include <QCoreApplication>
+#include <QStringBuilder>
 
-#include "IStyleManager.h"
+#include "DialogManager.h"
 
 using namespace Qt::StringLiterals;
 
@@ -34,7 +35,7 @@ QString describeConflict(const QKeySequence& key, const QKeySequence& nextProfil
 }
 
 bool applyChange(QPointer<HotkeyEdit> edit, const QKeySequence& newKey, const QKeySequence& oldKey,
-                 const QString& conflictText, Core::IStyleManager* sm, QWidget* parent, bool interactive) {
+                 const QString& conflictText, DialogManager* dialogManager, QWidget* parent, bool interactive) {
     if (conflictText.isEmpty())
         return true;
 
@@ -53,7 +54,10 @@ bool applyChange(QPointer<HotkeyEdit> edit, const QKeySequence& newKey, const QK
             conflictText % u"\n\n"_sv %
             QCoreApplication::translate("HotkeyValidation",
                                         "This shortcut cannot be used here. Reverting to previous value.");
-        sm->showWarning(parent, QCoreApplication::translate("HotkeyValidation", "Hotkey Conflict"), displayMessage);
+        if (dialogManager) {
+            dialogManager->showWarning(parent, QCoreApplication::translate("HotkeyValidation", "Hotkey Conflict"),
+                                       displayMessage);
+        }
         edit->setKeySequence(oldKey);
     }
 
@@ -64,7 +68,7 @@ bool applyChange(QPointer<HotkeyEdit> edit, const QKeySequence& newKey, const QK
 
 bool validateProfileHotkey(HotkeyEdit* edit, const QKeySequence& nextProfileHotkey,
                            const QList<Core::WorkspaceConfig>& configs, const QString& currentProfileId,
-                           Core::IStyleManager* sm, QWidget* parent) {
+                           DialogManager* dialogManager, QWidget* parent) {
     const QKeySequence currentKey = edit->keySequence();
     const QKeySequence baseKey = edit->lastAcceptedKey();
 
@@ -73,7 +77,7 @@ bool validateProfileHotkey(HotkeyEdit* edit, const QKeySequence& nextProfileHotk
 
     const QString conflictText = describeConflict(currentKey, nextProfileHotkey, configs, currentProfileId);
 
-    bool accepted = applyChange(edit, currentKey, baseKey, conflictText, sm, parent);
+    bool accepted = applyChange(edit, currentKey, baseKey, conflictText, dialogManager, parent);
 
     if (accepted) {
         edit->setLastAcceptedKey(currentKey);

@@ -86,7 +86,7 @@ void DialogManager::showSettingsDialog() {
     {
         DialogGuard guard(this, Core::ActiveDialog::Settings);
 
-        SettingsDialog dlg(m_services.settingsManager.get(), m_services.workspaceManager.get(),
+        SettingsDialog dlg(this, m_services.settingsManager.get(), m_services.workspaceManager.get(),
                            m_services.styleManager.get(), parentWindow());
         if (m_services.hotkeyManager) {
             connect(&dlg, &SettingsDialog::hotkeyCaptureChanged, m_services.hotkeyManager.get(),

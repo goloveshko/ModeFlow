@@ -18,12 +18,14 @@ namespace ModeFlow::Gui {
 
 using namespace Qt::StringLiterals;
 
-SettingsDialog::SettingsDialog(Core::ISettingsManager* settingsManager, Core::IWorkspaceManager* workspaceManager,
-                               Core::IStyleManager* sm, QWidget* parent)
-    : BaseDialog(sm, parent), ui(std::make_unique<Ui::SettingsDialog>()), m_settingsManager(settingsManager),
-      m_workspaceManager(workspaceManager) {
-    Q_ASSERT(m_workspaceManager);
+SettingsDialog::SettingsDialog(DialogManager* dialogManager, Core::ISettingsManager* settingsManager,
+                               Core::IWorkspaceManager* workspaceManager, Core::IStyleManager* styleManager,
+                               QWidget* parent)
+    : BaseDialog(styleManager, parent), ui(std::make_unique<Ui::SettingsDialog>()), m_dialogManager(dialogManager),
+      m_settingsManager(settingsManager), m_workspaceManager(workspaceManager) {
+    Q_ASSERT(m_dialogManager);
     Q_ASSERT(m_settingsManager);
+    Q_ASSERT(m_workspaceManager);
 
     ui->setupUi(this);
 
@@ -160,7 +162,7 @@ void SettingsDialog::onNextProfileHotkeyChanged() {
     const auto& configs = m_workspaceManager->configs();
 
     if (HotkeyValidation::validateProfileHotkey(ui->keyEditNextProfile, m_settingsManager->nextProfileHotkey(), configs,
-                                                QString(), m_styleManager, this)) {
+                                                QString(), m_dialogManager, this)) {
         updateUiState();
     }
 }

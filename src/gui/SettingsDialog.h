@@ -17,6 +17,8 @@ class SettingsDialog;
 
 namespace ModeFlow::Gui {
 
+class DialogManager;
+
 /**
  * @brief Dialog for application-wide settings.
  *
@@ -25,8 +27,9 @@ namespace ModeFlow::Gui {
 class SettingsDialog : public BaseDialog {
     Q_OBJECT
 public:
-    explicit SettingsDialog(Core::ISettingsManager* settingsManager, Core::IWorkspaceManager* workspaceManager,
-                            Core::IStyleManager* sm, QWidget* parent = nullptr);
+    explicit SettingsDialog(DialogManager* dialogManager, Core::ISettingsManager* settingsManager,
+                            Core::IWorkspaceManager* workspaceManager, Core::IStyleManager* styleManager,
+                            QWidget* parent = nullptr);
     ~SettingsDialog();
 
 protected:
@@ -86,6 +89,7 @@ private:
     std::unique_ptr<Ui::SettingsDialog> ui;
     Core::ISettingsManager* m_settingsManager;
     Core::IWorkspaceManager* m_workspaceManager;
+    DialogManager* m_dialogManager = nullptr;
     FormState m_initialState;
     bool m_isValidatingHotkey = false;
 };
