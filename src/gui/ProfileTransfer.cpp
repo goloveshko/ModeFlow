@@ -1,4 +1,4 @@
-﻿#include "ProfileExchangeController.h"
+﻿#include "ProfileTransfer.h"
 
 #include "DialogManager.h"
 #include "IWorkspaceManager.h"
@@ -8,14 +8,13 @@ namespace ModeFlow::Gui {
 
 using namespace Qt::StringLiterals;
 
-ProfileExchangeController::ProfileExchangeController(Core::IWorkspaceManager* wm, DialogManager* dialogManager,
-                                                     QObject* parent)
+ProfileTransfer::ProfileTransfer(Core::IWorkspaceManager* wm, DialogManager* dialogManager, QObject* parent)
     : QObject(parent), m_workspaceManager(wm), m_dialogManager(dialogManager) {
     Q_ASSERT(m_workspaceManager);
     Q_ASSERT(m_dialogManager);
 }
 
-void ProfileExchangeController::doImport() {
+void ProfileTransfer::doImport() {
     QString filePath =
         m_dialogManager->getOpenFileName(tr("Import Profiles"), QString(), tr("JSON files (*.json);;All files (*)"));
     if (filePath.isEmpty()) {
@@ -69,7 +68,7 @@ void ProfileExchangeController::doImport() {
     m_dialogManager->showInfo(tr("Import Successful"), msg);
 }
 
-void ProfileExchangeController::doExport() {
+void ProfileTransfer::doExport() {
     QString filePath = m_dialogManager->getSaveFileName(tr("Export Profiles"), u"profiles.json"_s,
                                                         tr("JSON files (*.json);;All files (*)"));
     if (filePath.isEmpty()) {

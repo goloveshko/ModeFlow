@@ -14,11 +14,10 @@ class DialogManager;
  * @brief Controller responsible for managing profile import/export operations.
  * Uses DialogManager as a unified UI facade for file dialogs and status alerts.
  */
-class ProfileExchangeController : public QObject {
+class ProfileTransfer : public QObject {
     Q_OBJECT
 public:
-    explicit ProfileExchangeController(Core::IWorkspaceManager* wm, DialogManager* dialogManager,
-                                       QObject* parent = nullptr);
+    explicit ProfileTransfer(Core::IWorkspaceManager* wm, DialogManager* dialogManager, QObject* parent = nullptr);
 public slots:
     void doImport();
     void doExport();

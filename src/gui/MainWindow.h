@@ -24,7 +24,7 @@ namespace ModeFlow::Gui {
 class DialogManager;
 class SettingsDialog;
 class ProfileIconMenu;
-class ProfileExchangeController;
+class ProfileTransfer;
 class ProfileDetailsController;
 
 class MainWindow : public BaseDialog {
@@ -107,7 +107,7 @@ private:
     DialogManager* m_dialogManager;
 
     ProfileIconMenu* m_profileIconMenu = nullptr;
-    std::unique_ptr<ProfileExchangeController> m_exchangeController;
+    std::unique_ptr<ProfileTransfer> m_exchangeController;
     std::unique_ptr<ProfileDetailsController> m_detailsController;
     QMenu* m_moreMenu = nullptr;
     QAction* m_iconAction = nullptr;

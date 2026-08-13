@@ -12,9 +12,9 @@
 #include "IStyleManager.h"
 #include "IWorkspaceManager.h"
 #include "ProfileDetailsController.h"
-#include "ProfileExchangeController.h"
 #include "ProfileIconMenu.h"
 #include "ProfileListView.h"
+#include "ProfileTransfer.h"
 #include "StyleUtils.h"
 
 namespace ModeFlow::Gui {
@@ -56,7 +56,7 @@ void MainWindow::init() {
 
     m_profileIconMenu = new ProfileIconMenu(this);
 
-    m_exchangeController = std::make_unique<ProfileExchangeController>(m_workspaceManager, m_dialogManager, this);
+    m_exchangeController = std::make_unique<ProfileTransfer>(m_workspaceManager, m_dialogManager, this);
 
     ProfileDetailsWidgets widgets;
     widgets.editName = ui->editName;
@@ -90,9 +90,9 @@ void MainWindow::initMoreMenu() {
     m_moreMenu->setObjectName("moreMenu");
 
     m_importAction = m_moreMenu->addAction(FontAwesome::icon(FontAwesome::FileImport, 20), tr("Import Profiles"),
-                                           m_exchangeController.get(), &ProfileExchangeController::doImport);
+                                           m_exchangeController.get(), &ProfileTransfer::doImport);
     m_exportAction = m_moreMenu->addAction(FontAwesome::icon(FontAwesome::FileExport, 20), tr("Export Profiles"),
-                                           m_exchangeController.get(), &ProfileExchangeController::doExport);
+                                           m_exchangeController.get(), &ProfileTransfer::doExport);
     m_moreMenu->addSeparator();
 
     m_checkUpdatesAction = m_moreMenu->addAction(FontAwesome::icon(FontAwesome::CloudArrowDown, 20), QString(), this,
@@ -120,7 +120,7 @@ void MainWindow::setupConnections() {
     connect(ui->btnSettings, &QToolButton::clicked, this, &MainWindow::showSettingsDialog);
     connect(ui->btnAbout, &QToolButton::clicked, this, &MainWindow::showAboutDialog);
 
-    connect(m_exchangeController.get(), &ProfileExchangeController::exchangeCompleted, this, [this]() {
+    connect(m_exchangeController.get(), &ProfileTransfer::exchangeCompleted, this, [this]() {
         notifySettingsChanged();
         updateUI();
         restoreSelection();
