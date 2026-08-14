@@ -107,7 +107,7 @@ set(COMMON_SOURCES
     src/gui/LogHighlighter.cpp src/gui/LogHighlighter.h
     src/gui/LogViewerDialog.cpp src/gui/LogViewerDialog.h src/gui/LogViewerDialog.ui
     src/gui/MainWindow.cpp src/gui/MainWindow.h src/gui/MainWindow.ui
-    src/gui/ProfileDetailsController.cpp src/gui/ProfileDetailsController.h
+    src/gui/ProfileEditor.cpp src/gui/ProfileEditor.h
     src/gui/ProfileIconMenu.cpp src/gui/ProfileIconMenu.h
     src/gui/ProfileListView.cpp src/gui/ProfileListView.h
     src/gui/ProfileTransfer.cpp src/gui/ProfileTransfer.h

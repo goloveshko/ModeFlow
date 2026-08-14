@@ -24,7 +24,7 @@ class ProfileIconMenu;
  * @brief Aggregate struct of pointers to the profile details widgets.
  * Allows clean decoupling of the details controller from the main window's private UI structure.
  */
-struct ProfileDetailsWidgets {
+struct ProfileEditorWidgets {
     QLineEdit* editName;
     HotkeyEdit* keyEditSpecific;
     QCheckBox* checkSkipInCycle;
@@ -41,11 +41,11 @@ struct ProfileDetailsWidgets {
  * @brief Controller responsible for managing the right-side profile details form.
  * Encapsulates device combo-box loading, form data mapping, autosave triggers, and icon suggestions.
  */
-class ProfileDetailsController : public QObject {
+class ProfileEditor : public QObject {
     Q_OBJECT
 public:
-    ProfileDetailsController(const ProfileDetailsWidgets& widgets, Core::IWorkspaceManager* wm,
-                             Core::ISettingsManager* sm, ProfileIconMenu* iconMenu, QObject* parent = nullptr);
+    ProfileEditor(const ProfileEditorWidgets& widgets, Core::IWorkspaceManager* wm, Core::ISettingsManager* sm,
+                  ProfileIconMenu* iconMenu, QObject* parent = nullptr);
 
     void loadProfile(const Core::WorkspaceConfig& cfg);
     void saveProfile(Core::WorkspaceConfig& cfg);
@@ -68,7 +68,7 @@ private:
     void populateDeviceCombo(QComboBox* combo, const QList<Core::DeviceEntry>& devices, const QString& currentId);
     void updateProfileIconButton();
 
-    ProfileDetailsWidgets m_widgets;
+    ProfileEditorWidgets m_widgets;
     Core::IWorkspaceManager* m_workspaceManager;
     Core::ISettingsManager* m_settingsManager;
     ProfileIconMenu* m_profileIconMenu;

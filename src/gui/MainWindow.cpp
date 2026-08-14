@@ -11,7 +11,7 @@
 #include "ISettingsManager.h"
 #include "IStyleManager.h"
 #include "IWorkspaceManager.h"
-#include "ProfileDetailsController.h"
+#include "ProfileEditor.h"
 #include "ProfileIconMenu.h"
 #include "ProfileListView.h"
 #include "ProfileTransfer.h"
@@ -58,7 +58,7 @@ void MainWindow::init() {
 
     m_exchangeController = std::make_unique<ProfileTransfer>(m_workspaceManager, m_dialogManager, this);
 
-    ProfileDetailsWidgets widgets;
+    ProfileEditorWidgets widgets;
     widgets.editName = ui->editName;
     widgets.keyEditSpecific = ui->keyEditSpecific;
     widgets.checkSkipInCycle = ui->checkSkipInCycle;
@@ -71,7 +71,7 @@ void MainWindow::init() {
     widgets.groupAuto = ui->groupAuto;
 
     m_detailsController =
-        std::make_unique<ProfileDetailsController>(widgets, m_workspaceManager, m_settingsManager, m_profileIconMenu);
+        std::make_unique<ProfileEditor>(widgets, m_workspaceManager, m_settingsManager, m_profileIconMenu);
 
     initMoreMenu();
     setupConnections();
@@ -126,10 +126,9 @@ void MainWindow::setupConnections() {
         restoreSelection();
     });
 
-    connect(m_detailsController.get(), &ProfileDetailsController::profileChanged, this, &MainWindow::scheduleAutosave);
-    connect(m_detailsController.get(), &ProfileDetailsController::hotkeyCaptureChanged, this,
-            &MainWindow::hotkeyCaptureChanged);
-    connect(m_detailsController.get(), &ProfileDetailsController::validateSpecificHotkey, this,
+    connect(m_detailsController.get(), &ProfileEditor::profileChanged, this, &MainWindow::scheduleAutosave);
+    connect(m_detailsController.get(), &ProfileEditor::hotkeyCaptureChanged, this, &MainWindow::hotkeyCaptureChanged);
+    connect(m_detailsController.get(), &ProfileEditor::validateSpecificHotkey, this,
             &MainWindow::validateSpecificHotkey);
 
     connect(m_autosaveTimer, &QTimer::timeout, this, &MainWindow::autosaveCurrentProfile);

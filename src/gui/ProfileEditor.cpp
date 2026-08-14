@@ -1,4 +1,4 @@
-﻿#include "ProfileDetailsController.h"
+﻿#include "ProfileEditor.h"
 
 #include <QAction>
 #include <QBrush>
@@ -17,9 +17,8 @@
 
 namespace ModeFlow::Gui {
 
-ProfileDetailsController::ProfileDetailsController(const ProfileDetailsWidgets& widgets, Core::IWorkspaceManager* wm,
-                                                   Core::ISettingsManager* sm, ProfileIconMenu* iconMenu,
-                                                   QObject* parent)
+ProfileEditor::ProfileEditor(const ProfileEditorWidgets& widgets, Core::IWorkspaceManager* wm,
+                             Core::ISettingsManager* sm, ProfileIconMenu* iconMenu, QObject* parent)
     : QObject(parent), m_widgets(widgets), m_workspaceManager(wm), m_settingsManager(sm), m_profileIconMenu(iconMenu) {
 
     m_iconAction = m_widgets.editName->addAction(QIcon(), QLineEdit::LeadingPosition);
@@ -32,7 +31,7 @@ ProfileDetailsController::ProfileDetailsController(const ProfileDetailsWidgets& 
     setupConnections();
 }
 
-void ProfileDetailsController::setupConnections() {
+void ProfileEditor::setupConnections() {
     connect(m_iconAction, &QAction::triggered, this, [this]() {
         if (!m_profileIconMenu)
             return;
@@ -73,15 +72,13 @@ void ProfileDetailsController::setupConnections() {
             emit profileChanged();
     });
 
-    connect(m_widgets.keyEditSpecific, &HotkeyEdit::captureChanged, this,
-            &ProfileDetailsController::hotkeyCaptureChanged);
-    connect(m_widgets.keyEditSpecific, &HotkeyEdit::validateRequested, this,
-            &ProfileDetailsController::validateSpecificHotkey);
-    connect(m_widgets.listApps, &AppListWidget::appsChanged, this, &ProfileDetailsController::profileChanged);
-    connect(m_widgets.btnCapture, &QPushButton::clicked, this, &ProfileDetailsController::captureCurrentSettings);
+    connect(m_widgets.keyEditSpecific, &HotkeyEdit::captureChanged, this, &ProfileEditor::hotkeyCaptureChanged);
+    connect(m_widgets.keyEditSpecific, &HotkeyEdit::validateRequested, this, &ProfileEditor::validateSpecificHotkey);
+    connect(m_widgets.listApps, &AppListWidget::appsChanged, this, &ProfileEditor::profileChanged);
+    connect(m_widgets.btnCapture, &QPushButton::clicked, this, &ProfileEditor::captureCurrentSettings);
 }
 
-void ProfileDetailsController::loadProfile(const Core::WorkspaceConfig& cfg) {
+void ProfileEditor::loadProfile(const Core::WorkspaceConfig& cfg) {
     m_isUpdating = true;
     const QString suggestedIcon = m_workspaceManager->suggestedProfileIconSymbol(cfg.name);
     m_iconIsManual = !cfg.iconSymbol.isEmpty() && cfg.iconSymbol != suggestedIcon;
@@ -101,7 +98,7 @@ void ProfileDetailsController::loadProfile(const Core::WorkspaceConfig& cfg) {
     m_isUpdating = false;
 }
 
-void ProfileDetailsController::saveProfile(Core::WorkspaceConfig& cfg) {
+void ProfileEditor::saveProfile(Core::WorkspaceConfig& cfg) {
     cfg.name = m_widgets.editName->text();
     cfg.iconSymbol = currentProfileIconSymbol();
     cfg.hotkey = m_widgets.keyEditSpecific->keySequence();
@@ -111,7 +108,7 @@ void ProfileDetailsController::saveProfile(Core::WorkspaceConfig& cfg) {
     cfg.appsToLaunch = m_widgets.listApps->apps();
 }
 
-void ProfileDetailsController::updateUI(bool hasProfiles) {
+void ProfileEditor::updateUI(bool hasProfiles) {
     m_widgets.groupGeneral->setEnabled(hasProfiles);
     m_widgets.groupHardware->setEnabled(hasProfiles);
     m_widgets.groupAuto->setEnabled(hasProfiles);
@@ -125,7 +122,7 @@ void ProfileDetailsController::updateUI(bool hasProfiles) {
     }
 }
 
-void ProfileDetailsController::captureCurrentSettings() {
+void ProfileEditor::captureCurrentSettings() {
     auto currentHardware = m_workspaceManager->captureCurrentHardwareState();
 
     QSignalBlocker b1(m_widgets.comboDisplay);
@@ -142,18 +139,18 @@ void ProfileDetailsController::captureCurrentSettings() {
     emit profileChanged();
 }
 
-void ProfileDetailsController::updateMonitorDevices(const QString& savedDisplayId) {
+void ProfileEditor::updateMonitorDevices(const QString& savedDisplayId) {
     auto devices = m_workspaceManager->getAvailableDisplays();
     populateDeviceCombo(m_widgets.comboDisplay, devices, savedDisplayId);
 }
 
-void ProfileDetailsController::updateAudioDevices(const QString& savedAudioId) {
+void ProfileEditor::updateAudioDevices(const QString& savedAudioId) {
     auto devices = m_workspaceManager->getAvailableAudioOutputs();
     populateDeviceCombo(m_widgets.comboAudio, devices, savedAudioId);
 }
 
-void ProfileDetailsController::populateDeviceCombo(QComboBox* combo, const QList<Core::DeviceEntry>& devices,
-                                                   const QString& currentId) {
+void ProfileEditor::populateDeviceCombo(QComboBox* combo, const QList<Core::DeviceEntry>& devices,
+                                        const QString& currentId) {
     if (!combo)
         return;
     combo->clear();
@@ -189,18 +186,18 @@ void ProfileDetailsController::populateDeviceCombo(QComboBox* combo, const QList
     }
 }
 
-void ProfileDetailsController::updateProfileIconButton() {
+void ProfileEditor::updateProfileIconButton() {
     const QString targetSymbol = currentProfileIconSymbol();
     if (m_iconAction) {
         m_iconAction->setIcon(FontAwesome::icon(targetSymbol, 16));
     }
 }
 
-void ProfileDetailsController::refreshVisualState() {
+void ProfileEditor::refreshVisualState() {
     updateProfileIconButton();
 }
 
-void ProfileDetailsController::setCurrentProfileIconSymbol(const QString& symbol) {
+void ProfileEditor::setCurrentProfileIconSymbol(const QString& symbol) {
     m_iconSymbol = symbol.isEmpty() ? FontAwesome::defaultProfileIconSymbol() : symbol;
     updateProfileIconButton();
 }

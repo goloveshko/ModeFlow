@@ -25,7 +25,7 @@ class DialogManager;
 class SettingsDialog;
 class ProfileIconMenu;
 class ProfileTransfer;
-class ProfileDetailsController;
+class ProfileEditor;
 
 class MainWindow : public BaseDialog {
     Q_OBJECT
@@ -108,7 +108,7 @@ private:
 
     ProfileIconMenu* m_profileIconMenu = nullptr;
     std::unique_ptr<ProfileTransfer> m_exchangeController;
-    std::unique_ptr<ProfileDetailsController> m_detailsController;
+    std::unique_ptr<ProfileEditor> m_detailsController;
     QMenu* m_moreMenu = nullptr;
     QAction* m_iconAction = nullptr;
     QAction* m_importAction = nullptr;
