@@ -100,7 +100,7 @@ set(COMMON_SOURCES
     src/gui/AppListWidget.cpp src/gui/AppListWidget.h
     src/gui/BaseDialog.cpp src/gui/BaseDialog.h
     src/gui/DialogManager.cpp src/gui/DialogManager.h
-    src/gui/FluentListItemDelegate.cpp src/gui/FluentListItemDelegate.h
+    src/gui/FluentItemDelegate.cpp src/gui/FluentItemDelegate.h
     src/gui/FontAwesome.cpp src/gui/FontAwesome.h
     src/gui/HotkeyEdit.cpp src/gui/HotkeyEdit.h
     src/gui/HotkeyValidation.cpp src/gui/HotkeyValidation.h

@@ -5,13 +5,13 @@
 #include <QMenu>
 #include <QToolButton>
 
-#include "FluentListItemDelegate.h"
+#include "FluentItemDelegate.h"
 #include "FontAwesome.h"
 
 namespace ModeFlow::Gui {
 
 ProfileListView::ProfileListView(QWidget* parent) : QListView(parent) {
-    setItemDelegate(new FluentListItemDelegate(this));
+    setItemDelegate(new FluentItemDelegate(this));
     setSpacing(4);
 }
 

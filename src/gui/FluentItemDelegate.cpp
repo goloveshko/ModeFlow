@@ -1,21 +1,19 @@
-﻿#include "FluentListItemDelegate.h"
+﻿#include <QPainter>
 
-#include <QPainter>
-
+#include "FluentItemDelegate.h"
 #include "FontAwesome.h"
 #include "StyleBridge.h"
 #include "WorkspaceModel.h"
 
 namespace ModeFlow::Gui {
 
-FluentListItemDelegate::FluentListItemDelegate(QObject* parent) : QStyledItemDelegate(parent) {
+FluentItemDelegate::FluentItemDelegate(QObject* parent) : QStyledItemDelegate(parent) {
     m_iconFont.setFamily(FontAwesome::fontFamily());
     m_iconFont.setPixelSize(16);
     m_iconFont.setHintingPreference(QFont::PreferNoHinting);
 }
 
-void FluentListItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option,
-                                   const QModelIndex& index) const {
+void FluentItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const {
     painter->save();
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setRenderHint(QPainter::TextAntialiasing);
@@ -92,7 +90,7 @@ void FluentListItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem
     painter->restore();
 }
 
-QSize FluentListItemDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
+QSize FluentItemDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
     QSize size = QStyledItemDelegate::sizeHint(option, index);
     return QSize(size.width(), 48);
 }

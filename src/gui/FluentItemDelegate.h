@@ -4,12 +4,12 @@
 
 namespace ModeFlow::Gui {
 
-class FluentListItemDelegate : public QStyledItemDelegate {
+class FluentItemDelegate : public QStyledItemDelegate {
     Q_OBJECT
 public:
     using QStyledItemDelegate::QStyledItemDelegate;
 
-    explicit FluentListItemDelegate(QObject* parent = nullptr);
+    explicit FluentItemDelegate(QObject* parent = nullptr);
 
     void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
     QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
