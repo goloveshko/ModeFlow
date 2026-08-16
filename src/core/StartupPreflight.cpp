@@ -1,4 +1,4 @@
-#include "StartupPreflightChecker.h"
+﻿#include "StartupPreflight.h"
 
 #include "Constants.h"
 #include "Logging.h"
@@ -6,17 +6,17 @@
 
 namespace ModeFlow::Core {
 
-StartupPreflightChecker::StartupPreflightChecker(QObject* parent) : QObject(parent) {}
+StartupPreflight::StartupPreflight(QObject* parent) : QObject(parent) {}
 
-void StartupPreflightChecker::startChecking() {
+void StartupPreflight::startChecking() {
     m_attempts = 0;
     m_pollTimer = new QTimer(this);
 
-    connect(m_pollTimer, &QTimer::timeout, this, &StartupPreflightChecker::onPollTimeout, Qt::QueuedConnection);
+    connect(m_pollTimer, &QTimer::timeout, this, &StartupPreflight::onPollTimeout, Qt::QueuedConnection);
     m_pollTimer->start(Utils::SystemReadyPollIntervalMs);
 }
 
-void StartupPreflightChecker::onPollTimeout() {
+void StartupPreflight::onPollTimeout() {
     m_attempts++;
 
     const bool systemReady = Utils::SystemUtils::isSystemReady() && Utils::SystemUtils::isDesktopActive();

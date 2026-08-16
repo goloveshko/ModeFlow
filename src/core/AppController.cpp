@@ -15,7 +15,7 @@
 #include "ServiceFactory.h"
 #include "ServiceWiring.h"
 #include "SettingsManager.h"
-#include "StartupPreflightChecker.h"
+#include "StartupPreflight.h"
 #include "StyleManager.h"
 #include "StyleUtils.h"
 #include "SystemUtils.h"
@@ -52,8 +52,8 @@ void AppController::init(const StartupOptions& options) {
     if (m_options.isLogon && !m_options.isSilentRestart) {
         qCDebug(lcCore) << "Logon startup detected. Starting async preflight.";
 
-        m_preflightChecker = std::make_unique<StartupPreflightChecker>();
-        connect(m_preflightChecker.get(), &StartupPreflightChecker::finished, this,
+        m_preflightChecker = std::make_unique<StartupPreflight>();
+        connect(m_preflightChecker.get(), &StartupPreflight::finished, this,
                 &AppController::finalizeInitialization, Qt::QueuedConnection);
 
         m_preflightChecker->startChecking();

@@ -86,7 +86,7 @@ set(COMMON_SOURCES
     src/core/LocalizationManager.cpp src/core/LocalizationManager.h
     src/core/ServiceFactory.cpp src/core/ServiceFactory.h
     src/core/ServiceWiring.cpp src/core/ServiceWiring.h
-    src/core/StartupPreflightChecker.cpp src/core/StartupPreflightChecker.h
+    src/core/StartupPreflight.cpp src/core/StartupPreflight.h
     src/core/StylePaths.h
     src/core/WorkspaceModel.cpp src/core/WorkspaceModel.h
     src/core/WorkspaceService.cpp src/core/WorkspaceService.h

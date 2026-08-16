@@ -9,7 +9,7 @@
 namespace ModeFlow::Core {
 
 class ServiceWiring;
-class StartupPreflightChecker;
+class StartupPreflight;
 
 /**
  * @brief Main application controller - coordinates all components.
@@ -61,7 +61,7 @@ signals:
 private:
     AppServices m_services;
 
-    std::unique_ptr<StartupPreflightChecker> m_preflightChecker;
+    std::unique_ptr<StartupPreflight> m_preflightChecker;
     QTimer m_updateTimer;
 
     QString m_pendingUpdateVersion;
