@@ -117,14 +117,14 @@ set(COMMON_SOURCES
     src/gui/UpdateDialog.cpp src/gui/UpdateDialog.h src/gui/UpdateDialog.ui
 
     # SERVICES
+    src/services/AppLauncher.cpp src/services/AppLauncher.h
     src/services/AudioDeviceManager.cpp src/services/AudioDeviceManager.h
     src/services/AudioFeedbackService.cpp src/services/AudioFeedbackService.h
-    src/services/AppLauncher.cpp src/services/AppLauncher.h
-    src/services/UpdateService.cpp src/services/UpdateService.h
-    src/services/WindowsAutostartManager.cpp src/services/WindowsAutostartManager.h
+    src/services/AutostartManager.cpp src/services/AutostartManager.h
     src/services/DisplayManager.cpp src/services/DisplayManager.h
     src/services/HotkeyManager.cpp src/services/HotkeyManager.h
     src/services/SingleInstanceGuard.cpp src/services/SingleInstanceGuard.h
+    src/services/UpdateService.cpp src/services/UpdateService.h
 
     # UTILS
     src/utils/ComInitGuard.cpp src/utils/ComInitGuard.h

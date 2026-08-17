@@ -1,13 +1,13 @@
 ﻿#include "SettingsManager.h"
 
+#include "AutostartManager.h"
 #include "ConfigManager.h"
 #include "LocalizationManager.h"
 #include "StyleManager.h"
-#include "WindowsAutostartManager.h"
 
 namespace ModeFlow::Core {
 
-SettingsManager::SettingsManager(ConfigManager* cm, Services::WindowsAutostartManager* as, LocalizationManager* lm,
+SettingsManager::SettingsManager(ConfigManager* cm, Services::AutostartManager* as, LocalizationManager* lm,
                                  StyleManager* sm)
     : m_config(cm), m_autostart(as), m_loc(lm), m_styleManager(sm) {}
 

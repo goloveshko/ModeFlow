@@ -6,13 +6,13 @@
 #include <QStandardItemModel>
 #include <QTimer>
 
+#include "AutostartManager.h"
 #include "HotkeyValidation.h"
 #include "ISettingsManager.h"
 #include "IWorkspaceManager.h"
 #include "LogManager.h"
 #include "Logging.h"
 #include "StyleUtils.h"
-#include "WindowsAutostartManager.h"
 
 namespace ModeFlow::Gui {
 
@@ -188,7 +188,7 @@ void SettingsDialog::updateAutostartUi(bool active) {
     QSignalBlocker blocker(ui->checkAutostart);
     ui->checkAutostart->setChecked(active);
 
-    if (!Services::WindowsAutostartManager::isAdmin()) {
+    if (!Services::AutostartManager::isAdmin()) {
         ui->checkAutostart->setIcon(qApp->style()->standardIcon(QStyle::SP_VistaShield));
     } else {
         ui->checkAutostart->setIcon(QIcon());
@@ -264,7 +264,7 @@ void SettingsDialog::refreshActionButtons() {
     const bool dirty = hasUnsavedChanges();
     saveButton->setEnabled(dirty);
 
-    if (requiresElevation() && !Services::WindowsAutostartManager::isAdmin()) {
+    if (requiresElevation() && !Services::AutostartManager::isAdmin()) {
         saveButton->setIcon(qApp->style()->standardIcon(QStyle::SP_VistaShield));
     } else {
         saveButton->setIcon(QIcon());

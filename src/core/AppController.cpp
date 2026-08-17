@@ -53,8 +53,8 @@ void AppController::init(const StartupOptions& options) {
         qCDebug(lcCore) << "Logon startup detected. Starting async preflight.";
 
         m_preflightChecker = std::make_unique<StartupPreflight>();
-        connect(m_preflightChecker.get(), &StartupPreflight::finished, this,
-                &AppController::finalizeInitialization, Qt::QueuedConnection);
+        connect(m_preflightChecker.get(), &StartupPreflight::finished, this, &AppController::finalizeInitialization,
+                Qt::QueuedConnection);
 
         m_preflightChecker->startChecking();
     } else {

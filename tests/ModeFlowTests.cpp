@@ -17,6 +17,7 @@
 #include "AppLauncher.h"
 #include "AppServices.h"
 #include "AudioDeviceManager.h"
+#include "AutostartManager.h"
 #include "CliParser.h"
 #include "CommandLineBuilder.h"
 #include "ConfigManager.h"
@@ -31,7 +32,6 @@
 #include "LocalizationManager.h"
 #include "MainWindow.h"
 #include "SettingsDialog.h"
-#include "WindowsAutostartManager.h"
 #include "WorkspaceModel.h"
 #include "WorkspaceService.h"
 
@@ -608,13 +608,13 @@ void ModeFlowTests::settingsAcceptRollsBackOnSaveFailure() {
 }
 
 void ModeFlowTests::startupLoggingRequiresCtrl() {
-    using ModeFlow::Services::WindowsAutostartManager;
+    using ModeFlow::Services::AutostartManager;
 
-    QVERIFY(!WindowsAutostartManager::shouldEnableStartupLogging(Qt::NoModifier));
-    QVERIFY(WindowsAutostartManager::shouldEnableStartupLogging(Qt::ControlModifier));
-    QVERIFY(WindowsAutostartManager::shouldEnableStartupLogging(Qt::ControlModifier | Qt::ShiftModifier));
-    QVERIFY(!WindowsAutostartManager::shouldEnableStartupLogging(Qt::AltModifier));
-    QVERIFY(!WindowsAutostartManager::shouldEnableStartupLogging(Qt::ShiftModifier));
+    QVERIFY(!AutostartManager::shouldEnableStartupLogging(Qt::NoModifier));
+    QVERIFY(AutostartManager::shouldEnableStartupLogging(Qt::ControlModifier));
+    QVERIFY(AutostartManager::shouldEnableStartupLogging(Qt::ControlModifier | Qt::ShiftModifier));
+    QVERIFY(!AutostartManager::shouldEnableStartupLogging(Qt::AltModifier));
+    QVERIFY(!AutostartManager::shouldEnableStartupLogging(Qt::ShiftModifier));
 }
 
 void ModeFlowTests::commandLineBuilder_generatesCorrectArguments() {

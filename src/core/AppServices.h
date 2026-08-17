@@ -9,7 +9,7 @@ class AppLauncher;
 class DisplayManager;
 class HotkeyManager;
 class UpdateService;
-class WindowsAutostartManager;
+class AutostartManager;
 } // namespace ModeFlow::Services
 
 namespace ModeFlow::Gui {
@@ -40,7 +40,7 @@ struct AppServices {
 
     std::unique_ptr<Services::DisplayManager> displayManager;
     std::unique_ptr<Services::AudioDeviceManager> audioManager;
-    std::unique_ptr<Services::WindowsAutostartManager> autostartManager;
+    std::unique_ptr<Services::AutostartManager> autostartManager;
     std::unique_ptr<Services::AudioFeedbackService> audioFeedback;
 
     std::unique_ptr<Services::HotkeyManager> hotkeyManager;

@@ -3,6 +3,7 @@
 #include "AppLauncher.h"
 #include "AudioDeviceManager.h"
 #include "AudioFeedbackService.h"
+#include "AutostartManager.h"
 #include "ConfigManager.h"
 #include "DialogManager.h"
 #include "DisplayManager.h"
@@ -13,7 +14,6 @@
 #include "StyleManager.h"
 #include "TrayController.h"
 #include "UpdateService.h"
-#include "WindowsAutostartManager.h"
 #include "WorkspaceManager.h"
 #include "WorkspaceService.h"
 

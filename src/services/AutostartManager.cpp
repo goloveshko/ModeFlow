@@ -1,4 +1,4 @@
-﻿#include "WindowsAutostartManager.h"
+﻿#include "AutostartManager.h"
 
 #include <QGuiApplication>
 #include <QtConcurrent>
@@ -8,17 +8,17 @@
 
 namespace ModeFlow::Services {
 
-WindowsAutostartManager::WindowsAutostartManager(QObject* parent) : QObject(parent) {}
+AutostartManager::AutostartManager(QObject* parent) : QObject(parent) {}
 
-bool WindowsAutostartManager::isAdmin() {
+bool AutostartManager::isAdmin() {
     return Utils::TaskScheduler::isAdmin();
 }
 
-QFuture<bool> WindowsAutostartManager::checkIsRegisteredAsync() {
+QFuture<bool> AutostartManager::checkIsRegisteredAsync() {
     return QtConcurrent::run([]() { return Utils::TaskScheduler::isTaskRegistered(); });
 }
 
-QFuture<bool> WindowsAutostartManager::toggleAsync(bool checked, int delaySeconds) {
+QFuture<bool> AutostartManager::toggleAsync(bool checked, int delaySeconds) {
     return QtConcurrent::run([=]() {
         using namespace ModeFlow::Core;
 
@@ -56,11 +56,11 @@ QFuture<bool> WindowsAutostartManager::toggleAsync(bool checked, int delaySecond
     });
 }
 
-bool WindowsAutostartManager::isAutostartEnabled() const {
+bool AutostartManager::isAutostartEnabled() const {
     return Utils::TaskScheduler::isTaskRegistered();
 }
 
-bool WindowsAutostartManager::shouldEnableStartupLogging(Qt::KeyboardModifiers modifiers) {
+bool AutostartManager::shouldEnableStartupLogging(Qt::KeyboardModifiers modifiers) {
     return modifiers.testFlag(Qt::ControlModifier);
 }
 

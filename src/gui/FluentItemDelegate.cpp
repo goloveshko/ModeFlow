@@ -1,6 +1,7 @@
-﻿#include <QPainter>
+﻿#include "FluentItemDelegate.h"
 
-#include "FluentItemDelegate.h"
+#include <QPainter>
+
 #include "FontAwesome.h"
 #include "StyleBridge.h"
 #include "WorkspaceModel.h"

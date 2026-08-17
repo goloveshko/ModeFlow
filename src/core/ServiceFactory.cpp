@@ -4,6 +4,7 @@
 #include "AppLauncher.h"
 #include "AudioDeviceManager.h"
 #include "AudioFeedbackService.h"
+#include "AutostartManager.h"
 #include "ConfigManager.h"
 #include "DialogManager.h"
 #include "DisplayManager.h"
@@ -14,7 +15,6 @@
 #include "StyleManager.h"
 #include "TrayController.h"
 #include "UpdateService.h"
-#include "WindowsAutostartManager.h"
 #include "WorkspaceManager.h"
 #include "WorkspaceService.h"
 
@@ -29,7 +29,7 @@ void ServiceFactory::createCoreServices(AppServices& services) {
 void ServiceFactory::createHardwareServices(AppServices& services, QObject* parent) {
     services.displayManager = std::make_unique<Services::DisplayManager>();
     services.audioManager = std::make_unique<Services::AudioDeviceManager>();
-    services.autostartManager = std::make_unique<Services::WindowsAutostartManager>();
+    services.autostartManager = std::make_unique<Services::AutostartManager>();
     services.audioFeedback = std::make_unique<Services::AudioFeedbackService>();
 
     services.styleManager = std::make_unique<StyleManager>(services.configManager->currentTheme(),

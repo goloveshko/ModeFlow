@@ -5,10 +5,10 @@
 
 namespace ModeFlow::Services {
 
-class WindowsAutostartManager : public QObject {
+class AutostartManager : public QObject {
     Q_OBJECT
 public:
-    explicit WindowsAutostartManager(QObject* parent = nullptr);
+    explicit AutostartManager(QObject* parent = nullptr);
 
     static bool isAdmin();
 
