@@ -14,7 +14,8 @@ class StyleManager;
 
 class SettingsManager : public ISettingsManager {
 public:
-    SettingsManager(ConfigManager* cm, Services::AutostartManager* as, LocalizationManager* lm, StyleManager* sm);
+    SettingsManager(ConfigManager* configManager, Services::AutostartManager* autostartManager,
+                    LocalizationManager* localizationManager, StyleManager* styleManager);
 
     QList<LanguageData> availableLanguages() const override;
     QString currentLanguage() const override;
@@ -67,10 +68,10 @@ public:
     void setSkippedVersion(const QString& version) override;
 
 private:
-    ConfigManager* m_config;
-    Services::AutostartManager* m_autostart;
+    ConfigManager* m_configManager;
+    Services::AutostartManager* m_autostartManager;
+    LocalizationManager* m_localizationManager;
     StyleManager* m_styleManager;
-    LocalizationManager* m_loc;
 };
 
 } // namespace ModeFlow::Core
