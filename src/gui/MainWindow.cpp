@@ -7,7 +7,7 @@
 #include "Constants.h"
 #include "DialogManager.h"
 #include "FontAwesome.h"
-#include "HotkeyValidation.h"
+#include "HotkeyValidator.h"
 #include "ISettingsManager.h"
 #include "IStyleManager.h"
 #include "IWorkspaceManager.h"
@@ -155,12 +155,10 @@ void MainWindow::validateSpecificHotkey() {
     const auto& configs = m_workspaceManager->configs();
     const QString currentId = configs.at(row).id;
 
-    // Access the hotkey edit widget from the controller's widgets struct or expose a helper
-    // Actually, we can access the widget safely since we know where it is
     auto* keyEdit = ui->keyEditSpecific;
 
-    if (HotkeyValidation::validateProfileHotkey(keyEdit, m_settingsManager->nextProfileHotkey(), configs, currentId,
-                                                m_dialogManager, this)) {
+    HotkeyValidator validator(m_workspaceManager, m_settingsManager, m_dialogManager);
+    if (validator.validateProfileHotkey(keyEdit, currentId, this)) {
         saveCurrentToModel(row);
         scheduleAutosave();
     }

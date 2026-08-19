@@ -7,11 +7,11 @@
 #include <QTimer>
 
 #include "AutostartManager.h"
-#include "HotkeyValidation.h"
+#include "HotkeyValidator.h"
 #include "ISettingsManager.h"
 #include "IWorkspaceManager.h"
-#include "LogManager.h"
 #include "Logging.h"
+#include "LogManager.h"
 #include "StyleUtils.h"
 
 namespace ModeFlow::Gui {
@@ -159,10 +159,8 @@ void SettingsDialog::setupConnections() {
 }
 
 void SettingsDialog::onNextProfileHotkeyChanged() {
-    const auto& configs = m_workspaceManager->configs();
-
-    if (HotkeyValidation::validateProfileHotkey(ui->keyEditNextProfile, m_settingsManager->nextProfileHotkey(), configs,
-                                                QString(), m_dialogManager, this)) {
+    HotkeyValidator validator(m_workspaceManager, m_settingsManager, m_dialogManager);
+    if (validator.validateNextProfileHotkey(ui->keyEditNextProfile, this)) {
         updateUiState();
     }
 }

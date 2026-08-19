@@ -103,7 +103,7 @@ set(COMMON_SOURCES
     src/gui/FluentItemDelegate.cpp src/gui/FluentItemDelegate.h
     src/gui/FontAwesome.cpp src/gui/FontAwesome.h
     src/gui/HotkeyEdit.cpp src/gui/HotkeyEdit.h
-    src/gui/HotkeyValidation.cpp src/gui/HotkeyValidation.h
+    src/gui/HotkeyValidator.cpp src/gui/HotkeyValidator.h
     src/gui/LogHighlighter.cpp src/gui/LogHighlighter.h
     src/gui/LogViewerDialog.cpp src/gui/LogViewerDialog.h src/gui/LogViewerDialog.ui
     src/gui/MainWindow.cpp src/gui/MainWindow.h src/gui/MainWindow.ui
