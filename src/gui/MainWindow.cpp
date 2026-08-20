@@ -81,6 +81,17 @@ void MainWindow::init() {
     updateUI();
 }
 
+template <typename Receiver, typename Func>
+QAction* MainWindow::addMenuAction(QMenu* menu, const QString& iconSymbol, const QString& text,
+                                   const Receiver* receiver, Func slot) {
+    QIcon icon = iconSymbol.isEmpty() ? QIcon() : FontAwesome::icon(iconSymbol, 20);
+    QAction* action = menu->addAction(icon, text, receiver, slot);
+    if (!iconSymbol.isEmpty()) {
+        action->setProperty("faSymbol", iconSymbol);
+    }
+    return action;
+}
+
 void MainWindow::initMoreMenu() {
     if (m_moreMenu) {
         m_moreMenu->deleteLater();
@@ -89,16 +100,19 @@ void MainWindow::initMoreMenu() {
     m_moreMenu = new QMenu(this);
     m_moreMenu->setObjectName("moreMenu");
 
-    m_importAction = m_moreMenu->addAction(FontAwesome::icon(FontAwesome::FileImport, 20), tr("Import Profiles"),
-                                           m_exchangeController.get(), &ProfileTransfer::doImport);
-    m_exportAction = m_moreMenu->addAction(FontAwesome::icon(FontAwesome::FileExport, 20), tr("Export Profiles"),
-                                           m_exchangeController.get(), &ProfileTransfer::doExport);
+    addMenuAction(m_moreMenu, FontAwesome::FileImport, tr("Import Profiles"), m_exchangeController.get(),
+                  &ProfileTransfer::doImport);
+
+    addMenuAction(m_moreMenu, FontAwesome::FileExport, tr("Export Profiles"), m_exchangeController.get(),
+                  &ProfileTransfer::doExport);
+
     m_moreMenu->addSeparator();
 
-    m_checkUpdatesAction = m_moreMenu->addAction(FontAwesome::icon(FontAwesome::CloudArrowDown, 20), QString(), this,
-                                                 &MainWindow::forceUpdateCheck);
-    m_logViewerAction = m_moreMenu->addAction(FontAwesome::icon(FontAwesome::FileLines, 20), tr("View Log"), this,
-                                              &MainWindow::showLogViewer);
+    m_checkUpdatesAction = addMenuAction(m_moreMenu, FontAwesome::CloudArrowDown, QString(), m_dialogManager,
+                                         &MainWindow::forceUpdateCheck);
+
+    addMenuAction(m_moreMenu, FontAwesome::FileLines, tr("View Log"), m_dialogManager,
+                  &DialogManager::showLogViewerDialog);
 
     ui->btnMore->setMenu(m_moreMenu);
     ui->btnMore->setPopupMode(QToolButton::InstantPopup);
@@ -394,30 +408,6 @@ void MainWindow::updateUI() {
     m_detailsController->updateUI(enable);
 }
 
-void MainWindow::refreshVisualState() {
-    const int toolbarIconSize = resolvedIconExtent(ui->btnSettings->iconSize(), 16);
-
-    ui->btnCreateProfile->setIcon(FontAwesome::icon(FontAwesome::Plus, toolbarIconSize));
-    ui->btnSettings->setIcon(FontAwesome::icon(FontAwesome::Settings, toolbarIconSize));
-    ui->btnMore->setIcon(FontAwesome::icon(FontAwesome::EllipsisVertical, toolbarIconSize));
-    ui->btnAbout->setIcon(FontAwesome::icon(FontAwesome::Info, toolbarIconSize));
-
-    if (m_importAction)
-        m_importAction->setIcon(FontAwesome::icon(FontAwesome::FileImport, 20));
-    if (m_exportAction)
-        m_exportAction->setIcon(FontAwesome::icon(FontAwesome::FileExport, 20));
-    if (m_checkUpdatesAction)
-        m_checkUpdatesAction->setIcon(FontAwesome::icon(FontAwesome::CloudArrowDown, 20));
-    if (m_logViewerAction)
-        m_logViewerAction->setIcon(FontAwesome::icon(FontAwesome::FileLines, 20));
-
-    if (m_detailsController) {
-        m_detailsController->refreshVisualState();
-    }
-
-    ui->configList->viewport()->update();
-}
-
 int MainWindow::currentRow() const {
     return ui->configList->currentIndex().row();
 }
@@ -461,6 +451,36 @@ void MainWindow::updateMoreButtonState() {
     }
 
     StyleUtils::repolish(ui->btnMore);
+}
+
+void MainWindow::refreshMenuIcons(QMenu* menu) {
+    if (!menu)
+        return;
+
+    for (QAction* action : menu->actions()) {
+        const QString symbol = action->property("faSymbol").toString();
+        if (!symbol.isEmpty()) {
+            action->setIcon(FontAwesome::icon(symbol, 20));
+        }
+    }
+}
+
+void MainWindow::refreshVisualState() {
+    const int toolbarIconSize = resolvedIconExtent(ui->btnSettings->iconSize(), 16);
+
+    ui->btnCreateProfile->setIcon(FontAwesome::icon(FontAwesome::Plus, toolbarIconSize));
+    ui->btnSettings->setIcon(FontAwesome::icon(FontAwesome::Settings, toolbarIconSize));
+    ui->btnMore->setIcon(FontAwesome::icon(FontAwesome::EllipsisVertical, toolbarIconSize));
+    ui->btnAbout->setIcon(FontAwesome::icon(FontAwesome::Info, toolbarIconSize));
+
+    // Automatically re-generate icons for all menu actions using the faSymbol property
+    refreshMenuIcons(m_moreMenu);
+
+    if (m_detailsController) {
+        m_detailsController->refreshVisualState();
+    }
+
+    ui->configList->viewport()->update();
 }
 
 void MainWindow::showToolTipOnMoreButton(const QString& text) {

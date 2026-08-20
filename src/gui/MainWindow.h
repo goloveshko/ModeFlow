@@ -78,7 +78,6 @@ signals:
 private:
     void init();
     void setupConnections();
-    void initMoreMenu();
     void restoreSelection();
 
     void saveWindowGeometry();
@@ -98,7 +97,13 @@ private:
     int currentRow() const;
     QModelIndex currentIndex() const;
 
+    void initMoreMenu();
     void updateMoreButtonState();
+    void refreshMenuIcons(QMenu* menu);
+
+    template <typename Receiver, typename Func>
+    QAction* addMenuAction(QMenu* menu, const QString& iconSymbol, const QString& text, const Receiver* receiver,
+                           Func slot);
 
 private:
     std::unique_ptr<Ui::MainWindow> ui;
@@ -110,11 +115,7 @@ private:
     std::unique_ptr<ProfileTransfer> m_exchangeController;
     std::unique_ptr<ProfileEditor> m_detailsController;
     QMenu* m_moreMenu = nullptr;
-    QAction* m_iconAction = nullptr;
-    QAction* m_importAction = nullptr;
-    QAction* m_exportAction = nullptr;
     QAction* m_checkUpdatesAction = nullptr;
-    QAction* m_logViewerAction = nullptr;
 
     bool m_isUpdating = false;
 
