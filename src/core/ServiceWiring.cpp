@@ -101,16 +101,6 @@ void ServiceWiring::wireWindowConnections(AppServices& s, AppController* control
                      Qt::UniqueConnection);
     QObject::connect(s.mainWindow.get(), &Gui::MainWindow::hotkeyCaptureChanged, s.hotkeyManager.get(),
                      &Services::HotkeyManager::setCaptureMode, Qt::UniqueConnection);
-    QObject::connect(s.mainWindow.get(), &Gui::MainWindow::forceUpdateCheck, controller,
-                     &AppController::forceUpdateCheck, Qt::UniqueConnection);
-
-    auto* window = s.mainWindow.get();
-    QObject::connect(s.workspaceService.get(), &WorkspaceService::configApplyFinished, window,
-                     [window](const WorkspaceConfig&, WorkspaceService::ApplyStatus status) {
-                         if (status == WorkspaceService::ApplyStatus::Success) {
-                             window->refreshVisualState();
-                         }
-                     });
 
     QObject::connect(s.mainWindow.get(), &Gui::MainWindow::showSettingsDialog, s.dialogManager.get(),
                      &Gui::DialogManager::showSettingsDialog, Qt::UniqueConnection);
@@ -120,6 +110,14 @@ void ServiceWiring::wireWindowConnections(AppServices& s, AppController* control
                      &Gui::DialogManager::showUpdateDialog, Qt::UniqueConnection);
     QObject::connect(s.mainWindow.get(), &Gui::MainWindow::showLogViewer, s.dialogManager.get(),
                      &Gui::DialogManager::showLogViewerDialog, Qt::UniqueConnection);
+
+    auto* window = s.mainWindow.get();
+    QObject::connect(s.workspaceService.get(), &WorkspaceService::configApplyFinished, window,
+                     [window](const WorkspaceConfig&, WorkspaceService::ApplyStatus status) {
+                         if (status == WorkspaceService::ApplyStatus::Success) {
+                             window->refreshVisualState();
+                         }
+                     });
 }
 
 } // namespace ModeFlow::Core

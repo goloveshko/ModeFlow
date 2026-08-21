@@ -310,56 +310,6 @@ void AppController::profilesChanged() {
     }
 }
 
-void AppController::forceUpdateCheck() {
-    if (m_activeDialog != ActiveDialog::None && m_activeDialog != ActiveDialog::About)
-        return;
-
-    if (!m_services.updateService || m_services.updateService->isCheckingInProgress())
-        return;
-
-    // Disconnect and clear any lingering handles from previous manual checks
-    for (const auto& conn : m_manualUpdateConns) {
-        QObject::disconnect(conn);
-    }
-    m_manualUpdateConns.clear();
-
-    // Helper to immediately unhook all manual check connections as soon as ANY outcome triggers
-    auto cleanupConns = [this]() {
-        for (const auto& conn : m_manualUpdateConns) {
-            QObject::disconnect(conn);
-        }
-        m_manualUpdateConns.clear();
-    };
-
-    const auto c1 = QObject::connect(m_services.updateService.get(), &Services::UpdateService::updateAvailable, this,
-                                     [this, cleanupConns](const QString&, const QUrl&, const QString&) {
-                                         cleanupConns();
-                                         m_services.dialogManager->showUpdateDialog();
-                                     });
-
-    const auto c2 = QObject::connect(m_services.updateService.get(), &Services::UpdateService::noUpdateAvailable, this,
-                                     [this, cleanupConns]() {
-                                         cleanupConns();
-                                         if (m_services.mainWindow) {
-                                             m_services.mainWindow->showToolTipOnMoreButton(tr("You are up to date."));
-                                         }
-                                     });
-
-    const auto c3 = QObject::connect(m_services.updateService.get(), &Services::UpdateService::checkFailed, this,
-                                     [this, cleanupConns](const QString& error) {
-                                         cleanupConns();
-                                         if (m_services.mainWindow) {
-                                             m_services.mainWindow->showToolTipOnMoreButton(tr("Update check failed") +
-                                                                                            u": "_s + error);
-                                         }
-                                     });
-
-    m_manualUpdateConns = {c1, c2, c3};
-
-    // Force network check on manual trigger
-    m_services.updateService->checkForUpdates(true);
-}
-
 void AppController::requestAppExit() {
     qCDebug(lcCore) << "Explicit exit requested by user.";
     qApp->quit();

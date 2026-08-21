@@ -22,7 +22,7 @@ class AppController : public QObject {
 
 public:
     explicit AppController(QObject* parent = nullptr);
-    ~AppController() override; // Explicilty declared for std::unique_ptr destruction
+    ~AppController() override;
 
     void init(const StartupOptions& options);
 
@@ -47,7 +47,6 @@ public slots:
     void confirmAndApplyProfile(const ModeFlow::Core::WorkspaceConfig& config);
 
 private slots:
-    void forceUpdateCheck();
     void profilesChanged();
     void handleStartupSuccess();
     void handleStartupError();
@@ -65,8 +64,6 @@ private:
     QTimer m_updateTimer;
 
     QString m_pendingUpdateVersion;
-
-    QList<QMetaObject::Connection> m_manualUpdateConns;
 
     ActiveDialog m_activeDialog = ActiveDialog::None;
     bool m_restartPending = false;

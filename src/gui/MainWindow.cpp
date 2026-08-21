@@ -109,7 +109,7 @@ void MainWindow::initMoreMenu() {
     m_moreMenu->addSeparator();
 
     m_checkUpdatesAction = addMenuAction(m_moreMenu, FontAwesome::CloudArrowDown, QString(), m_dialogManager,
-                                         &MainWindow::forceUpdateCheck);
+                                         &DialogManager::forceUpdateCheck);
 
     addMenuAction(m_moreMenu, FontAwesome::FileLines, tr("View Log"), m_dialogManager,
                   &DialogManager::showLogViewerDialog);

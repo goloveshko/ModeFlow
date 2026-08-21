@@ -34,6 +34,8 @@ public:
     virtual void showSettingsDialog();
     virtual void showUpdateDialog();
 
+    virtual void forceUpdateCheck();
+
     // --- 2. Action Confirmations ---
     virtual bool confirmApplyProfile(const Core::WorkspaceConfig& config);
     virtual bool confirmAction(const QString& title, const QString& text);
@@ -79,6 +81,7 @@ private:
 
     Core::AppServices& m_services;
     Core::ActiveDialog m_activeDialog = Core::ActiveDialog::None;
+    QList<QMetaObject::Connection> m_manualUpdateConns;
 };
 
 } // namespace ModeFlow::Gui

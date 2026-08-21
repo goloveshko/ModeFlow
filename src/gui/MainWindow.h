@@ -71,7 +71,6 @@ signals:
     void showSettingsDialog();
     void showAboutDialog();
     void showUpdateDialog();
-    void forceUpdateCheck();
     void showLogViewer();
     void hotkeyCaptureChanged(bool active);
 

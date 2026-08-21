@@ -130,6 +130,55 @@ void DialogManager::showUpdateDialog() {
     }
 }
 
+void DialogManager::forceUpdateCheck() {
+    if (m_activeDialog != Core::ActiveDialog::None && m_activeDialog != Core::ActiveDialog::About)
+        return;
+
+    if (!m_services.updateService || m_services.updateService->isCheckingInProgress())
+        return;
+
+    // Disconnect any lingering connections from previous manual checks
+    for (const auto& conn : m_manualUpdateConns) {
+        QObject::disconnect(conn);
+    }
+    m_manualUpdateConns.clear();
+
+    auto cleanupConns = [this]() {
+        for (const auto& conn : m_manualUpdateConns) {
+            QObject::disconnect(conn);
+        }
+        m_manualUpdateConns.clear();
+    };
+
+    const auto c1 = connect(m_services.updateService.get(), &Services::UpdateService::updateAvailable, this,
+                            [this, cleanupConns](const QString&, const QUrl&, const QString&) {
+                                cleanupConns();
+                                showUpdateDialog();
+                            });
+
+    const auto c2 = connect(m_services.updateService.get(), &Services::UpdateService::noUpdateAvailable, this,
+                            [this, cleanupConns]() {
+                                cleanupConns();
+                                if (m_services.mainWindow) {
+                                    m_services.mainWindow->showToolTipOnMoreButton(tr("You are up to date."));
+                                }
+                            });
+
+    const auto c3 =
+        connect(m_services.updateService.get(), &Services::UpdateService::checkFailed, this,
+                [this, cleanupConns](const QString& error) {
+                    cleanupConns();
+                    if (m_services.mainWindow) {
+                        m_services.mainWindow->showToolTipOnMoreButton(tr("Update check failed: %1").arg(error));
+                    }
+                });
+
+    m_manualUpdateConns = {c1, c2, c3};
+
+    // Force network check on manual trigger
+    m_services.updateService->checkForUpdates(true);
+}
+
 // --- 2. Action Confirmations ---
 
 bool DialogManager::confirmApplyProfile(const Core::WorkspaceConfig& config) {
