@@ -23,9 +23,6 @@ signals:
     void duplicateRequested(int row);
     void applyRequested(int row);
 
-public slots:
-    void updateRowWidgets();
-
 protected:
     void contextMenuEvent(QContextMenuEvent* event) override;
     void changeEvent(QEvent* event) override;

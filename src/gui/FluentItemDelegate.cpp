@@ -77,11 +77,7 @@ void FluentItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
         isSelected ? bridge.sidebarTextSelected() : (isActive ? bridge.sidebarAccent() : bridge.sidebarTextNormal());
     painter->setPen(textColor);
 
-    // The right-side inset of textRect is calculated as: -(RightContentsMargin + DeleteButtonWidth)
-    // - 8 is the right margin of the row layout (layout->setContentsMargins(0, 0, 8, 0))
-    // - 24 is the exact width of the delete button (deleteBtn->setFixedSize(24, 24))
-    // This defines the precise safety boundary where text elision starts, preventing overlaps.
-    const QRect textRect = rect.adjusted(iconRect.right(), 0, -(8 + 24), 0);
+    const QRect textRect = rect.adjusted(iconRect.right() + 8, 0, -10, 0);
 
     QFontMetrics fm(painter->font());
     const QString elidedText = fm.elidedText(text, Qt::ElideMiddle, textRect.width());
