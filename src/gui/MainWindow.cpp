@@ -56,7 +56,7 @@ void MainWindow::init() {
 
     m_profileIconMenu = new ProfileIconMenu(this);
 
-    m_exchangeController = std::make_unique<ProfileTransfer>(m_workspaceManager, m_dialogManager, this);
+    m_profileTransfer = std::make_unique<ProfileTransfer>(m_workspaceManager, m_dialogManager, this);
 
     ProfileEditorWidgets widgets;
     widgets.editName = ui->editName;
@@ -70,7 +70,7 @@ void MainWindow::init() {
     widgets.groupHardware = ui->groupHardware;
     widgets.groupAuto = ui->groupAuto;
 
-    m_detailsController =
+    m_profileEditor =
         std::make_unique<ProfileEditor>(widgets, m_workspaceManager, m_settingsManager, m_profileIconMenu);
 
     initMoreMenu();
@@ -100,10 +100,10 @@ void MainWindow::initMoreMenu() {
     m_moreMenu = new QMenu(this);
     m_moreMenu->setObjectName("moreMenu");
 
-    addMenuAction(m_moreMenu, FontAwesome::FileImport, tr("Import Profiles"), m_exchangeController.get(),
+    addMenuAction(m_moreMenu, FontAwesome::FileImport, tr("Import Profiles"), m_profileTransfer.get(),
                   &ProfileTransfer::doImport);
 
-    addMenuAction(m_moreMenu, FontAwesome::FileExport, tr("Export Profiles"), m_exchangeController.get(),
+    addMenuAction(m_moreMenu, FontAwesome::FileExport, tr("Export Profiles"), m_profileTransfer.get(),
                   &ProfileTransfer::doExport);
 
     m_moreMenu->addSeparator();
@@ -134,16 +134,15 @@ void MainWindow::setupConnections() {
     connect(ui->btnSettings, &QToolButton::clicked, this, &MainWindow::showSettingsDialog);
     connect(ui->btnAbout, &QToolButton::clicked, this, &MainWindow::showAboutDialog);
 
-    connect(m_exchangeController.get(), &ProfileTransfer::exchangeCompleted, this, [this]() {
+    connect(m_profileTransfer.get(), &ProfileTransfer::exchangeCompleted, this, [this]() {
         notifySettingsChanged();
         updateUI();
         restoreSelection();
     });
 
-    connect(m_detailsController.get(), &ProfileEditor::profileChanged, this, &MainWindow::scheduleAutosave);
-    connect(m_detailsController.get(), &ProfileEditor::hotkeyCaptureChanged, this, &MainWindow::hotkeyCaptureChanged);
-    connect(m_detailsController.get(), &ProfileEditor::validateSpecificHotkey, this,
-            &MainWindow::validateSpecificHotkey);
+    connect(m_profileEditor.get(), &ProfileEditor::profileChanged, this, &MainWindow::scheduleAutosave);
+    connect(m_profileEditor.get(), &ProfileEditor::hotkeyCaptureChanged, this, &MainWindow::hotkeyCaptureChanged);
+    connect(m_profileEditor.get(), &ProfileEditor::validateSpecificHotkey, this, &MainWindow::validateSpecificHotkey);
 
     connect(m_autosaveTimer, &QTimer::timeout, this, &MainWindow::autosaveCurrentProfile);
 }
@@ -263,7 +262,7 @@ void MainWindow::saveCurrentToModel(int row) {
         return;
 
     Core::WorkspaceConfig cfg = m_workspaceManager->configs().at(row);
-    m_detailsController->saveProfile(cfg);
+    m_profileEditor->saveProfile(cfg);
 
     m_workspaceManager->updateConfig(row, cfg);
 }
@@ -293,7 +292,7 @@ void MainWindow::loadRowToUi(int row) {
     m_isUpdating = true;
     const auto& cfg = m_workspaceManager->configs().at(row);
 
-    m_detailsController->loadProfile(cfg);
+    m_profileEditor->loadProfile(cfg);
 
     m_isUpdating = false;
 }
@@ -330,7 +329,7 @@ void MainWindow::captureCurrentSettings() {
     if (currentRow() < 0)
         return;
 
-    m_detailsController->captureCurrentSettings();
+    m_profileEditor->captureCurrentSettings();
 }
 
 void MainWindow::changeEvent(QEvent* event) {
@@ -405,7 +404,7 @@ void MainWindow::hideEvent(QHideEvent* event) {
 void MainWindow::updateUI() {
     bool enable = m_workspaceManager->model()->rowCount() > 0;
 
-    m_detailsController->updateUI(enable);
+    m_profileEditor->updateUI(enable);
 }
 
 int MainWindow::currentRow() const {
@@ -476,8 +475,8 @@ void MainWindow::refreshVisualState() {
     // Automatically re-generate icons for all menu actions using the faSymbol property
     refreshMenuIcons(m_moreMenu);
 
-    if (m_detailsController) {
-        m_detailsController->refreshVisualState();
+    if (m_profileEditor) {
+        m_profileEditor->refreshVisualState();
     }
 
     ui->configList->viewport()->update();

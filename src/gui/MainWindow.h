@@ -111,8 +111,8 @@ private:
     DialogManager* m_dialogManager;
 
     ProfileIconMenu* m_profileIconMenu = nullptr;
-    std::unique_ptr<ProfileTransfer> m_exchangeController;
-    std::unique_ptr<ProfileEditor> m_detailsController;
+    std::unique_ptr<ProfileTransfer> m_profileTransfer;
+    std::unique_ptr<ProfileEditor> m_profileEditor;
     QMenu* m_moreMenu = nullptr;
     QAction* m_checkUpdatesAction = nullptr;
 

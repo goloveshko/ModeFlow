@@ -60,7 +60,7 @@ signals:
 private:
     AppServices m_services;
 
-    std::unique_ptr<StartupPreflight> m_preflightChecker;
+    std::unique_ptr<StartupPreflight> m_preflight;
     QTimer m_updateTimer;
 
     QString m_pendingUpdateVersion;
